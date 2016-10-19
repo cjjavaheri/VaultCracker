@@ -1,0 +1,10 @@
+*.o
+*.d
+*.orig
+main
+html/
+core
+CMakeLists.txt
+.idea/
+.directory
+gmon.out

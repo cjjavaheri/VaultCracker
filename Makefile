@@ -30,7 +30,7 @@ main: $(OBJS)
 	$(LINK) -o $@ $^ $(LIBS)
 
 clean:
-	rm -rf *.o *.d core main
+	rm -rf *.o *.d *.orig core main
 
 debug: CXXFLAGS = -DDEBUG -g -std=c++11
 debug: clean main
