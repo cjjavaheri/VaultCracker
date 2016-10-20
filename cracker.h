@@ -25,8 +25,8 @@ using namespace std;
 class Cracker : public BaseCracker
 {
 public:
-   Cracker(); /*!< Constructor */
+    Cracker(); /*!< Constructor */
 
-   void getCracking(); /*!< Function to start the intrusion attempt */
+    void getCracking(); /*!< Function to start the intrusion attempt */
 };
 #endif

@@ -28,19 +28,19 @@ Game::Game(BaseVault *v, int minLen, int maxLen) : vault(v), range(Range(minLen,
  ******************************************************************************/
 Response Game::sendPassword(string str)
 {
-   if (str.length() < get<0>(range))
-      return Response(PW_TOO_SHORT, 0.0);
+    if (str.length() < get<0>(range))
+        return Response(PW_TOO_SHORT, 0.0);
 
-   if (str.length() > get<1>(range))
-      return Response(PW_TOO_LONG, 0.0);
+    if (str.length() > get<1>(range))
+        return Response(PW_TOO_LONG, 0.0);
 
-   // Check for time limit exceeded here
-  
-   // Stop the timer related to cracker computation
-   Response response = vault->sendPassword(str);
-   // Start the timer related to cracker computation
+    // Check for time limit exceeded here
 
-   return response;
+    // Stop the timer related to cracker computation
+    Response response = vault->sendPassword(str);
+    // Start the timer related to cracker computation
+
+    return response;
 }
 
 /***************************************************************************//**
@@ -50,13 +50,13 @@ Response Game::sendPassword(string str)
  ******************************************************************************/
 void Game::sendPasswordFunc(function<Response(string)>& callback)
 {
-   callback = bind(&Game::sendPassword, this, _1);
+    callback = bind(&Game::sendPassword, this, _1);
 }
 
 void Game::startGame(BaseCracker *c)
 {
-   cracker = c;
+    cracker = c;
 
-   // Start the timer
-   cracker->getCracking();
+    // Start the timer
+    cracker->getCracking();
 }

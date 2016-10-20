@@ -11,15 +11,15 @@ using namespace placeholders;
 
 class Game
 {
-   BaseVault *vault;
-   BaseCracker *cracker;
-   Range range;
+    BaseVault *vault;
+    BaseCracker *cracker;
+    Range range;
 public:
-   Game(BaseVault *v, int minLen, int maxLen);
+    Game(BaseVault *v, int minLen, int maxLen);
 
-   void sendPasswordFunc(function<Response(string)>& callback);
-   Response sendPassword(string str);
-   void startGame(BaseCracker *c);
+    void sendPasswordFunc(function<Response(string)>& callback);
+    Response sendPassword(string str);
+    void startGame(BaseCracker *c);
 };
 
 #endif

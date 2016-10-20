@@ -19,11 +19,11 @@
  ******************************************************************************/
 Vault::Vault(int minLen, int maxLen)
 {
-   cout << "Vault::Vault starting construction\n";
-   srand(time(NULL));
-   setRange(minLen, maxLen);
-   setPW();
-   cout << "Vault::Vault finished construction\n";
+    cout << "Vault::Vault starting construction\n";
+    srand(time(NULL));
+    setRange(minLen, maxLen);
+    setPW();
+    cout << "Vault::Vault finished construction\n";
 }
 
 /***************************************************************************//**
@@ -34,24 +34,24 @@ Vault::Vault(int minLen, int maxLen)
  ******************************************************************************/
 void Vault::setRange(int minLen, int maxLen)
 {
-   range = Range(minLen, maxLen);
-   pwLen = minLen;
-   while ((rand() % 100) > 50) pwLen++;
-   cout << "Vault::setRange - [" << minLen << " to " << maxLen << "] :: [" << pwLen << "]\n";
+    range = Range(minLen, maxLen);
+    pwLen = minLen;
+    while ((rand() % 100) > 50) pwLen++;
+    cout << "Vault::setRange - [" << minLen << " to " << maxLen << "] :: [" << pwLen << "]\n";
 }
 
 /***************************************************************************//**
  * @brief Set the password for this instance of the Vault
  *
- * Here is one of the places you might make changes to make your defense 
+ * Here is one of the places you might make changes to make your defense
  * stronger.  Combining this and your score calculator will be important.
  ******************************************************************************/
 void Vault::setPW()
 {
     for (unsigned int i = 0 ; i < pwLen ; i++)
     {
-       char ch = validChars[rand() % 74];
-       password += ch;
+        char ch = validChars[rand() % 74];
+        password += ch;
     }
     cout << "Generated a random password\n" << password << endl;
 }
@@ -65,10 +65,10 @@ void Vault::setPW()
  ******************************************************************************/
 Response Vault::sendPassword(string guess)
 {
-   unsigned int i;
-   bool correct = false;
-   Response response(WAITING, 100.0);
-   cout << "Vault::sendPassword(" << guess << ")\n";
+    unsigned int i;
+    bool correct = false;
+    Response response(WAITING, 100.0);
+    cout << "Vault::sendPassword(" << guess << ")\n";
 
 // Here is where you will take the password guess and compare it with the
 // password that you created.  If the guess is correct then you are required
@@ -83,24 +83,24 @@ Response Vault::sendPassword(string guess)
 // to be an important part of your defense.  Think about how this will impact
 // how easy or hard it will be to guess your password.
 
-	
-	if (guess.length() == password.length())
-	{
-		for (i = 0; i < password.length(); i++)
-		{
-			if (password.at(i) == guess.at(i))
-			{
-				correct = true;
-			}
-			else
-			{
-				correct = false;
-				break;
-			}
-		}
-	}
-	if (correct)
-		response = Response(ACCEPTED, 100.0);
 
-   return response;
+    if (guess.length() == password.length())
+    {
+        for (i = 0; i < password.length(); i++)
+        {
+            if (password.at(i) == guess.at(i))
+            {
+                correct = true;
+            }
+            else
+            {
+                correct = false;
+                break;
+            }
+        }
+    }
+    if (correct)
+        response = Response(ACCEPTED, 100.0);
+
+    return response;
 }

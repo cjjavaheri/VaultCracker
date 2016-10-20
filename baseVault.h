@@ -21,11 +21,11 @@ using namespace std;
 class BaseVault
 {
 public:
-   /// Constructor
-   BaseVault();
+    /// Constructor
+    BaseVault();
 
-   /// The function that will check a password guess against the actual password
-   virtual Response sendPassword(string pw) = 0;
+    /// The function that will check a password guess against the actual password
+    virtual Response sendPassword(string pw) = 0;
 };
 
 #endif

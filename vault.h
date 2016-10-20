@@ -21,27 +21,27 @@ using namespace std;
  ******************************************************************************/
 class Vault : public BaseVault
 {
-   /// A place to store the target password
-   string password;
+    /// A place to store the target password
+    string password;
 
-   /// The range of lengths that the password might be
-   Range range;
+    /// The range of lengths that the password might be
+    Range range;
 
-   /// The actual length of the password
-   unsigned int pwLen;
+    /// The actual length of the password
+    unsigned int pwLen;
 
 public:
-   /// Constructor
-   Vault(int minLen, int maxLen);
+    /// Constructor
+    Vault(int minLen, int maxLen);
 
-   /// The function that will check a password guess against the actual password
-   Response sendPassword(string pw);
+    /// The function that will check a password guess against the actual password
+    Response sendPassword(string pw);
 
 private:
-   /// Private function to calculate a password
-   void setPW();
-   /// Private function to set the range and actual password length
-   void setRange(int, int);
+    /// Private function to calculate a password
+    void setPW();
+    /// Private function to set the range and actual password length
+    void setRange(int, int);
 };
 
 #endif

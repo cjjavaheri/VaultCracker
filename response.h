@@ -11,21 +11,21 @@ typedef tuple<unsigned int, unsigned int> Range;
 
 const string ResponseMsg[] =
 {
-   "Waiting for Credentials",
-   "Password Too Long",
-   "Password Too Short",
-   "Password Accepted",
-   "Time Limit Exceeded",
+    "Waiting for Credentials",
+    "Password Too Long",
+    "Password Too Short",
+    "Password Accepted",
+    "Time Limit Exceeded",
 };
 
 const string validChars = {"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+=:;~?.<>]["};
 
 struct Response
 {
-   ResponseCode rc;
-   long double score;
+    ResponseCode rc;
+    long double score;
 
-   Response(ResponseCode responseCode=WAITING, long double sc=0.0) : rc(responseCode), score(sc) {}
+    Response(ResponseCode responseCode=WAITING, long double sc=0.0) : rc(responseCode), score(sc) {}
 };
 
 #endif

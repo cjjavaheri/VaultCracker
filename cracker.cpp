@@ -15,37 +15,39 @@ Cracker::Cracker() {}
  ******************************************************************************/
 void Cracker::getCracking()
 {
-   string guess = "Password";
-   string checklen="";
-   
-   cout << "Cracker::getCracking()" << endl;
-   
-   unsigned int min=0;
-   unsigned int max=0;
-   
-   Response getlen=sendPassword(checklen);
-   for(int i=0;i<15;i++)
-   {
-      getlen=sendPassword(checklen);
-      if(getlen.rc == PW_TOO_SHORT)
-      {
-   	cout << ResponseMsg[getlen.rc] << endl;
-      	min++;
-      }
-      max +=1;
-      if (getlen.rc == PW_TOO_LONG)
-      {
-      max -= 1;
-      break;
-      }
-      	checklen+="a";
-   }
-	cout << "Our Min is " << min << " and our Max is " << max << endl;
-   // Here you will generate your password guesses
-   // Once generated, you send the prospective password to the game system
-   // through the bound callback function 'sendPassword'
+    string guess = "Password";
+    string checklen="";
 
-  // Response response = sendPassword(guess);
+    cout << "Cracker::getCracking()" << endl;
 
-   // cout << ResponseMsg[response.rc] << endl;
+    unsigned int min=0;
+    unsigned int max=0;
+
+    Response getlen=sendPassword(checklen);
+    for(int i=0; i<15; i++)
+    {
+        cout << i << endl;
+        getlen=sendPassword(checklen);
+        if(getlen.rc == PW_TOO_SHORT)
+        {
+            cout << ResponseMsg[getlen.rc] << endl;
+            min++;
+        }
+        max++;
+        if (getlen.rc == PW_TOO_LONG)
+        {
+            cout << ResponseMsg[getlen.rc] << endl;
+            max -= 2;
+            break;
+        }
+        checklen+="a";
+    }
+    cout << "Our Min is " << min << " and our Max is " << max << endl;
+    // Here you will generate your password guesses
+    // Once generated, you send the prospective password to the game system
+    // through the bound callback function 'sendPassword'
+
+    // Response response = sendPassword(guess);
+
+    // cout << ResponseMsg[response.rc] << endl;
 }

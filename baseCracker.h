@@ -23,11 +23,11 @@ using namespace std;
 class BaseCracker
 {
 public:
-   BaseCracker(); /*!< Constructor */
+    BaseCracker(); /*!< Constructor */
 
-   virtual void getCracking() = 0; /*! Function to start the intrusion attempt*/
+    virtual void getCracking() = 0; /*! Function to start the intrusion attempt*/
 
-   /// A function pointer exposed so that a callback can be set
-   function<Response(string)> sendPassword;
+    /// A function pointer exposed so that a callback can be set
+    function<Response(string)> sendPassword;
 };
 #endif
