@@ -37,6 +37,7 @@ void Vault::setRange(int minLen, int maxLen)
     range = Range(minLen, maxLen);
     pwLen = minLen;
     while ((rand() % 100) > 50) pwLen++;
+    pwLen = 8;
     cout << "Vault::setRange - [" << minLen << " to " << maxLen << "] :: [" << pwLen << "]\n";
 }
 
@@ -67,6 +68,7 @@ Response Vault::sendPassword(string guess)
 {
     unsigned int i;
     bool correct = false;
+    double score = 0.0;
     Response response(WAITING, 100.0);
     cout << "Vault::sendPassword(" << guess << ")\n";
 
@@ -88,19 +90,22 @@ Response Vault::sendPassword(string guess)
     {
         for (i = 0; i < password.length(); i++)
         {
-            if (password.at(i) == guess.at(i))
-            {
-                correct = true;
-            }
-            else
-            {
-                correct = false;
-                break;
-            }
+            score += guess.at(i) - password.at(i);
+//            if (password.at(i) == guess.at(i))
+//            {
+//                correct = true;
+//            }
+//            else
+//            {
+//                correct = false;
+//                break;
+//            }
         }
     }
-    if (correct)
-        response = Response(ACCEPTED, 100.0);
+//    if (correct)
+//        response = Response(ACCEPTED, score);
+//    else
+    response = Response(WAITING, score);
 
     return response;
 }
