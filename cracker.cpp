@@ -16,9 +16,29 @@ Cracker::Cracker() {}
 void Cracker::getCracking()
 {
    string guess = "Password";
-
+   string checklen="";
+   
    cout << "Cracker::getCracking()" << endl;
-
+   
+   unsigned int min=0;
+   unsigned int max=0;
+   
+   Response getlen=sendPassword(checklen);
+   for(int i=0;i<11;i++)
+   {
+      getlen=sendPassword(checklen);
+      if(getlen.rc == PW_TOO_SHORT)
+      {
+      	checklen+="a";
+      	min++;
+      }
+      max ++;
+      if (getlen.rc == PW_TOO_LONG)
+      {
+      max--;
+      break;
+      }
+   }
    // Here you will generate your password guesses
    // Once generated, you send the prospective password to the game system
    // through the bound callback function 'sendPassword'
