@@ -53,7 +53,6 @@ void Vault::setPW()
        char ch = validChars[rand() % 74];
        password += ch;
     }
-	password = "Password";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -67,7 +66,7 @@ void Vault::setPW()
 Response Vault::sendPassword(string guess)
 {
    unsigned int i;
-   bool correct;
+   bool correct = false;
    Response response(WAITING, 100.0);
    cout << "Vault::sendPassword(" << guess << ")\n";
 
@@ -84,19 +83,20 @@ Response Vault::sendPassword(string guess)
 // to be an important part of your defense.  Think about how this will impact
 // how easy or hard it will be to guess your password.
 
-	if (password.length() != guess.length())
-		return response;
-
-	for (i = 0; i < password.length(); i++)
+	
+	if (guess.length() == password.length())
 	{
-		if (password.at(i) == guess.at(i))
+		for (i = 0; i < password.length(); i++)
 		{
-			correct = true;
-		}
-		else
-		{
-			correct = false;
-			break;
+			if (password.at(i) == guess.at(i))
+			{
+				correct = true;
+			}
+			else
+			{
+				correct = false;
+				break;
+			}
 		}
 	}
 	if (correct)

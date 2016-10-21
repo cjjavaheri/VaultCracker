@@ -24,26 +24,28 @@ void Cracker::getCracking()
    unsigned int max=0;
    
    Response getlen=sendPassword(checklen);
-   for(int i=0;i<12;i++)
+   for(int i=0;i<15;i++)
    {
       getlen=sendPassword(checklen);
       if(getlen.rc == PW_TOO_SHORT)
       {
-      	checklen+="a";
+   	cout << ResponseMsg[getlen.rc] << endl;
       	min++;
       }
-      max ++;
+      max +=1;
       if (getlen.rc == PW_TOO_LONG)
       {
-      max--;
+      max -= 1;
       break;
       }
+      	checklen+="a";
    }
+	cout << "Our Min is " << min << " and our Max is " << max << endl;
    // Here you will generate your password guesses
    // Once generated, you send the prospective password to the game system
    // through the bound callback function 'sendPassword'
 
-   Response response = sendPassword(guess);
+  // Response response = sendPassword(guess);
 
-   cout << ResponseMsg[response.rc] << endl;
+   // cout << ResponseMsg[response.rc] << endl;
 }
