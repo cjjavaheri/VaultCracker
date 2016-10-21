@@ -24,7 +24,7 @@ void Cracker::getCracking()
    unsigned int max=0;
    
    Response getlen=sendPassword(checklen);
-   for(int i=0;i<11;i++)
+   for(int i=0;i<12;i++)
    {
       getlen=sendPassword(checklen);
       if(getlen.rc == PW_TOO_SHORT)
