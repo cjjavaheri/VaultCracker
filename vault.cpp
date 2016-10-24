@@ -2,6 +2,7 @@
  * @file
  ******************************************************************************/
 #include "vault.h"
+#include <cmath>
 
 /***************************************************************************//**
  * @brief Vault Constructor
@@ -51,9 +52,10 @@ void Vault::setPW()
 {
     for (unsigned int i = 0 ; i < pwLen ; i++)
     {
-        char ch = validChars[rand() % 74];
+        char ch = validChars[rand() % 26]; // Original is 74. Changed for testing
         password += ch;
     }
+    password = "Password";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -90,7 +92,7 @@ Response Vault::sendPassword(string guess)
     {
         for (i = 0; i < password.length(); i++)
         {
-            score += guess.at(i) - password.at(i);
+            score += abs(guess.at(i) - password.at(i));
 //            if (password.at(i) == guess.at(i))
 //            {
 //                correct = true;
