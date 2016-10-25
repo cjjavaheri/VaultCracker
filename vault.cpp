@@ -88,7 +88,11 @@ Response Vault::sendPassword(string guess)
 // how easy or hard it will be to guess your password.
 
 
-    if (guess.length() == password.length())
+    if(guess==password)
+        {response=Response(ACCEPTED,score);
+         return response;}
+    
+    else if (guess.length() == password.length())
     {
         for (i = 0; i < password.length(); i++)
         {
@@ -104,9 +108,7 @@ Response Vault::sendPassword(string guess)
 //            }
         }
     }
-//    if (correct)
-//        response = Response(ACCEPTED, score);
-//    else
+    
     response = Response(WAITING, score);
 
     return response;
