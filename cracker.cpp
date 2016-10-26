@@ -31,7 +31,7 @@ void Cracker::getCracking()
     {
         guess = "";
         vector<int> scoreSheet;
-        for (unsigned int i = 0 ; i < 8 ; i++)
+        for (unsigned int i = 0 ; i < 4 ; i++)
         {
             char ch = validChars[rand() % 26];
             guess += ch;
@@ -39,7 +39,7 @@ void Cracker::getCracking()
         // Here you will generate your password guesses
         // Once generated, you send the prospective password to the game system
         // through the bound callback function 'sendPassword'
-
+	cout<<guess<<endl;
         response = sendPassword(guess);
 
         cout << ResponseMsg[response.rc] << " ";
@@ -47,17 +47,23 @@ void Cracker::getCracking()
         cout << response.score << endl;
     }
 
-    guess = "Password";
+    guess = "pass";
     response = sendPassword(guess);
 
     cout << ResponseMsg[response.rc] << " ";
     cout << response.score << endl;
 
-    unsigned int min=0;
+    //sorting plot.data
+    ofstream fout;
+    fout.open("plot.data",ios::app);
+    
+    fout.close();
+   /* unsigned int min=0;
     unsigned int max=0;
 
     Response getlen=sendPassword(checklen);
-    for(int i=0; i < 12; i++)
+    //for checking min and max length of password
+      for(int i=0; i < 12; i++)
     {
         getlen=sendPassword(checklen);
         if(getlen.rc == PW_TOO_SHORT)
@@ -71,5 +77,5 @@ void Cracker::getCracking()
             break;
         }
         checklen+="a";
-    }
+    }*/
 }
