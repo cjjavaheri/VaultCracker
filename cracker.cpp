@@ -19,7 +19,11 @@ void Cracker::getCracking()
 {
     string guess = "";
     string checklen="";
+    string guess1 = "mmmm";
     Response response;
+
+    response = sendPassword(guess1);
+
 
     cout << "Cracker::getCracking()" << endl;
 

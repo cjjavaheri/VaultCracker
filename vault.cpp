@@ -38,7 +38,7 @@ void Vault::setRange(int minLen, int maxLen)
     range = Range(minLen, maxLen);
     pwLen = minLen;
     while ((rand() % 100) > 50) pwLen++;
-    pwLen = 8;
+    pwLen = 4;
     cout << "Vault::setRange - [" << minLen << " to " << maxLen << "] :: [" << pwLen << "]\n";
 }
 
@@ -55,7 +55,7 @@ void Vault::setPW()
         char ch = validChars[rand() % 26]; // Original is 74. Changed for testing
         password += ch;
     }
-    password = "Password";
+    password = "Pass";
     cout << "Generated a random password\n" << password << endl;
 }
 
