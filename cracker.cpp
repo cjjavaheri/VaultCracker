@@ -21,8 +21,11 @@ void Cracker::getCracking()
     string checklen="";
     string guess1 = "mmmm";
     Response response;
-
+    map<string, int> mymap;
+    map<string, int>::iterator it;
     response = sendPassword(guess1);
+    ofstream fout;
+    fout.open("plot.dat");
 
 
     cout << "Cracker::getCracking()" << endl;
@@ -45,6 +48,7 @@ void Cracker::getCracking()
         cout << ResponseMsg[response.rc] << " ";
         scoreSheet.push_back(response.score);
         cout << response.score << endl;
+        mymap.insert({guess, response.score});
     }
 
     guess = "pass";
@@ -54,8 +58,12 @@ void Cracker::getCracking()
     cout << response.score << endl;
 
     //sorting plot.data
-    ofstream fout;
-    fout.open("plot.data",ios::app);
+    it = mymap.begin();
+    while (it != mymap.end())
+	{
+		fout << it->first << " " <<  it->second << endl;
+		it++;
+	}
     
     fout.close();
    /* unsigned int min=0;

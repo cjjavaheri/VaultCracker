@@ -68,13 +68,13 @@ void Vault::setPW()
  ******************************************************************************/
 Response Vault::sendPassword(string guess)
 {
+    
     unsigned int i;
    // bool correct = false;
     double score = 0.0;
     Response response(WAITING, 100.0);
     cout << "Vault::sendPassword(" << guess << ")\n";
-    ofstream fout;
-    fout.open("plot.dat",ios::app);
+    
 // Here is where you will take the password guess and compare it with the
 // password that you created.  If the guess is correct then you are required
 // to create a Response object with the ResponseCode field set to ACCEPTED
@@ -109,11 +109,10 @@ Response Vault::sendPassword(string guess)
 //            }
         }
         //sending score and the guess to a file plot.data for graphing
-        cout << "In loop" << endl;
-        if(fout.is_open()){fout<<guess<<" " <<score<<endl;}
+	
     }
     
-    if(fout.is_open()){fout.close();}
+  
     response = Response(WAITING, score);
 
     return response;
