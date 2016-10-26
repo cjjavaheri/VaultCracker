@@ -1,4 +1,4 @@
-set logscale x 2
+
 unset label
 set xtic auto
 set ytic auto

@@ -23,6 +23,7 @@ void Cracker::getCracking()
     Response response;
     map<string, int> mymap;
     map<string, int>::iterator it;
+    int counter = 0;
     response = sendPassword(guess1);
     ofstream fout;
     fout.open("plot.dat");
@@ -61,8 +62,10 @@ void Cracker::getCracking()
     it = mymap.begin();
     while (it != mymap.end())
 	{
-		fout << it->first << " " <<  it->second << endl;
+		cout << counter << " " << it->first << " " << it->second << endl;
+		fout << counter << " " <<  it->second << endl;
 		it++;
+		counter++;
 	}
     
     fout.close();
