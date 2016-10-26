@@ -2,6 +2,7 @@
 #define __RESPONSE_H
 #include <string>
 #include <tuple>
+#include <fstream>
 
 using namespace std;
 
