@@ -2,6 +2,8 @@
 #include <time.h>
 #include <vector>
 
+string getGuess(double value, unsigned int length, double base);
+
 /***************************************************************************//**
  * @brief Constructor
  ******************************************************************************/
@@ -54,72 +56,18 @@ void Cracker::getCracking()
 
 // Start of brute force algorithm
 
-// First create a map of all of the valid characters with an integer from 0-73.
-   for (i = 0; i < 26; i++)
-   {
-       CharacterMap.insert({ i, nextChar });
-       nextChar += 1;
-   }
- 
-nextChar = 'A';
 
-     for (i = 26; i < 52; i++)
-     {
-         CharacterMap.insert({ i, nextChar });
-         nextChar += 1;
-     }
-
-     CharacterMap.insert({ 52, '!' });
-     CharacterMap.insert({ 53, '@' });
-     CharacterMap.insert({ 54, '#' });
-     CharacterMap.insert({ 55, '$' });
-     CharacterMap.insert({ 56, '%' });
-     CharacterMap.insert({ 57, '^' });
-     CharacterMap.insert({ 58, '&' });
-     CharacterMap.insert({ 59, '*' });
-     CharacterMap.insert({ 60, '(' });
-     CharacterMap.insert({ 61, ')' });
-     CharacterMap.insert({ 62, '_' });
-     CharacterMap.insert({ 63, '+' });
-     CharacterMap.insert({ 64, '=' });
-     CharacterMap.insert({ 65, ':' });
-     CharacterMap.insert({ 66, ';' });
-     CharacterMap.insert({ 67, '~' });
-     CharacterMap.insert({ 68, '?' });
-     CharacterMap.insert({ 69, '.' });
-     CharacterMap.insert({ 70, '<' });
-     CharacterMap.insert({ 71, '>' });
-     CharacterMap.insert({ 72, ']' });
-     CharacterMap.insert({ 73, '[' });
-
-   // Now take each integer from i and create a password combination for each i.
-   // Do this for all integers in a certain range. For example, if base is 26
-   // and length is 4, (26)^4 passwords will be generated.
    for (i = 0; i < int(pow(base, length)); i++)
    {
-       counter = 1;
-       value = i;
-       while (counter < length + 1)
-       {
-           digit = int(value / pow(base, length - counter));
-           cit = CharacterMap.find(digit);
-           guess[guess.size() - length + (counter - 1)] = cit->second;
-           value = (value / pow(base, length - counter) - digit) * pow(base, length - counter);
-           value = nearbyint(value);
-           counter++;
-       }
-
-	// Send the vault each guess, then insert each guess with its score
-	// into a file map so that the map can sort the passwords. Then
-	// output the data to a file in order to plot a graph of permuatations vs. scores
-       response = sendPassword(guess);
-       FileMap.insert({guess, response.score});
+	guess = getGuess(i, length, base);
+	response = sendPassword(guess);
+	FileMap.insert({guess, response.score});
 	cout << ResponseMsg[response.rc] << " ";
 
-	// Set the actual password if found.
 	if (response.rc == ACCEPTED)
 		truePassword = guess;
    }
+
 
 
 // End of brute force algorithm.
@@ -157,4 +105,73 @@ nextChar = 'A';
         }
         checklen+="a";
     }*/
+}
+
+
+
+
+
+
+
+string getGuess(double value, unsigned int length, double base)
+{
+    static map<int, char> CharacterMap;
+    map<int, char>::iterator cit;
+    int i;
+    unsigned int digit;
+    static char nextChar = 'a';
+    string guess = "";
+    unsigned int counter;
+ 
+    if (CharacterMap.empty())
+    {
+        for (i = 0; i < 26; i++)
+        {
+            CharacterMap.insert({ i, nextChar });
+            nextChar += 1;
+        }
+        nextChar = 'A';
+        for (i = 26; i < 52; i++)
+        {
+            CharacterMap.insert({ i, nextChar });
+            nextChar += 1;
+        }
+        CharacterMap.insert({ 52, '!' });
+        CharacterMap.insert({ 53, '@' });
+        CharacterMap.insert({ 54, '#' });
+        CharacterMap.insert({ 55, '$' });
+        CharacterMap.insert({ 56, '%' });
+        CharacterMap.insert({ 57, '^' });
+        CharacterMap.insert({ 58, '&' });
+        CharacterMap.insert({ 59, '*' });
+        CharacterMap.insert({ 60, '(' });
+        CharacterMap.insert({ 61, ')' });
+        CharacterMap.insert({ 62, '_' });
+        CharacterMap.insert({ 63, '+' });
+        CharacterMap.insert({ 64, '=' });
+        CharacterMap.insert({ 65, ':' });
+        CharacterMap.insert({ 66, ';' });
+        CharacterMap.insert({ 67, '~' });
+        CharacterMap.insert({ 68, '?' });
+        CharacterMap.insert({ 69, '.' });
+        CharacterMap.insert({ 70, '<' });
+        CharacterMap.insert({ 71, '>' });
+        CharacterMap.insert({ 72, ']' });
+        CharacterMap.insert({ 73, '[' });
+    }
+ 
+         counter = 1;
+         guess.resize(length);
+         while (counter < length + 1)
+         {
+             digit = int(value / pow(base, length - counter));
+             cit = CharacterMap.find(digit);
+             guess[guess.size() - length + (counter - 1)] = cit->second;
+             value = (value / pow(base, length - counter) - digit) * pow(base, length - counter);
+             value = nearbyint(value);
+             counter++;
+         }
+ 
+         return guess;
+ 
 }
