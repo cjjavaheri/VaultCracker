@@ -22,11 +22,12 @@ void Cracker::getCracking()
     string checklen="";
     map<char, int> CharacterMap;
     map<char, int>::iterator cit;
-    map<string, int> mymap;
-    map<string, int>::iterator it;
+    map<string, int> FileMap;
+    map<string, int>::iterator fit;
     double value;
     int digit;
     int i;
+    // Change base in order to change number of characters used.
     double base = 26;
     char nextChar = 'a';
     unsigned int length = 4;
@@ -50,12 +51,46 @@ void Cracker::getCracking()
     
 
 // Start of brute force algorithm
+
+// First create a map of all of the valid characters with an integer from 0-73.
    for (i = 0; i < 26; i++)
    {
        CharacterMap.insert({ i, nextChar });
        nextChar += 1;
    }
  
+nextChar = 'A';
+
+     for (i = 26; i < 52; i++)
+     {
+         CharacterMap.insert({ i, nextChar });
+         nextChar += 1;
+     }
+
+     CharacterMap.insert({ 52, '!' });
+     CharacterMap.insert({ 53, '@' });
+     CharacterMap.insert({ 54, '#' });
+     CharacterMap.insert({ 55, '$' });
+     CharacterMap.insert({ 56, '%' });
+     CharacterMap.insert({ 57, '^' });
+     CharacterMap.insert({ 58, '&' });
+     CharacterMap.insert({ 59, '*' });
+     CharacterMap.insert({ 60, '(' });
+     CharacterMap.insert({ 61, ')' });
+     CharacterMap.insert({ 62, '_' });
+     CharacterMap.insert({ 63, '+' });
+     CharacterMap.insert({ 64, '=' });
+     CharacterMap.insert({ 65, ':' });
+     CharacterMap.insert({ 66, ';' });
+     CharacterMap.insert({ 67, '~' });
+     CharacterMap.insert({ 68, '?' });
+     CharacterMap.insert({ 69, '.' });
+     CharacterMap.insert({ 70, '<' });
+     CharacterMap.insert({ 71, '>' });
+     CharacterMap.insert({ 72, ']' });
+     CharacterMap.insert({ 73, '[' });
+
+
    for (i = 0; i < int(pow(base, length)); i++)
    {
        counter = 1;
@@ -70,8 +105,9 @@ void Cracker::getCracking()
            counter++;
        }
        response = sendPassword(guess);
-       mymap.insert({guess, response.score});
+       FileMap.insert({guess, response.score});
 	cout << ResponseMsg[response.rc] << " ";
+
 	if (response.rc == ACCEPTED)
 		truePassword = guess;
    }
@@ -80,13 +116,13 @@ void Cracker::getCracking()
 // End of brute force algorithm.
 
     //Outputting data to plot.dat
-    it = mymap.begin();
-    while (it != mymap.end())
+    fit = FileMap.begin();
+    while (fit != FileMap.end())
 	{
-		cout << fileCounter << " " << it->first << " " << it->second << endl;
-		fout << fileCounter << " " <<  it->second << endl;
+		cout << fileCounter << " " << fit->first << " " << fit->second << endl;
+		fout << fileCounter << " " <<  fit->second << endl;
 		fileCounter++;
-		it++;
+		fit++;
 	}
     
     fout.close();
