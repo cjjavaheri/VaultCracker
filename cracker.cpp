@@ -30,7 +30,6 @@ void Cracker::getCracking()
     // Change length in order to change length of password generated.
     unsigned int length = 4;
     unsigned int fileCounter = 0;
-    guess.resize(length);
     Response response;
     ofstream fout;
 
