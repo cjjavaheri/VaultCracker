@@ -28,7 +28,7 @@ void Cracker::getCracking()
     int digit;
     int i;
     // Change base in order to change number of characters used.
-    double base = 4;
+    double base = 26;
     char nextChar = 'a';
     // Change length in order to change length of password generated.
     // Must also change guess to the same number of letters.
