@@ -8,3 +8,4 @@ CMakeLists.txt
 .idea/
 .directory
 gmon.out
+plot.dat

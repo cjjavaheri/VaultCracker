@@ -30,6 +30,10 @@ void Cracker::getCracking()
     // Change base in order to change number of characters used.
     double base = 26;
     char nextChar = 'a';
+    // Change length in order to change length of password generated.
+    // Must also change guess to the same number of letters.
+    // For example, in order to generate passwords of length 2, set length = 2,
+    // and change guess's intial value = 'aa'.
     unsigned int length = 4;
     unsigned int counter;
     unsigned int fileCounter = 0;
@@ -90,7 +94,9 @@ nextChar = 'A';
      CharacterMap.insert({ 72, ']' });
      CharacterMap.insert({ 73, '[' });
 
-
+   // Now take each integer from i and create a password combination for each i.
+   // Do this for all integers in a certain range. For example, if base is 26
+   // and length is 4, (26)^4 passwords will be generated.
    for (i = 0; i < int(pow(base, length)); i++)
    {
        counter = 1;
@@ -104,10 +110,15 @@ nextChar = 'A';
            value = nearbyint(value);
            counter++;
        }
+
+	// Send the vault each guess, then insert each guess with its score
+	// into a file map so that the map can sort the passwords. Then
+	// output the data to a file in order to plot a graph of permuatations vs. scores
        response = sendPassword(guess);
        FileMap.insert({guess, response.score});
 	cout << ResponseMsg[response.rc] << " ";
 
+	// Set the actual password if found.
 	if (response.rc == ACCEPTED)
 		truePassword = guess;
    }
