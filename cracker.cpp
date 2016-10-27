@@ -22,19 +22,13 @@ void Cracker::getCracking()
     string guess = "";
     string truePassword = "";
     string checklen="";
-    map<char, int> CharacterMap;
-    map<char, int>::iterator cit;
     map<string, int> FileMap;
     map<string, int>::iterator fit;
-    double value;
-    int digit;
     int i;
     // Change base in order to change number of characters used.
     double base = 26;
-    char nextChar = 'a';
     // Change length in order to change length of password generated.
     unsigned int length = 4;
-    unsigned int counter;
     unsigned int fileCounter = 0;
     guess.resize(length);
     Response response;
