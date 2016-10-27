@@ -19,53 +19,30 @@ Cracker::Cracker() {}
  ******************************************************************************/
 void Cracker::getCracking()
 {
-    string guess = "";
     string truePassword = "";
     string checklen="";
     map<string, int> FileMap;
     map<string, int>::iterator fit;
-    int i;
-    // Change base in order to change number of characters used.
-    double base = 26;
-    // Change length in order to change length of password generated.
-    unsigned int length = 4;
     unsigned int fileCounter = 0;
     Response response;
     ofstream fout;
 
+    // Change base in order to change number of characters used.
+    double base = 26;
+    // Change length in order to change length of password generated.
+    unsigned int length = 4;
 
     fout.open("plot.dat");
-
-
-    cout << "Cracker::getCracking()" << endl;
 
         // Here you will generate your password guesses
         // Once generated, you send the prospective password to the game system
         // through the bound callback function 'sendPassword'
 
         cout << ResponseMsg[response.rc] << " ";
+	// Brute force the password.
+    truePassword = bruteForce(length, base, FileMap, response);
 
-    
-
-// Start of brute force algorithm
-
-
-   for (i = 0; i < int(pow(base, length)); i++)
-   {
-	guess = getGuess(i, length, base);
-	response = sendPassword(guess);
-	FileMap.insert({guess, response.score});
-	cout << ResponseMsg[response.rc] << " ";
-
-	if (response.rc == ACCEPTED)
-		truePassword = guess;
-   }
-
-
-
-// End of brute force algorithm.
-
-    //Outputting data to plot.dat
+    //Outputting data to plot.dat for visualization.
     fit = FileMap.begin();
     while (fit != FileMap.end())
 	{
@@ -101,12 +78,65 @@ void Cracker::getCracking()
 }
 
 
+/***************************************************************************//**
+ * @brief A brute force algorithm to find the password.
+ *
+ * @par Description
+ *    This function generates all possible permutations for a fixed password length
+ * with a given base.
+ *
+ * @param[in] length - The length of the password.
+ * @param[in] base - The number of characters used in the guesses.
+ * @param[in,out] FileMap - A map containing all of the guesses in order to
+ * generate a graph for the permuatations as a visualization.
+ * @param[in,out] response - The response that the vault sends back to the cracker.
+ * 
+ * @return The actual password to the vault.
+ ******************************************************************************/
+
+string Cracker::bruteForce(unsigned int length, double base, map<string, int> &FileMap, Response &response)
+{
+	string guess = "";
+	int i;
+	string truePassword = "";
+	truePassword.resize(length);
+   for (i = 0; i < int(pow(base, length)); i++)
+   {
+	guess = getGuess(i, length, base);
+	response = sendPassword(guess);
+	FileMap.insert({guess, response.score});
+	cout << ResponseMsg[response.rc] << " ";
+
+	if (response.rc == ACCEPTED)
+		truePassword = guess;
+   }
+	return truePassword;
+
+}
 
 
+/***************************************************************************//**
+ * @brief getGuess is an algorithm used to generate a password guess given a number.
+ *
+ * @par Description
+ *    This function generates a unique password guess given a unique number. The number
+ * must be an integer, but has a data type of double due to the calculations and
+ * the rounding. What this function does specifically is create a character map of
+ * all of the possible characters, and then treats the value the user inputs as a number
+ * in the given base provided by the user. It then calculates each letter using that base.
+ * Finally, it returns a permutation (password guess).
+ *
+ * @param[in] value - The number used to generate the password guess. Must be given as int
+ * but the data type provided is double because of the calculations done.
+ * @param[in] length - The length of the password.
+ * param[in] base - The number of characters to use in the guess.
+ * 
+ * @return A string which is the permuatation represented by the value sent in
+ * by the user.
+ ******************************************************************************/
 
 
-
-string getGuess(double value, unsigned int length, double base)
+string Cracker::getGuess(double value, unsigned int length, double base)
 {
     static map<int, char> CharacterMap;
     map<int, char>::iterator cit;

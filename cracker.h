@@ -28,5 +28,8 @@ public:
     Cracker(); /*!< Constructor */
 
     void getCracking(); /*!< Function to start the intrusion attempt */
+    string bruteForce( unsigned int length, double base, map<string, int> &FileMap, Response 		&response);
+private:
+	string getGuess(double value, unsigned int length, double base);
 };
 #endif
