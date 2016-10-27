@@ -17,7 +17,7 @@ Cracker::Cracker() {}
  ******************************************************************************/
 void Cracker::getCracking()
 {
-    string guess = "aaaa";
+    string guess = "";
     string truePassword = "";
     string checklen="";
     map<char, int> CharacterMap;
@@ -31,12 +31,10 @@ void Cracker::getCracking()
     double base = 26;
     char nextChar = 'a';
     // Change length in order to change length of password generated.
-    // Must also change guess to the same number of letters.
-    // For example, in order to generate passwords of length 2, set length = 2,
-    // and change guess's intial value = 'aa'.
     unsigned int length = 4;
     unsigned int counter;
     unsigned int fileCounter = 0;
+    guess.resize(length);
     Response response;
     ofstream fout;
 
