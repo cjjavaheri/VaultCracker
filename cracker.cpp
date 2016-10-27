@@ -17,58 +17,81 @@ Cracker::Cracker() {}
  ******************************************************************************/
 void Cracker::getCracking()
 {
-    string guess = "";
+    string guess = "aaaa";
+    string truePassword = "";
     string checklen="";
-    string guess1 = "mmmm";
-    Response response;
+    map<char, int> CharacterMap;
+    map<char, int>::iterator cit;
     map<string, int> mymap;
     map<string, int>::iterator it;
-    int counter = 0;
-    response = sendPassword(guess1);
+    double value;
+    int digit;
+    int i;
+    double base = 26;
+    char nextChar = 'a';
+    unsigned int length = 4;
+    unsigned int counter;
+    unsigned int fileCounter = 0;
+    Response response;
     ofstream fout;
+
+
     fout.open("plot.dat");
 
 
     cout << "Cracker::getCracking()" << endl;
 
-    for (int i = 0; i < 100; i++)
-    {
-        guess = "";
-        vector<int> scoreSheet;
-        for (unsigned int i = 0 ; i < 4 ; i++)
-        {
-            char ch = validChars[rand() % 26];
-            guess += ch;
-        }
         // Here you will generate your password guesses
         // Once generated, you send the prospective password to the game system
         // through the bound callback function 'sendPassword'
-	cout<<guess<<endl;
-        response = sendPassword(guess);
 
         cout << ResponseMsg[response.rc] << " ";
-        scoreSheet.push_back(response.score);
-        cout << response.score << endl;
-        mymap.insert({guess, response.score});
-    }
 
-    guess = "pass";
-    response = sendPassword(guess);
+    
 
-    cout << ResponseMsg[response.rc] << " ";
-    cout << response.score << endl;
+// Start of brute force algorithm
+   for (i = 0; i < 26; i++)
+   {
+       CharacterMap.insert({ i, nextChar });
+       nextChar += 1;
+   }
+ 
+   for (i = 0; i < int(pow(base, length)); i++)
+   {
+       counter = 1;
+       value = i;
+       while (counter < length + 1)
+       {
+           digit = int(value / pow(base, length - counter));
+           cit = CharacterMap.find(digit);
+           guess[guess.size() - length + (counter - 1)] = cit->second;
+           value = (value / pow(base, length - counter) - digit) * pow(base, length - counter);
+           value = nearbyint(value);
+           counter++;
+       }
+       response = sendPassword(guess);
+       mymap.insert({guess, response.score});
+	cout << ResponseMsg[response.rc] << " ";
+	if (response.rc == ACCEPTED)
+		truePassword = guess;
+   }
 
-    //sorting plot.data
+
+// End of brute force algorithm.
+
+    //Outputting data to plot.dat
     it = mymap.begin();
     while (it != mymap.end())
 	{
-		cout << counter << " " << it->first << " " << it->second << endl;
-		fout << counter << " " <<  it->second << endl;
+		cout << fileCounter << " " << it->first << " " << it->second << endl;
+		fout << fileCounter << " " <<  it->second << endl;
+		fileCounter++;
 		it++;
-		counter++;
 	}
     
     fout.close();
+
+    cout << "True password: " << truePassword << endl;
    /* unsigned int min=0;
     unsigned int max=0;
 
