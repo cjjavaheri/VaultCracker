@@ -37,8 +37,7 @@ void Vault::setRange(int minLen, int maxLen)
 {
     range = Range(minLen, maxLen);
     pwLen = minLen;
-    while ((rand() % 100) > 50) pwLen++;
-    pwLen = 4;
+    while (pwLen < maxLen && (rand() % 100) > 50) pwLen++;
     cout << "Vault::setRange - [" << minLen << " to " << maxLen << "] :: [" << pwLen << "]\n";
 }
 
@@ -55,7 +54,7 @@ void Vault::setPW()
         char ch = validChars[rand() % 26]; // Original is 74. Changed for testing
         password += ch;
     }
-    password = "pass";
+
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -68,13 +67,13 @@ void Vault::setPW()
  ******************************************************************************/
 Response Vault::sendPassword(string guess)
 {
-    
+
     unsigned int i;
-   // bool correct = false;
+    // bool correct = false;
     double score = 0.0;
     Response response(WAITING, 100.0);
     cout << "Vault::sendPassword(" << guess << ")\n";
-    
+
 // Here is where you will take the password guess and compare it with the
 // password that you created.  If the guess is correct then you are required
 // to create a Response object with the ResponseCode field set to ACCEPTED
@@ -90,34 +89,19 @@ Response Vault::sendPassword(string guess)
 
     int psum=0;
     int gsum=0;
-    
-    if(guess==password)
-        {response=Response(ACCEPTED,score);
-         return response;}
-    
-    else if (guess.length() == password.length())
-    {
-        for (i = 0; i < password.length(); i++)
-        {
-            psum=psum*29 + password[i];
-            gsum=gsum*29 + guess[i];
-//            if (password.at(i) == guess.at(i))
-//            {
-//                correct = true;
-//            }
-//            else
-//            {
-//                correct = false;
-//                break;
-//            }
-        }
-        score=abs(gsum-psum);
-        //sending score and the guess to a file plot.data for graphing
-	
-    }
-    
-  
-    response = Response(WAITING, score);
+
+    for (i = 0; i < password.length(); i++)
+        psum=psum*29 + password[i];
+    for (i = 0; i < guess.length(); i++)
+        gsum = gsum*29 + guess[i];
+
+    score=abs(gsum-psum);
+    //sending score and the guess to a file plot.data for graphing
+
+    if (score == 0)
+        response = Response(ACCEPTED, score);
+    else
+        response = Response(WAITING, score);
 
     return response;
 }

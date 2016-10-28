@@ -27,40 +27,12 @@ void Cracker::getCracking()
     Response response;
     ofstream fout;
 
-    // Change base in order to change number of characters used.
-    double base = 26;
-    // Change length in order to change length of password generated.
-    unsigned int length = 4;
-
-    fout.open("plot.dat");
-
-        // Here you will generate your password guesses
-        // Once generated, you send the prospective password to the game system
-        // through the bound callback function 'sendPassword'
-
-        cout << ResponseMsg[response.rc] << " ";
-	// Brute force the password.
-    truePassword = bruteForce(length, base, FileMap, response);
-
-    //Outputting data to plot.dat for visualization.
-    fit = FileMap.begin();
-    while (fit != FileMap.end())
-	{
-		cout << fileCounter << " " << fit->first << " " << fit->second << endl;
-		fout << fileCounter << " " <<  fit->second << endl;
-		fileCounter++;
-		fit++;
-	}
-    
-    fout.close();
-
-    cout << "True password: " << truePassword << endl;
-   /* unsigned int min=0;
+    unsigned int min=0;
     unsigned int max=0;
 
     Response getlen=sendPassword(checklen);
     //for checking min and max length of password
-      for(int i=0; i < 12; i++)
+    for(int i=0; i < 12; i++)
     {
         getlen=sendPassword(checklen);
         if(getlen.rc == PW_TOO_SHORT)
@@ -74,7 +46,39 @@ void Cracker::getCracking()
             break;
         }
         checklen+="a";
-    }*/
+    }
+
+    // Change base in order to change number of characters used.
+    double base = 26;
+    // Change length in order to change length of password generated.
+    unsigned int length = 4;
+
+    fout.open("plot.dat");
+
+    // Here you will generate your password guesses
+    // Once generated, you send the prospective password to the game system
+    // through the bound callback function 'sendPassword'
+    response=sendPassword(truePassword);
+    // Brute force the password.
+    if (max<5)
+    {
+        truePassword = bruteForce(min, max, base, FileMap, response);
+    }
+
+    //Outputting data to plot.dat for visualization.
+    fit = FileMap.begin();
+    while (fit != FileMap.end())
+    {
+        //cout << fileCounter << " " << fit->first << " " << fit->second << endl;
+        fout << fileCounter << " " <<  fit->second << endl;
+        fileCounter++;
+        fit++;
+    }
+
+    fout.close();
+
+    cout << "True password: " << truePassword << endl;
+
 }
 
 
@@ -90,27 +94,38 @@ void Cracker::getCracking()
  * @param[in,out] FileMap - A map containing all of the guesses in order to
  * generate a graph for the permuatations as a visualization.
  * @param[in,out] response - The response that the vault sends back to the cracker.
- * 
+ *
  * @return The actual password to the vault.
  ******************************************************************************/
 
-string Cracker::bruteForce(unsigned int length, double base, map<string, int> &FileMap, Response &response)
+string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<string, int> &FileMap, Response &response)
 {
-	string guess = "";
-	int i;
-	string truePassword = "";
-	truePassword.resize(length);
-   for (i = 0; i < int(pow(base, length)); i++)
-   {
-	guess = getGuess(i, length, base);
-	response = sendPassword(guess);
-	FileMap.insert({guess, response.score});
-	cout << ResponseMsg[response.rc] << " ";
+    string guess = "";
+    int i;
+    
+    if(max==0)
+    {
+        cout<<"\nThere is no password\n";
+        return guess;
+    }
+    
+    for (int j=min;j<=max;j++)
+    {
+    for (i = 0; i < int(pow(base, j)); i++)
+    {
+        response = sendPassword(guess);
+        guess = getGuess(i, j, base);
+        FileMap.insert({guess, response.score});
+        cout << ResponseMsg[response.rc] << " ";
 
-	if (response.rc == ACCEPTED)
-		truePassword = guess;
-   }
-	return truePassword;
+        if (response.rc == ACCEPTED)
+            if (guess == "")
+            	{cout << "\nThere is no password\n"; return guess;}
+            else
+            	return guess;
+    }
+    }
+    return guess;
 
 }
 
@@ -130,7 +145,7 @@ string Cracker::bruteForce(unsigned int length, double base, map<string, int> &F
  * but the data type provided is double because of the calculations done.
  * @param[in] length - The length of the password.
  * param[in] base - The number of characters to use in the guess.
- * 
+ *
  * @return A string which is the permuatation represented by the value sent in
  * by the user.
  ******************************************************************************/
@@ -145,7 +160,7 @@ string Cracker::getGuess(double value, unsigned int length, double base)
     static char nextChar = 'a';
     string guess = "";
     unsigned int counter;
- 
+
     if (CharacterMap.empty())
     {
         for (i = 0; i < 26; i++)
@@ -182,19 +197,19 @@ string Cracker::getGuess(double value, unsigned int length, double base)
         CharacterMap.insert({ 72, ']' });
         CharacterMap.insert({ 73, '[' });
     }
- 
-         counter = 1;
-         guess.resize(length);
-         while (counter < length + 1)
-         {
-             digit = int(value / pow(base, length - counter));
-             cit = CharacterMap.find(digit);
-             guess[guess.size() - length + (counter - 1)] = cit->second;
-             value = (value / pow(base, length - counter) - digit) * pow(base, length - counter);
-             value = nearbyint(value);
-             counter++;
-         }
- 
-         return guess;
- 
+
+    counter = 1;
+    guess.resize(length);
+    while (counter < length + 1)
+    {
+        digit = int(value / pow(base, length - counter));
+        cit = CharacterMap.find(digit);
+        guess[guess.size() - length + (counter - 1)] = cit->second;
+        value = (value / pow(base, length - counter) - digit) * pow(base, length - counter);
+        value = nearbyint(value);
+        counter++;
+    }
+
+    return guess;
+
 }
