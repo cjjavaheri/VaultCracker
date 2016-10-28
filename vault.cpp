@@ -37,7 +37,7 @@ void Vault::setRange(int minLen, int maxLen)
 {
     range = Range(minLen, maxLen);
     pwLen = minLen;
-    while (pwLen < maxLen && (rand() % 100) > 50) pwLen++;
+    while (pwLen < maxLen && (rand() % 100) > 1) pwLen++;
     cout << "Vault::setRange - [" << minLen << " to " << maxLen << "] :: [" << pwLen << "]\n";
 }
 
