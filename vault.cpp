@@ -88,7 +88,9 @@ Response Vault::sendPassword(string guess)
 // to be an important part of your defense.  Think about how this will impact
 // how easy or hard it will be to guess your password.
 
-
+    int psum=0;
+    int gsum=0;
+    
     if(guess==password)
         {response=Response(ACCEPTED,score);
          return response;}
@@ -97,7 +99,8 @@ Response Vault::sendPassword(string guess)
     {
         for (i = 0; i < password.length(); i++)
         {
-            score += abs(guess.at(i) - password.at(i));
+            psum=psum*29 + password[i];
+            gsum=gsum*29 + guess[i];
 //            if (password.at(i) == guess.at(i))
 //            {
 //                correct = true;
@@ -108,6 +111,7 @@ Response Vault::sendPassword(string guess)
 //                break;
 //            }
         }
+        score=abs(gsum-psum);
         //sending score and the guess to a file plot.data for graphing
 	
     }
