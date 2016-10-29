@@ -67,7 +67,7 @@ void Cracker::getCracking()
     fit = FileMap.begin();
     while (fit != FileMap.end())
     {
-        //cout << fileCounter << " " << fit->first << " " << fit->second << endl;
+        cout << fileCounter << " " << fit->first << " " << fit->second << endl;
         fout << fileCounter << " " <<  fit->second << endl;
         fileCounter++;
         fit++;
