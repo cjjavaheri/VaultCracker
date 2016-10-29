@@ -28,7 +28,7 @@ class Vault : public BaseVault
     Range range;
 
     /// The actual length of the password
-    unsigned int pwLen;
+    int pwLen;
 
 public:
     /// Constructor

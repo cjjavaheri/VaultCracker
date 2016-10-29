@@ -50,8 +50,6 @@ void Cracker::getCracking()
 
     // Change base in order to change number of characters used.
     double base = 26;
-    // Change length in order to change length of password generated.
-    unsigned int length = 4;
 
     fout.open("plot.dat");
 
@@ -109,7 +107,7 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
         return guess;
     }
     
-    for (int j=min;j<=max;j++)
+    for (unsigned int j=min;j<=max;j++)
     {
     for (i = 0; i < int(pow(base, j)); i++)
     {
@@ -119,10 +117,12 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
         cout << ResponseMsg[response.rc] << " ";
 
         if (response.rc == ACCEPTED)
+	{
             if (guess == "")
             	{cout << "\nThere is no password\n"; return guess;}
             else
             	return guess;
+	}
     }
     }
     return guess;

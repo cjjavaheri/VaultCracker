@@ -49,7 +49,7 @@ void Vault::setRange(int minLen, int maxLen)
  ******************************************************************************/
 void Vault::setPW()
 {
-    for (unsigned int i = 0 ; i < pwLen ; i++)
+    for (int i = 0 ; i < pwLen ; i++)
     {
         char ch = validChars[rand() % 26]; // Original is 74. Changed for testing
         password += ch;
