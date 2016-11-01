@@ -100,30 +100,32 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
 {
     string guess = "";
     int i;
-    
+
     if(max==0)
     {
         cout<<"\nThere is no password\n";
         return guess;
     }
-    
-    for (unsigned int j=min;j<=max;j++)
-    {
-    for (i = 0; i < int(pow(base, j)); i++)
-    {
-        response = sendPassword(guess);
-        guess = getGuess(i, j, base);
-        FileMap.insert({guess, response.score});
-        cout << ResponseMsg[response.rc] << " ";
 
-        if (response.rc == ACCEPTED)
-	{
-            if (guess == "")
-            	{cout << "\nThere is no password\n"; return guess;}
-            else
-            	return guess;
-	}
-    }
+    for (unsigned int j=min; j<=max; j++)
+    {
+        for (i = 0; i < int(pow(base, j)); i++)
+        {
+            response = sendPassword(guess);
+            if (response.rc == ACCEPTED)
+            {
+                if (guess == "")
+                {
+                    cout << "\nThere is no password\n";
+                    return guess;
+                }
+                else
+                    return guess;
+            }
+            guess = getGuess(i, j, base);
+            FileMap.insert({guess, response.score});
+            cout << ResponseMsg[response.rc] << " ";
+        }
     }
     return guess;
 
