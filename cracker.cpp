@@ -1,6 +1,9 @@
 #include "cracker.h"
 #include <time.h>
 #include <vector>
+#include <fstream>
+#include <map>
+#include <cmath>
 
 string getGuess(double value, unsigned int length, double base);
 
@@ -61,6 +64,7 @@ void Cracker::getCracking()
     if (max<5)
     {
         truePassword = bruteForce(min, max, base, FileMap, response);
+        cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
     }
 
     //Outputting data to plot.dat for visualization.
@@ -74,6 +78,9 @@ void Cracker::getCracking()
     }
 
     fout.close();
+    
+    fit = FileMap.find("mmm");
+    cout << fit->first << " " << fit->second << endl;
 
     cout << "True password: " << truePassword << endl;
 
@@ -117,10 +124,13 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
                 if (guess == "")
                 {
                     cout << "\nThere is no password\n";
-                    return guess;
                 }
                 else
-                    return guess;
+                   { cout<<"\nreturns guess\n score is "<<response.score<<"\n";}
+                 FileMap.insert({guess, response.score}); 
+                 cout<<"\nguess is "<<guess<<" " <<"response.score is "<<response.score<<"\n";
+                 cout << ResponseMsg[response.rc] << " "; 
+                 return guess;
             }
             guess = getGuess(i, j, base);
             FileMap.insert({guess, response.score});

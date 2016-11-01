@@ -8,6 +8,11 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+
+#include <fstream>
+#include <map>
+#include <cmath>
+
 #include "baseCracker.h"
 #include "response.h"
 

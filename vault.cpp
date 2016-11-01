@@ -4,6 +4,10 @@
 #include "vault.h"
 #include <cmath>
 #include <fstream>
+
+#include <fstream>
+#include <map>
+#include <cmath>
 /***************************************************************************//**
  * @brief Vault Constructor
  *
@@ -54,7 +58,7 @@ void Vault::setPW()
         char ch = validChars[rand() % 26]; // Original is 74. Changed for testing
         password += ch;
     }
-
+	password="mmm";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -99,7 +103,7 @@ Response Vault::sendPassword(string guess)
     //sending score and the guess to a file plot.data for graphing
 
     if (score == 0)
-        response = Response(ACCEPTED, score);
+       { response = Response(ACCEPTED, score); cout<<"\nscore is "<<score<<endl;}
     else
         response = Response(WAITING, score);
 

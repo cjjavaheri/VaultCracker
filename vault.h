@@ -11,6 +11,10 @@
 #include "baseVault.h"
 #include "response.h"
 
+#include <fstream>
+#include <map>
+#include <cmath>
+
 using namespace std;
 
 /***************************************************************************//**
