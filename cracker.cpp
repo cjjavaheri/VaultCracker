@@ -215,3 +215,57 @@ string Cracker::getGuess(double value, unsigned int length, double base)
     return guess;
 
 }
+
+int Cracker::getPassword(string guess, double base)
+{
+    int i;
+    int j = 0;
+    int sum = 0;
+    static map<char, int> CharacterMap;
+    map<char, int>::iterator cit;
+    char nextChar = 'a';
+    if (CharacterMap.empty())
+    {
+        for (i = 0; i < 26; i++)
+        {
+            CharacterMap.insert({ nextChar, i });
+            nextChar += 1;
+        }
+        nextChar = 'A';
+        for (i = 26; i < 52; i++)
+        {
+            CharacterMap.insert({ nextChar, i });
+            nextChar += 1;
+        }
+        CharacterMap.insert({ '!', 52 });
+        CharacterMap.insert({ '@', 53 });
+        CharacterMap.insert({ '#', 54 });
+        CharacterMap.insert({ '$', 55 });
+        CharacterMap.insert({ '%', 56 });
+        CharacterMap.insert({ '^', 57 });
+        CharacterMap.insert({ '&', 58 });
+        CharacterMap.insert({ '*', 59 });
+        CharacterMap.insert({ '(', 60 });
+        CharacterMap.insert({ ')', 61 });
+        CharacterMap.insert({ '_', 62 });
+        CharacterMap.insert({ '+', 63 });
+        CharacterMap.insert({ '=', 64 });
+        CharacterMap.insert({ ':', 65 });
+        CharacterMap.insert({ ';', 66 });
+        CharacterMap.insert({ '~', 67 });
+        CharacterMap.insert({ '?', 68 });
+        CharacterMap.insert({ '.', 69 });
+        CharacterMap.insert({ '<', 70 });
+        CharacterMap.insert({ '>', 71 });
+        CharacterMap.insert({ ']', 72 });
+        CharacterMap.insert({ '[', 73 });
+    }
+
+    for (i = guess.length() - 1; i > -1; i--, j++)
+    {
+        cit = CharacterMap.find(guess[i]);
+        sum += (cit->second * pow(base, j));
+    }
+
+    return sum;
+}

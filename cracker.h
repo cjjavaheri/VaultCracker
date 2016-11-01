@@ -31,5 +31,6 @@ public:
     string bruteForce( unsigned int min, unsigned int max, double base, map<string, int> &FileMap, Response 		&response);
 private:
     string getGuess(double value, unsigned int length, double base);
+    int getPassword(string guess, double base);
 };
 #endif
