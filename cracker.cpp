@@ -130,6 +130,17 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
 
 }
 
+/***************************************************************************//**
+ * @brief checkLength is called to find the exact length of the password
+ *
+ * @par Description
+ *    This function will be used to find the range minimum and maximum and use
+ *    that to find the specific length of the password
+ *
+ * @param[in] min - will pass back the range minimum.
+ * @param[in] max - will pass back the range maximum.
+ ******************************************************************************/
+
 void Cracker::checkLength(unsigned int &min, unsigned int &max)
 {
     string checklen="";
