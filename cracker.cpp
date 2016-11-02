@@ -23,7 +23,6 @@ Cracker::Cracker() {}
 void Cracker::getCracking()
 {
     string truePassword = "";
-    string checklen="";
     map<string, int> FileMap;
     map<string, int>::iterator fit;
     unsigned int fileCounter = 0;
@@ -33,23 +32,7 @@ void Cracker::getCracking()
     unsigned int min=0;
     unsigned int max=0;
 
-    Response getlen=sendPassword(checklen);
-    //for checking min and max length of password
-    for(int i=0; i < 12; i++)
-    {
-        getlen=sendPassword(checklen);
-        if(getlen.rc == PW_TOO_SHORT)
-        {
-            min++;
-        }
-        max++;
-        if (getlen.rc == PW_TOO_LONG)
-        {
-            max -= 2;
-            break;
-        }
-        checklen+="a";
-    }
+    checkLength(min, max);
 
     // Change base in order to change number of characters used.
     double base = 26;
@@ -72,16 +55,16 @@ void Cracker::getCracking()
 
 
     truePassword = binarySearch(length, base, response, g1, g2, FileMap);
-	
+
 
     //Outputting data to plot.dat for visualization.
     fit = FileMap.begin();
     while (fit != FileMap.end())
     {
-    cout << fileCounter << " " << fit->first << " " << fit->second << endl;
-    fout << fileCounter << " " <<  fit->second << endl;
-    fileCounter++;
-    fit++;
+        cout << fileCounter << " " << fit->first << " " << fit->second << endl;
+        fout << fileCounter << " " <<  fit->second << endl;
+        fileCounter++;
+        fit++;
     }
 
     fout.close();
@@ -90,7 +73,6 @@ void Cracker::getCracking()
     // cout << "True password: " << truePassword << endl;
 
 }
-
 
 /***************************************************************************//**
  * @brief A brute force algorithm to find the password.
@@ -148,6 +130,27 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
 
 }
 
+void Cracker::checkLength(unsigned int &min, unsigned int &max)
+{
+    string checklen="";
+    Response getlen=sendPassword(checklen);
+    //for checking min and max length of password
+    for(int i=0; i < 12; i++)
+    {
+        getlen=sendPassword(checklen);
+        if(getlen.rc == PW_TOO_SHORT)
+        {
+            min++;
+        }
+        max++;
+        if (getlen.rc == PW_TOO_LONG)
+        {
+            max -= 2;
+            break;
+        }
+        checklen+="a";
+    }
+}
 
 /***************************************************************************//**
  * @brief getGuess is an algorithm used to generate a password guess given a number.
@@ -306,56 +309,56 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 
     response = sendPassword(guess1);
     if (response.rc == ACCEPTED)
-	{
-		FileMap.insert({guess1, s1});
-        	return guess1;
-	}
-	s1 = response.score;
+    {
+        FileMap.insert({guess1, s1});
+        return guess1;
+    }
+    s1 = response.score;
     response = sendPassword(guess2);
     if (response.rc == ACCEPTED)
-	{
-		FileMap.insert({guess2, s2});
-        	return guess2;
-	}
+    {
+        FileMap.insert({guess2, s2});
+        return guess2;
+    }
     s2 = response.score;
     response = sendPassword(guess3);
     if (response.rc == ACCEPTED)
-	{
-		FileMap.insert({guess3, s3});
-        	return guess3;
-	}
+    {
+        FileMap.insert({guess3, s3});
+        return guess3;
+    }
     s3 = response.score;
 
-	FileMap.insert({guess1, s1});
-	FileMap.insert({guess2, s2});
-	FileMap.insert({guess3, s3});
+    FileMap.insert({guess1, s1});
+    FileMap.insert({guess2, s2});
+    FileMap.insert({guess3, s3});
 
-		    if (g1 == g2  )
-		return binarySearch(length, base, response, g1, g2, FileMap);
+    if (g1 == g2  )
+        return binarySearch(length, base, response, g1, g2, FileMap);
 
 
-	if (s1 <= s3)
-		return binarySearch(length, base, response, g1, g3 - 1, FileMap);
+    if (s1 <= s3)
+        return binarySearch(length, base, response, g1, g3 - 1, FileMap);
 
-	  if (s2 <= s3)
-		return binarySearch(length, base, response, g3 + 1, g2, FileMap);
-	
-	  if (s1 <= s2)
-		return binarySearch(length, base, response, g1 - 1, g3 , FileMap);
+    if (s2 <= s3)
+        return binarySearch(length, base, response, g3 + 1, g2, FileMap);
 
-	  if (s2 <= s1)
-		return binarySearch(length, base, response, g3, g2 - 1 , FileMap);
+    if (s1 <= s2)
+        return binarySearch(length, base, response, g1 - 1, g3 , FileMap);
 
-	/*if(s1<s2 && s1<s3)
-		return binarySearch(length, base, response, g1, g3 - 1, FileMap);
-	if(s1>s2 && s1>s3)
-		return binarySearch(length, base, response, g3, g2 - 1, FileMap);
-	if(s2>s1 && s1>s3)
-		return binarySearch(length, base, response, g1, g3 - 1, FileMap);
-	if(s1>s3 && s3<s2)
-		return binarySearch(length, base, response, g3, g2 - 1, FileMap);*/
+    if (s2 <= s1)
+        return binarySearch(length, base, response, g3, g2 - 1 , FileMap);
 
-	
+    /*if(s1<s2 && s1<s3)
+    	return binarySearch(length, base, response, g1, g3 - 1, FileMap);
+    if(s1>s2 && s1>s3)
+    	return binarySearch(length, base, response, g3, g2 - 1, FileMap);
+    if(s2>s1 && s1>s3)
+    	return binarySearch(length, base, response, g1, g3 - 1, FileMap);
+    if(s1>s3 && s3<s2)
+    	return binarySearch(length, base, response, g3, g2 - 1, FileMap);*/
+
+
 
 
 }

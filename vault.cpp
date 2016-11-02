@@ -41,7 +41,7 @@ void Vault::setRange(int minLen, int maxLen)
 {
     range = Range(minLen, maxLen);
     pwLen = minLen;
-    while (pwLen < maxLen && (rand() % 100) > 1) pwLen++;
+    while (pwLen < maxLen && (rand() % 100) > 50) pwLen++;
     cout << "Vault::setRange - [" << minLen << " to " << maxLen << "] :: [" << pwLen << "]\n";
 }
 
@@ -55,10 +55,10 @@ void Vault::setPW()
 {
     for (int i = 0 ; i < pwLen ; i++)
     {
-        char ch = validChars[rand() % 26]; // Original is 74. Changed for testing
+        char ch = validChars[rand() % 74]; // Original is 74. Changed for testing
         password += ch;
     }
-	password="rrr";
+    password="rrr";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -95,15 +95,18 @@ Response Vault::sendPassword(string guess)
     int gsum=0;
 
     for (i = 0; i < password.length(); i++)
-        psum=psum*26 + password[i];
+        psum=psum*74 + validChars.find(password[i]) + 1;
     for (i = 0; i < guess.length(); i++)
-        gsum = gsum*26 + guess[i];
+        gsum = gsum*74 + validChars.find(guess[i]) + 1;
 
     score=abs(gsum-psum);
     //sending score and the guess to a file plot.data for graphing
 
     if (score == 0)
-       { response = Response(ACCEPTED, score); cout<<"\nscore is "<<score<<endl;}
+    {
+        response = Response(ACCEPTED, score);
+        cout<<"\nscore is "<<score<<endl;
+    }
     else
         response = Response(WAITING, score);
 

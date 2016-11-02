@@ -36,8 +36,9 @@ public:
     string bruteForce( unsigned int min, unsigned int max, double base, map<string, int> &FileMap, Response 		&response);
 
     string binarySearch(int length, double base, Response &response, long long int g1, long
-long  int g2, map<string, int> &FileMap);
+                        long  int g2, map<string, int> &FileMap);
 private:
+    void checkLength(unsigned int &min, unsigned int &max);
     string getGuess(double value, unsigned int length, double base);
     int getPassword(string guess, double base);
 };
