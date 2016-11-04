@@ -119,10 +119,16 @@ Response Vault::sendPassword(string guess)
 
 				*/
 	pass = getPassword(guess, 74);
-	cout<<endl<<pass<<endl;
-	pass=pass*6.28318530718;
+	static int asd=0;
+	cout<<endl<<pass<<" ";
+	++asd;
 	
-	score = sin(double(pass));
+	pass=pass*6.283185307179586476;
+	
+	score = (long double)sinl((long double)(pass));
+	cout<<score<<endl;
+	if(asd==100)
+	exit (1);
 	if(guess==password)
         {return Response(ACCEPTED, score);}
         
@@ -224,8 +230,8 @@ string Vault::getGuess(long double value, unsigned int length, double base)
 long double Vault::getPassword(string guess, double base)
 {
     long long int i;
-    long long int j = 0;
-    long long int sum = 0;
+    int j = 0;
+    long double sum = 0;
     static map<char, int> CharacterMap;
     map<char, int>::iterator cit;
     char nextChar = 'a';
@@ -272,7 +278,7 @@ long double Vault::getPassword(string guess, double base)
         sum += (cit->second * pow(base, j));
     }
     
-    cout<<endl<<sum<<endl;
+    //cout<<endl<<sum<<endl;
     //(long double)(sum)=((long double)(sum))/((long double)(pow(74,4)));
     //cout<<endl<<sum<<endl;
     return (long double)(sum)/((long double)(pow(74,3)));

@@ -104,13 +104,13 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
         return guess;
     }
 
-	// original: j <= max
-    for (unsigned int j=min; j<=3; j++)
+	// original: j <= max, j=min
+    for (unsigned int j=3; j<=3; j++)
     {
   		
         for (i = 0; i < int(pow(base, j)); i++)
         {
-     
+            cout<<endl<<guess<<endl;
             response = sendPassword(guess);
             if (response.rc == ACCEPTED)
             {
