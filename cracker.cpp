@@ -36,7 +36,7 @@ void Cracker::getCracking()
 
     // Change base in order to change number of characters used.
     double base = 26;
-    unsigned int length = 3;
+    unsigned int length = 4;
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
 
@@ -70,7 +70,7 @@ void Cracker::getCracking()
     fout.close();
 
 
-    // cout << "True password: " << truePassword << endl;
+     cout << "True password: " << truePassword << endl;
 
 }
 
@@ -304,7 +304,7 @@ int Cracker::getPassword(string guess, double base)
 string Cracker::binarySearch(int length, double base, Response &response, long long int g1,
                              long long int  g2, map<string, int> &FileMap)
 {
-    long long int g3 = floor((g1 + g2) / 2.0);
+    long long int g3 = ceil((g1 + g2) / 2.0);
     string guess1;
     string guess2;
     string guess3;
@@ -344,30 +344,38 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     FileMap.insert({guess2, s2});
     FileMap.insert({guess3, s3});
 
-    if (g1 == g2  )
-        return binarySearch(length, base, response, g1, g2, FileMap);
+
+	// s1 is the min value
+	if (s1 <= s3 && s1 <= s2)
+	{
+		if (s2 <= s3)
+			return binarySearch(length, base, response, g1 + 1, g2 - 1, FileMap);
+
+		else if (s3 <= s2)
+			return binarySearch(length, base, response, g1 + 1, g3 - 1, FileMap);
+	}
+
+	//s2 is the min value
+	if (s2 <= s3 && s2 <= s1)
+	{
+		if (s1 <= s3)
+			return binarySearch(length, base, response, g1 + 1, g2 - 1, FileMap);
+
+		else if (s3 <= s1)
+			return binarySearch(length, base, response, g3 + 1, g2 - 1, FileMap);
+	}
 
 
-    if (s1 <= s3)
-        return binarySearch(length, base, response, g1, g3 - 1, FileMap);
+	//s3 is the min value
+	if (s3 <= s2 && s3 <= s1)
+	{
+		if (s1 <= s2)
+			return binarySearch(length, base, response, g3 - 1, g1 + 1, FileMap);
 
-    if (s2 <= s3)
-        return binarySearch(length, base, response, g3 + 1, g2, FileMap);
+		else if (s2 <= s1)
+			return binarySearch(length, base, response, g3 + 1, g2 - 1, FileMap);
+	}
 
-    if (s1 <= s2)
-        return binarySearch(length, base, response, g1 - 1, g3 , FileMap);
-
-    if (s2 <= s1)
-        return binarySearch(length, base, response, g3, g2 - 1 , FileMap);
-
-    /*if(s1<s2 && s1<s3)
-    	return binarySearch(length, base, response, g1, g3 - 1, FileMap);
-    if(s1>s2 && s1>s3)
-    	return binarySearch(length, base, response, g3, g2 - 1, FileMap);
-    if(s2>s1 && s1>s3)
-    	return binarySearch(length, base, response, g1, g3 - 1, FileMap);
-    if(s1>s3 && s3<s2)
-    	return binarySearch(length, base, response, g3, g2 - 1, FileMap);*/
 
 
 

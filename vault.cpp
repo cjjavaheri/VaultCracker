@@ -58,7 +58,7 @@ void Vault::setPW()
         char ch = validChars[rand() % 74]; // Original is 74. Changed for testing
         password += ch;
     }
-    password="rrr";
+    password="yyyy";
     cout << "Generated a random password\n" << password << endl;
 }
 
