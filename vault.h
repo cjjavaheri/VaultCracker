@@ -46,6 +46,10 @@ private:
     void setPW();
     /// Private function to set the range and actual password length
     void setRange(int, int);
+
+    long double  getPassword(string guess, double base);
+
+    string getGuess(long double value, unsigned int length, double base);
 };
 
 #endif

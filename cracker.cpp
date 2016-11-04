@@ -36,7 +36,7 @@ void Cracker::getCracking()
 
     // Change base in order to change number of characters used.
     double base = 74;
-    unsigned int length = 7;
+    unsigned int length = 4;
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
 
@@ -46,15 +46,19 @@ void Cracker::getCracking()
     // Once generated, you send the prospective password to the game system
     // through the bound callback function 'sendPassword'
     response=sendPassword(truePassword);
-    // Brute force the password.
-   /* if (max<5)
+
+
+	 // Brute force the password.
+    if (max<5)
     {
         truePassword = bruteForce(min, max, base, FileMap, response);
         cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
-    }*/
+    }
+
+	  //if (max == 4 && response.rc != ACCEPTED)
+   		// truePassword = binarySearch(length, base, response, g1, g2, FileMap);
 
 
-    truePassword = binarySearch(length, base, response, g1, g2, FileMap);
 
 
     //Outputting data to plot.dat for visualization.
@@ -101,7 +105,8 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
         return guess;
     }
 
-    for (unsigned int j=min; j<=max; j++)
+	// original: j <= max
+    for (unsigned int j=min; j<=3; j++)
     {
         for (i = 0; i < int(pow(base, j)); i++)
         {
