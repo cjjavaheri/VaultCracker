@@ -53,22 +53,7 @@ void Cracker::getCracking()
       //  cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
     }
 
-   // else { truePassword = binarySearch(length, base, response, g1, g2); }
-
-
-
-
-    //Outputting data to plot.dat for visualization.
-    //fit = FileMap.begin();
-   // while (fit != FileMap.end())
-    //{
-      //  cout << fit->first << " " << fit->second << endl;
-        //fout << fit->first << " " <<  fit->second << endl;
-      //  fit++;
-    //}
-
-    //fout.close();
-
+    else { truePassword = binarySearch(length, base, response, g1, g2);} 
 
     cout << "True password: " << truePassword << endl;
 
@@ -112,23 +97,10 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, Resp
             response = sendPassword(guess);
              if (response.rc == ACCEPTED)
              {
-                 if (guess == "")
-                 {
-                   //  cout << "\nThere is no password\n";
-                 }
-                 else
-                 {
-                  //   cout<<"\nreturns guess\n score is "<<response.score<<"\n";
-                 }
-                // FileMap.insert({getPassword(guess, base), response.score});
-                // cout<<"\nguess is "<<guess<<" " <<"response.score is "<<response.score<<"\n";
-               //  cout << ResponseMsg[response.rc] << " ";
                  return guess;
              }
             
             guess = getGuess(i, j, base);
-            //FileMap.insert({getPassword(guess, base), response.score});
-//          cout << ResponseMsg[response.rc] << " ";
 
         }
     }
@@ -254,7 +226,7 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 
     if (length <= 6)
     {
-	multiplier = 1.50;
+	multiplier = 1.01;
     }
 
     else if (length == 7)
@@ -377,14 +349,6 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     if (response.rc == ACCEPTED)
 	return guess3;
     s3 = response.score;
-
-
-
-  /*  FileMap.insert({getPassword(guess1, base),  s1});
-    FileMap.insert({getPassword(guess2, base), s2});
-    FileMap.insert({getPassword(guess3, base), s3});
-
-   */
 
 	//If item is located at a minimum return the item
     if (g3NextScore > s3 && g3PrevScore > s3)
