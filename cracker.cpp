@@ -50,8 +50,8 @@ void Cracker::getCracking()
     if ( min < 5)
     {
         truePassword = bruteForce(min, max, base, response);
-      //  cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
     }
+   
 
     else { truePassword = binarySearch(length, base, response, g1, g2);} 
 
@@ -80,18 +80,12 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, Resp
     string guess = "";
     long long int i;
     unsigned int j;
-
-    if(max==0)
-    {
-        cout<<"\nThere is no password\n";
-        return guess;
-    }
-
- 
+    
+    
     for ( j = min; j <= max; j++)
     {
 
-        for (i = 0; i < int(pow(base, j)) ; i++)
+        for (i = 0; i < int(pow(base, j)); i++)
         {
           
             response = sendPassword(guess);
@@ -99,9 +93,8 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, Resp
              {
                  return guess;
              }
-            
             guess = getGuess(i, j, base);
-
+	    
         }
     }
     return guess;
