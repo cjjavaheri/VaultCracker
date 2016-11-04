@@ -23,8 +23,8 @@ Cracker::Cracker() {}
 void Cracker::getCracking()
 {
     string truePassword = "";
-    map<string, int> FileMap;
-    map<string, int>::iterator fit;
+    map<string, long long int> FileMap;
+    map<string, long long int>::iterator fit;
     unsigned int fileCounter = 0;
     Response response;
     ofstream fout;
@@ -36,7 +36,7 @@ void Cracker::getCracking()
 
     // Change base in order to change number of characters used.
     double base = 26;
-    unsigned int length = 9;
+    unsigned int length = 4;
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
 
@@ -47,11 +47,11 @@ void Cracker::getCracking()
     // through the bound callback function 'sendPassword'
     response=sendPassword(truePassword);
     // Brute force the password.
-    if (max<5)
+   /* if (max<5)
     {
         truePassword = bruteForce(min, max, base, FileMap, response);
         cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
-    }
+    }*/
 
 
     truePassword = binarySearch(length, base, response, g1, g2, FileMap);
@@ -90,10 +90,10 @@ void Cracker::getCracking()
  * @return The actual password to the vault.
  ******************************************************************************/
 
-string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<string, int> &FileMap, Response &response)
+string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<string, long long int> &FileMap, Response &response)
 {
     string guess = "";
-    int i;
+    long long int i;
 
     if(max==0)
     {
@@ -302,7 +302,7 @@ long long int Cracker::getPassword(string guess, double base)
 }
 
 string Cracker::binarySearch(int length, double base, Response &response, long long int g1,
-                             long long int  g2, map<string, int> &FileMap)
+                             long long int  g2, map<string, long long int> &FileMap)
 {
     long long int g3 = ceil((g1 + g2) / 2.0);
     string guess1;
