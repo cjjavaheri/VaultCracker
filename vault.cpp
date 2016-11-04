@@ -59,7 +59,7 @@ void Vault::setPW()
         password += ch;
     }
 
-	password = "]]]";
+	password = "mmm";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -77,6 +77,8 @@ Response Vault::sendPassword(string guess)
     // bool correct = false;
     long double score = 0.0;
     long double pass;
+    long double c;
+    string temp = "";
     Response response(WAITING, 100.0);
     cout << "Vault::sendPassword(" << guess << ")\n";
     
@@ -119,9 +121,11 @@ Response Vault::sendPassword(string guess)
 
 				*/
 	pass = getPassword(guess, 74);
+	c = pass;
 	cout<<endl<<pass<<" ";
 	
-	pass=pass*6.283185307179586476 * 3.0;
+	pass=pass*6.283185307179586476 ;
+
 	
 	score = (long double)sinl((long double)(pass));
 	cout<<score<<endl;
@@ -133,6 +137,69 @@ Response Vault::sendPassword(string guess)
 
     return response;
 }
+
+
+	string Vault::binarySearch(int length, double base, long long int g1, long long int g2 )
+{
+    long long int g3 = ceil((g1 + g2) / 2.0);
+    string guess1;
+    string guess2;
+    string guess3;
+    string temp = "";
+    long long int s1;
+    long long int s2;
+    long long int s3;
+
+    guess1 = getGuess(g1, length, base);
+    guess2 = getGuess(g2, length, base);
+    guess3 = getGuess(g3, length, base);
+    
+    if (sinl(g1) == - 1)
+    	return guess1;
+    	
+     if (sinl(g2) == -1)
+    	return guess2;
+    	
+     if (sinl(g3) == -1)
+     	return guess3;
+
+
+    s3 = response.score;
+
+
+	// s1 is the min value
+	if (s1 <= s3 && s1 <= s2)
+	{
+
+		return binarySearch(length, base, response, g1 + 1, g3 - 1);
+	}
+
+	//s2 is the min value
+	else if (s2 <= s3 && s2 <= s1)
+	{
+
+		return binarySearch(length, base, response, g3 + 1, g2 - 1);
+	}
+
+
+	//s3 is the min value
+	else
+	{
+
+
+		if (s1 <= s2)
+			return binarySearch(length, base, response, g3 - 1, g1 + 1);
+
+		else
+			return binarySearch(length, base, response, g3 + 1, g2 - 1);
+	}
+
+
+
+
+
+}
+
 
 
 

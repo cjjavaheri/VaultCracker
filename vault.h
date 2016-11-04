@@ -50,6 +50,8 @@ private:
     long double  getPassword(string guess, double base);
 
     string getGuess(long double value, unsigned int length, double base);
+    
+    string binarySearch(int length, double base, long long int g1, long long int  g2);
 };
 
 #endif
