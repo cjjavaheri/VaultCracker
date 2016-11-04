@@ -23,8 +23,8 @@ Cracker::Cracker() {}
 void Cracker::getCracking()
 {
     string truePassword = "";
-    map<long long int, long double> FileMap;
-    map<long long int, long double>::iterator fit;
+    //map<long long int, long double> FileMap;
+    //map<long long int, long double>::iterator fit;
     string globalMin = "";
     Response response;
     ofstream fout;
@@ -49,25 +49,25 @@ void Cracker::getCracking()
    // Brute force the password.
     if ( min < 5)
     {
-        truePassword = bruteForce(min, max, base, FileMap, response);
+        truePassword = bruteForce(min, max, base, response);
       //  cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
     }
 
-        truePassword = binarySearch(length, base, response, g1, g2, FileMap);
+   // else { truePassword = binarySearch(length, base, response, g1, g2); }
 
 
 
 
     //Outputting data to plot.dat for visualization.
-    fit = FileMap.begin();
-    while (fit != FileMap.end())
-    {
+    //fit = FileMap.begin();
+   // while (fit != FileMap.end())
+    //{
       //  cout << fit->first << " " << fit->second << endl;
-        fout << fit->first << " " <<  fit->second << endl;
-        fit++;
-    }
+        //fout << fit->first << " " <<  fit->second << endl;
+      //  fit++;
+    //}
 
-    fout.close();
+    //fout.close();
 
 
     cout << "True password: " << truePassword << endl;
@@ -90,7 +90,7 @@ void Cracker::getCracking()
  * @return The actual password to the vault.
  ******************************************************************************/
 
-string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<long long int, long double> &FileMap, Response &response)
+string Cracker::bruteForce(unsigned int min, unsigned int max, double base, Response &response)
 {
     string guess = "";
     long long int i;
@@ -120,14 +120,14 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
                  {
                   //   cout<<"\nreturns guess\n score is "<<response.score<<"\n";
                  }
-                 FileMap.insert({getPassword(guess, base), response.score});
+                // FileMap.insert({getPassword(guess, base), response.score});
                 // cout<<"\nguess is "<<guess<<" " <<"response.score is "<<response.score<<"\n";
                //  cout << ResponseMsg[response.rc] << " ";
                  return guess;
              }
             
             guess = getGuess(i, j, base);
-            FileMap.insert({getPassword(guess, base), response.score});
+            //FileMap.insert({getPassword(guess, base), response.score});
 //          cout << ResponseMsg[response.rc] << " ";
 
         }
@@ -237,7 +237,7 @@ long long int Cracker::getPassword(string guess, double base)
 }
 
 string Cracker::binarySearch(int length, double base, Response &response, long long int g1,
-                             long long int  g2, map<long long int, long double> &FileMap)
+                             long long int  g2)
 {
     string min;
     string firstMin;
@@ -273,7 +273,7 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 		found = false;
 		while (!found)
 		{
-			firstMin = FindMin(length, base, response, initialValue,initialValue + value , 						FileMap);
+			firstMin = FindMin(length, base, response, initialValue,initialValue + value);
 			initialValue = initialValue + value;
 			value *= multiplier;
 			g3 = getPassword(firstMin, base);
@@ -330,7 +330,7 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 }
 
 string Cracker::FindMin(int length, double base, Response &response, long long int g1,
-                        long long int  g2, map<long long int, long double> &FileMap)
+                        long long int  g2)
 {
     long long int g3 = ceil((g1 + g2) / 2.0);
     string guess1;
@@ -398,14 +398,14 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     else if (s1 <= s3 && s1 <= s2)
     {
 
-        return FindMin(length, base, response, g1 + 1, g3 - 1, FileMap);
+        return FindMin(length, base, response, g1 + 1, g3 - 1);
     }
 
     //s2 is the min value
     else if (s2 <= s3 && s2 <= s1)
     {
 
-        return FindMin(length, base, response, g3 + 1, g2 - 1, FileMap);
+        return FindMin(length, base, response, g3 + 1, g2 - 1);
     }
 
 
@@ -415,17 +415,17 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
 
 
         if (s1 <= s2)
-            return FindMin(length, base, response, g3 - 1, g1 + 1, FileMap);
+            return FindMin(length, base, response, g3 - 1, g1 + 1);
 
         else
-            return FindMin(length, base, response, g3 + 1, g2 - 1, FileMap);
+            return FindMin(length, base, response, g3 + 1, g2 - 1);
     }
 
 }
 
 
-string Cracker::FindMax(int length, double base, Response &response, long long int g1,
-                        long long int  g2, map<long long int, long double> &FileMap)
+/*string Cracker::FindMax(int length, double base, Response &response, long long int g1,
+                        long long int  g2)
 {
     long long int g3 = ceil((g1 + g2) / 2.0);
     string guess1;
@@ -474,11 +474,11 @@ string Cracker::FindMax(int length, double base, Response &response, long long i
 
 
 
- /*   FileMap.insert({getPassword(guess1, base),  s1});
-    FileMap.insert({getPassword(guess2, base), s2});
-    FileMap.insert({getPassword(guess3, base), s3});
+ //   FileMap.insert({getPassword(guess1, base),  s1});
+   // FileMap.insert({getPassword(guess2, base), s2});
+   // FileMap.insert({getPassword(guess3, base), s3});
 
- */
+ 
 
     if (g3NextScore < s3 && g3PrevScore < s3)
         return guess3;
@@ -488,14 +488,14 @@ string Cracker::FindMax(int length, double base, Response &response, long long i
     else if (s1 >= s3 && s1 >= s2)
     {
 
-        return FindMax(length, base, response, g1 + 1, g3 - 1, FileMap);
+        return FindMax(length, base, response, g1 + 1, g3 - 1);
     }
 
     //s2 is the max value
     else if (s2 >= s3 && s2 >= s1)
     {
 
-        return FindMax(length, base, response, g3 + 1, g2 - 1, FileMap);
+        return FindMax(length, base, response, g3 + 1, g2 - 1);
     }
 
 
@@ -505,13 +505,13 @@ string Cracker::FindMax(int length, double base, Response &response, long long i
 
 
         if (s1 >= s2)
-            return FindMax(length, base, response, g3 - 1, g1 + 1, FileMap);
+            return FindMax(length, base, response, g3 - 1, g1 + 1);
 
         else
-            return FindMax(length, base, response, g3 + 1, g2 - 1, FileMap);
+            return FindMax(length, base, response, g3 + 1, g2 - 1);
     }
 
-}
+}*/
 
 
 

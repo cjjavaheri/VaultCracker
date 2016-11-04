@@ -33,9 +33,9 @@ public:
     Cracker(); /*!< Constructor */
 
     void getCracking(); /*!< Function to start the intrusion attempt */
-    string bruteForce( unsigned int min, unsigned int max, double base, map<long long int, long double> &FileMap, Response 		&response);
+    string bruteForce( unsigned int min, unsigned int max, double base, Response &response);
     string binarySearch(int length, double base, Response &response, long long int g1,
-                         long long int  g2, map<long long int, long double> &FileMap);
+                         long long int  g2);
 
     
 private:
@@ -47,11 +47,11 @@ private:
     map<int, char> getIntegerMap();
     char getPrevChar(char some_char, double base);
     string FindMax(int length, double base, Response &response, long long int g1,
-                             long long int  g2, map<long long int, long double> &FileMap);
+                             long long int  g2);
 
 
     string FindMin(int length, double base, Response &response, long long int g1,
-                            long long int g2, map<long long int, long double> &FileMap);
+                            long long int g2);
 
 
 };
