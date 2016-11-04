@@ -58,7 +58,7 @@ void Vault::setPW()
         char ch = validChars[rand() % 26]; // Original is 74. Changed for testing
         password += ch;
     }
-	password="mmm";
+	password="rrr";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -95,9 +95,9 @@ Response Vault::sendPassword(string guess)
     int gsum=0;
 
     for (i = 0; i < password.length(); i++)
-        psum=psum*29 + password[i];
+        psum=psum*26 + password[i];
     for (i = 0; i < guess.length(); i++)
-        gsum = gsum*29 + guess[i];
+        gsum = gsum*26 + guess[i];
 
     score=abs(gsum-psum);
     //sending score and the guess to a file plot.data for graphing

@@ -53,6 +53,9 @@ void Cracker::getCracking()
 
     // Change base in order to change number of characters used.
     double base = 26;
+    unsigned int length = 3;
+    long long int g1 = 0;
+    long long int g2 = pow(base, length) - 1;
 
     fout.open("plot.dat");
 
@@ -67,22 +70,24 @@ void Cracker::getCracking()
         cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
     }
 
+
+    truePassword = binarySearch(length, base, response, g1, g2, FileMap);
+	
+
     //Outputting data to plot.dat for visualization.
     fit = FileMap.begin();
     while (fit != FileMap.end())
     {
-        cout << fileCounter << " " << fit->first << " " << fit->second << endl;
-        fout << fileCounter << " " <<  fit->second << endl;
-        fileCounter++;
-        fit++;
+    cout << fileCounter << " " << fit->first << " " << fit->second << endl;
+    fout << fileCounter << " " <<  fit->second << endl;
+    fileCounter++;
+    fit++;
     }
 
     fout.close();
-    
-    fit = FileMap.find("mmm");
-    cout << fit->first << " " << fit->second << endl;
 
-    cout << "True password: " << truePassword << endl;
+
+    // cout << "True password: " << truePassword << endl;
 
 }
 
@@ -126,11 +131,13 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
                     cout << "\nThere is no password\n";
                 }
                 else
-                   { cout<<"\nreturns guess\n score is "<<response.score<<"\n";}
-                 FileMap.insert({guess, response.score}); 
-                 cout<<"\nguess is "<<guess<<" " <<"response.score is "<<response.score<<"\n";
-                 cout << ResponseMsg[response.rc] << " "; 
-                 return guess;
+                {
+                    cout<<"\nreturns guess\n score is "<<response.score<<"\n";
+                }
+                FileMap.insert({guess, response.score});
+                cout<<"\nguess is "<<guess<<" " <<"response.score is "<<response.score<<"\n";
+                cout << ResponseMsg[response.rc] << " ";
+                return guess;
             }
             guess = getGuess(i, j, base);
             FileMap.insert({guess, response.score});
@@ -278,4 +285,77 @@ int Cracker::getPassword(string guess, double base)
     }
 
     return sum;
+}
+
+string Cracker::binarySearch(int length, double base, Response &response, long long int g1,
+                             long long int  g2, map<string, int> &FileMap)
+{
+    long long int g3 = floor((g1 + g2) / 2.0);
+    string guess1;
+    string guess2;
+    string guess3;
+    long long int s1;
+    long long int s2;
+    long long int s3;
+
+
+    guess1 = getGuess(g1, length, base);
+    guess2 = getGuess(g2, length, base);
+    guess3 = getGuess(g3, length, base);
+
+
+    response = sendPassword(guess1);
+    if (response.rc == ACCEPTED)
+	{
+		FileMap.insert({guess1, s1});
+        	return guess1;
+	}
+	s1 = response.score;
+    response = sendPassword(guess2);
+    if (response.rc == ACCEPTED)
+	{
+		FileMap.insert({guess2, s2});
+        	return guess2;
+	}
+    s2 = response.score;
+    response = sendPassword(guess3);
+    if (response.rc == ACCEPTED)
+	{
+		FileMap.insert({guess3, s3});
+        	return guess3;
+	}
+    s3 = response.score;
+
+	FileMap.insert({guess1, s1});
+	FileMap.insert({guess2, s2});
+	FileMap.insert({guess3, s3});
+
+		    if (g1 == g2  )
+		return binarySearch(length, base, response, g1, g2, FileMap);
+
+
+	if (s1 <= s3)
+		return binarySearch(length, base, response, g1, g3 - 1, FileMap);
+
+	  if (s2 <= s3)
+		return binarySearch(length, base, response, g3 + 1, g2, FileMap);
+	
+	  if (s1 <= s2)
+		return binarySearch(length, base, response, g1 - 1, g3 , FileMap);
+
+	  if (s2 <= s1)
+		return binarySearch(length, base, response, g3, g2 - 1 , FileMap);
+
+	/*if(s1<s2 && s1<s3)
+		return binarySearch(length, base, response, g1, g3 - 1, FileMap);
+	if(s1>s2 && s1>s3)
+		return binarySearch(length, base, response, g3, g2 - 1, FileMap);
+	if(s2>s1 && s1>s3)
+		return binarySearch(length, base, response, g1, g3 - 1, FileMap);
+	if(s1>s3 && s3<s2)
+		return binarySearch(length, base, response, g3, g2 - 1, FileMap);*/
+
+	
+
+
 }
