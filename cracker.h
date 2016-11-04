@@ -33,10 +33,10 @@ public:
     Cracker(); /*!< Constructor */
 
     void getCracking(); /*!< Function to start the intrusion attempt */
-    string bruteForce( unsigned int min, unsigned int max, double base, map<string, long long int> &FileMap, Response 		&response);
+    string bruteForce( unsigned int min, unsigned int max, double base, map<string, long double> &FileMap, Response 		&response);
 
     string binarySearch(int length, double base, Response &response, long long int g1, long
-                        long  int g2, map<string, long long int> &FileMap);
+                        long  int g2, map<string, long double> &FileMap);
 private:
     void checkLength(unsigned int &min, unsigned int &max);
     string getGuess(long double value, unsigned int length, double base);

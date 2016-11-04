@@ -59,7 +59,7 @@ void Vault::setPW()
         password += ch;
     }
 
-	password = "bbbb";
+	password = "]]]";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -79,6 +79,8 @@ Response Vault::sendPassword(string guess)
     long double pass;
     Response response(WAITING, 100.0);
     cout << "Vault::sendPassword(" << guess << ")\n";
+    
+    
 
 // Here is where you will take the password guess and compare it with the
 // password that you created.  If the guess is correct then you are required
@@ -115,11 +117,15 @@ Response Vault::sendPassword(string guess)
     else
         response = Response(WAITING, score);
 
-								*/
+				*/
+	pass = getPassword(guess, 74);
+	cout<<endl<<pass<<endl;
+	pass=pass*6.28318530718;
 	
-	pass = getPassword(password, 74);
 	score = sin(double(pass));
-
+	if(guess==password)
+        {return Response(ACCEPTED, score);}
+        
 	response = Response(WAITING, score);
 	
 
@@ -265,6 +271,9 @@ long double Vault::getPassword(string guess, double base)
         cit = CharacterMap.find(guess[i]);
         sum += (cit->second * pow(base, j));
     }
-
-    return sum;
+    
+    cout<<endl<<sum<<endl;
+    //(long double)(sum)=((long double)(sum))/((long double)(pow(74,4)));
+    //cout<<endl<<sum<<endl;
+    return (long double)(sum)/((long double)(pow(74,3)));
 }
