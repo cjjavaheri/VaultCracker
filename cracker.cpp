@@ -36,7 +36,7 @@ void Cracker::getCracking()
 
     // Change base in order to change number of characters used.
     double base = 74;
-    unsigned int length = 8;
+    unsigned int length = 7;
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
 
