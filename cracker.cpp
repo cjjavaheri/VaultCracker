@@ -36,7 +36,7 @@ void Cracker::getCracking()
 
     // Change base in order to change number of characters used.
     double base = 26;
-    unsigned int length = 4;
+    unsigned int length = 9;
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
 
@@ -184,7 +184,7 @@ void Cracker::checkLength(unsigned int &min, unsigned int &max)
  ******************************************************************************/
 
 
-string Cracker::getGuess(double value, unsigned int length, double base)
+string Cracker::getGuess(long double value, unsigned int length, double base)
 {
     static map<int, char> CharacterMap;
     map<int, char>::iterator cit;
@@ -247,11 +247,11 @@ string Cracker::getGuess(double value, unsigned int length, double base)
 
 }
 
-int Cracker::getPassword(string guess, double base)
+long long int Cracker::getPassword(string guess, double base)
 {
-    int i;
-    int j = 0;
-    int sum = 0;
+    long long int i;
+    long long int j = 0;
+    long long int sum = 0;
     static map<char, int> CharacterMap;
     map<char, int>::iterator cit;
     char nextChar = 'a';
@@ -308,10 +308,10 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     string guess1;
     string guess2;
     string guess3;
+    string temp = "";
     long long int s1;
     long long int s2;
     long long int s3;
-
 
     guess1 = getGuess(g1, length, base);
     guess2 = getGuess(g2, length, base);
@@ -348,27 +348,68 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 	// s1 is the min value
 	if (s1 <= s3 && s1 <= s2)
 	{
-		if (s2 <= s3)
+		
+		
+
+		return binarySearch(length, base, response, g1 + 1, g3 - 1, FileMap);
+
+	/*	if (s2 <= s3)
 			return binarySearch(length, base, response, g1 + 1, g2 - 1, FileMap);
 
 		else if (s3 <= s2)
 			return binarySearch(length, base, response, g1 + 1, g3 - 1, FileMap);
+
+	*/
 	}
 
 	//s2 is the min value
 	if (s2 <= s3 && s2 <= s1)
 	{
+
+
+
+
+		return binarySearch(length, base, response, g3 + 1, g2 - 1, FileMap);
+		/*
 		if (s1 <= s3)
 			return binarySearch(length, base, response, g1 + 1, g2 - 1, FileMap);
 
 		else if (s3 <= s1)
 			return binarySearch(length, base, response, g3 + 1, g2 - 1, FileMap);
+
+
+		*/
 	}
 
 
 	//s3 is the min value
 	if (s3 <= s2 && s3 <= s1)
 	{
+
+	
+
+	/*	temp = guess3;
+		temp[temp.size() - 1] = getNextChar(temp[temp.size() - 1], base);
+		response = sendPassword(temp);
+		nextTry = getPassword(temp, base);
+		guess2[guess2.size() - 1] = getPrevChar(guess2[guess2.size() - 1], base);
+		g2 = getPassword(guess2, base);
+		if (response.score <= s3)
+			return binarySearch(length, base, response, nextTry, g2  , FileMap);
+
+
+		temp = guess3;
+		temp[temp.size() - 1] = getPrevChar(temp[temp.size() - 1], base);
+		response = sendPassword(temp);
+		nextTry = getPassword(temp, base);
+		guess1[guess1.size() - 1] = getNextChar(guess1[guess1.size() - 1], base);
+		g1 = getPassword(guess1, base);
+		if (response.score <= s3)
+			return binarySearch(length, base, response, g1 , nextTry, FileMap);
+
+	*/
+
+
 		if (s1 <= s2)
 			return binarySearch(length, base, response, g3 - 1, g1 + 1, FileMap);
 
@@ -379,5 +420,99 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 
 
 
+
+}
+
+
+char Cracker::getNextChar(char some_char, double base)
+{
+        map<char, int> CharacterMap;
+	map<char,int>::iterator cit;
+
+	CharacterMap = getMap();
+
+
+	cit = CharacterMap.find(some_char);
+	if (cit->second == base - 1)
+	{
+		return 'a';
+	}
+	else
+	{
+		cit++;
+		return cit->first;
+	}
+
+}
+
+char Cracker::getPrevChar(char some_char, double base)
+{
+        map<char, int> CharacterMap;
+	map<char,int>::iterator cit;
+	int i;
+
+	CharacterMap = getMap();
+
+
+	cit = CharacterMap.find(some_char);
+	if (cit->second == 0)
+	{
+		for (i = 0; i < base; i++)
+			cit++;
+
+		return cit->first;
+	}
+	else
+	{
+		cit--;
+		return cit->first;
+	}
+
+}
+
+map<char,int> Cracker::getMap()
+{
+	static map<char, int> CharacterMap;
+	int i;
+	char nextChar = 'a';
+
+    if (CharacterMap.empty())
+    {
+        for (i = 0; i < 26; i++)
+        {
+            CharacterMap.insert({ nextChar, i });
+            nextChar += 1;
+        }
+        nextChar = 'A';
+        for (i = 26; i < 52; i++)
+        {
+            CharacterMap.insert({ nextChar, i });
+            nextChar += 1;
+        }
+        CharacterMap.insert({ '!', 52 });
+        CharacterMap.insert({ '@', 53 });
+        CharacterMap.insert({ '#', 54 });
+        CharacterMap.insert({ '$', 55 });
+        CharacterMap.insert({ '%', 56 });
+        CharacterMap.insert({ '^', 57 });
+        CharacterMap.insert({ '&', 58 });
+        CharacterMap.insert({ '*', 59 });
+        CharacterMap.insert({ '(', 60 });
+        CharacterMap.insert({ ')', 61 });
+        CharacterMap.insert({ '_', 62 });
+        CharacterMap.insert({ '+', 63 });
+        CharacterMap.insert({ '=', 64 });
+        CharacterMap.insert({ ':', 65 });
+        CharacterMap.insert({ ';', 66 });
+        CharacterMap.insert({ '~', 67 });
+        CharacterMap.insert({ '?', 68 });
+        CharacterMap.insert({ '.', 69 });
+        CharacterMap.insert({ '<', 70 });
+        CharacterMap.insert({ '>', 71 });
+        CharacterMap.insert({ ']', 72 });
+        CharacterMap.insert({ '[', 73 });
+    }
+
+	return CharacterMap;
 
 }

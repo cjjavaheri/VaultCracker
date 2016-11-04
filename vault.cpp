@@ -58,7 +58,7 @@ void Vault::setPW()
         char ch = validChars[rand() % 74]; // Original is 74. Changed for testing
         password += ch;
     }
-    password="yyyy";
+    password="eeeeeeeee";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -91,13 +91,13 @@ Response Vault::sendPassword(string guess)
 // to be an important part of your defense.  Think about how this will impact
 // how easy or hard it will be to guess your password.
 
-    int psum=0;
-    int gsum=0;
+    long long int psum=0;
+    long long int gsum=0;
 
     for (i = 0; i < password.length(); i++)
-        psum=psum*74 + validChars.find(password[i]) + 1;
+        psum=psum*26 + validChars.find(password[i]) + 1;
     for (i = 0; i < guess.length(); i++)
-        gsum = gsum*74 + validChars.find(guess[i]) + 1;
+        gsum = gsum*26 + validChars.find(guess[i]) + 1;
 
     score=abs(gsum-psum);
     //sending score and the guess to a file plot.data for graphing

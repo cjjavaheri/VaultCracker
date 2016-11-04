@@ -39,7 +39,10 @@ public:
                         long  int g2, map<string, int> &FileMap);
 private:
     void checkLength(unsigned int &min, unsigned int &max);
-    string getGuess(double value, unsigned int length, double base);
-    int getPassword(string guess, double base);
+    string getGuess(long double value, unsigned int length, double base);
+    long long int getPassword(string guess, double base);
+    char getNextChar(char some_char, double base);
+    map<char, int> getMap();
+    char getPrevChar(char some_char, double base);
 };
 #endif
