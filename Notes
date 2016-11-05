@@ -1,0 +1,20 @@
+This does not compile:
+
+g++ -Wall -O -std=c++11   -c -o vault.o vault.cpp
+vault.cpp: In member function ‘virtual Response Vault::sendPassword(std::__cxx11::string)’:
+vault.cpp:76:18: warning: unused variable ‘i’ [-Wunused-variable]
+     unsigned int i;
+                  ^
+vault.cpp:80:17: warning: variable ‘c’ set but not used [-Wunused-but-set-variable]
+     long double c;
+                 ^
+vault.cpp: In member function ‘std::__cxx11::string Vault::binarySearch(int, double, long long int, long long int)’:
+vault.cpp:167:10: error: ‘response’ was not declared in this scope
+     s3 = response.score;
+          ^~~~~~~~
+<builtin>: recipe for target 'vault.o' failed
+make: *** [vault.o] Error 1
+
+I know it's harder when three people are working on the same codebase but
+everyone needs to maintain good repository discipline and make sure they are
+not putting back code that 'breaks the build'.
