@@ -315,9 +315,9 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     string guess2;
     string guess3;
     string temp = "";
-    long long int s1;
-    long long int s2;
-    long long int s3;
+    long double s1;
+    long double s2;
+    long double s3;
 
     guess1 = getGuess(g1, length, base);
     guess2 = getGuess(g2, length, base);

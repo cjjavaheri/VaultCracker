@@ -59,7 +59,7 @@ void Vault::setPW()
         password += ch;
     }
 
-	password = "mmm";
+	password = "zzz";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -78,6 +78,10 @@ Response Vault::sendPassword(string guess)
     long double score = 0.0;
     long double pass;
     long double c;
+    long double scalar = 2 * 3.141592654;
+    long double min = 3 * 3.141592654 / 2;
+    long double length;
+    long double intvalue;
     string temp = "";
     Response response(WAITING, 100.0);
     cout << "Vault::sendPassword(" << guess << ")\n";
@@ -121,13 +125,24 @@ Response Vault::sendPassword(string guess)
 
 				*/
 	pass = getPassword(guess, 74);
-	c = pass;
+
+	c = 2 * 3.141592654 / pow(74, 3);
 	cout<<endl<<pass<<" ";
 	
-	pass=pass*6.283185307179586476 ;
+	pass = pass * scalar;
 
-	
-	score = (long double)sinl((long double)(pass));
+	min = min / c;
+
+	intvalue = getInteger(password, 74);
+
+	length = min - intvalue;
+
+	// Shift left
+	if (length > 0)
+		score = (long double)sinl((long double)(pass + abs(length * c) ));
+	// Shift right
+	else
+		score = (long double)sinl((long double)(pass - abs(length * c) ));
 	cout<<score<<endl;
 	if(guess==password)
         {return Response(ACCEPTED, score);}
@@ -136,68 +151,6 @@ Response Vault::sendPassword(string guess)
 	
 
     return response;
-}
-
-
-	string Vault::binarySearch(int length, double base, long long int g1, long long int g2 )
-{
-    long long int g3 = ceil((g1 + g2) / 2.0);
-    string guess1;
-    string guess2;
-    string guess3;
-    string temp = "";
-    long long int s1;
-    long long int s2;
-    long long int s3;
-
-    guess1 = getGuess(g1, length, base);
-    guess2 = getGuess(g2, length, base);
-    guess3 = getGuess(g3, length, base);
-    
-    if (sinl(g1) == - 1)
-    	return guess1;
-    	
-     if (sinl(g2) == -1)
-    	return guess2;
-    	
-     if (sinl(g3) == -1)
-     	return guess3;
-
-
-    s3 = response.score;
-
-
-	// s1 is the min value
-	if (s1 <= s3 && s1 <= s2)
-	{
-
-		return binarySearch(length, base, response, g1 + 1, g3 - 1);
-	}
-
-	//s2 is the min value
-	else if (s2 <= s3 && s2 <= s1)
-	{
-
-		return binarySearch(length, base, response, g3 + 1, g2 - 1);
-	}
-
-
-	//s3 is the min value
-	else
-	{
-
-
-		if (s1 <= s2)
-			return binarySearch(length, base, response, g3 - 1, g1 + 1);
-
-		else
-			return binarySearch(length, base, response, g3 + 1, g2 - 1);
-	}
-
-
-
-
-
 }
 
 
@@ -345,4 +298,60 @@ long double Vault::getPassword(string guess, double base)
     //(long double)(sum)=((long double)(sum))/((long double)(pow(74,4)));
     //cout<<endl<<sum<<endl;
     return (long double)(sum)/((long double)(pow(74,3)));
+}
+
+
+
+long long int Vault::getInteger(string guess, double base)
+{
+    long long int i;
+    long long int j = 0;
+    long double sum = 0;
+    static map<char, int> CharacterMap;
+    map<char, int>::iterator cit;
+    char nextChar = 'a';
+    if (CharacterMap.empty())
+    {
+        for (i = 0; i < 26; i++)
+        {
+            CharacterMap.insert({ nextChar, i });
+            nextChar += 1;
+        }
+        nextChar = 'A';
+        for (i = 26; i < 52; i++)
+        {
+            CharacterMap.insert({ nextChar, i });
+            nextChar += 1;
+        }
+        CharacterMap.insert({ '!', 52 });
+        CharacterMap.insert({ '@', 53 });
+        CharacterMap.insert({ '#', 54 });
+        CharacterMap.insert({ '$', 55 });
+        CharacterMap.insert({ '%', 56 });
+        CharacterMap.insert({ '^', 57 });
+        CharacterMap.insert({ '&', 58 });
+        CharacterMap.insert({ '*', 59 });
+        CharacterMap.insert({ '(', 60 });
+        CharacterMap.insert({ ')', 61 });
+        CharacterMap.insert({ '_', 62 });
+        CharacterMap.insert({ '+', 63 });
+        CharacterMap.insert({ '=', 64 });
+        CharacterMap.insert({ ':', 65 });
+        CharacterMap.insert({ ';', 66 });
+        CharacterMap.insert({ '~', 67 });
+        CharacterMap.insert({ '?', 68 });
+        CharacterMap.insert({ '.', 69 });
+        CharacterMap.insert({ '<', 70 });
+        CharacterMap.insert({ '>', 71 });
+        CharacterMap.insert({ ']', 72 });
+        CharacterMap.insert({ '[', 73 });
+    }
+
+    for (i = guess.length() - 1; i > -1; i--, j++)
+    {
+        cit = CharacterMap.find(guess[i]);
+        sum += (cit->second * pow(base, j));
+    }
+
+    return sum;
 }
