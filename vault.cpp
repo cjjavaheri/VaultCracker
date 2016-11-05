@@ -119,16 +119,12 @@ Response Vault::sendPassword(string guess)
 
 				*/
 	pass = getPassword(guess, 74);
-	static int asd=0;
 	cout<<endl<<pass<<" ";
-	++asd;
 	
-	pass=pass*6.283185307179586476;
+	pass=pass*6.283185307179586476 * 3.0;
 	
 	score = (long double)sinl((long double)(pass));
 	cout<<score<<endl;
-	if(asd==100)
-	exit (1);
 	if(guess==password)
         {return Response(ACCEPTED, score);}
         
