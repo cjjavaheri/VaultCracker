@@ -23,9 +23,8 @@ Cracker::Cracker() {}
 void Cracker::getCracking()
 {
     string truePassword = "";
-    map<string, long double> FileMap;
-    map<string, long double>::iterator fit;
-    unsigned int fileCounter = 0;
+    map<long long int, long double> FileMap;
+    map<long long int, long double>::iterator fit;
     Response response;
     ofstream fout;
 
@@ -35,7 +34,7 @@ void Cracker::getCracking()
     checkLength(min, max);
     // Change base in order to change number of characters used.
     double base = 74;
-    unsigned int length = 4;
+    unsigned int length = 3;
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
 
@@ -64,9 +63,8 @@ void Cracker::getCracking()
     fit = FileMap.begin();
     while (fit != FileMap.end())
     {
-        cout << fileCounter << " " << fit->first << " " << fit->second << endl;
-        fout << fileCounter << " " <<  fit->second << endl;
-        fileCounter++;
+        cout << fit->first << " " << fit->second << endl;
+        fout << fit->first << " " <<  fit->second << endl;
         fit++;
     }
 
@@ -93,7 +91,7 @@ void Cracker::getCracking()
  * @return The actual password to the vault.
  ******************************************************************************/
 
-string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<string, long double> &FileMap, Response &response)
+string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<long long int, long double> &FileMap, Response &response)
 {
     string guess = "";
     long long int i;
@@ -108,7 +106,7 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
     for (unsigned int j=3; j<=3; j++)
     {
   		
-        for (i = 0; i < int(pow(base, j)); i++)
+        for (i = 0; i < int(pow(base, j)) ; i++)
         {
             cout<<endl<<guess<<endl;
             response = sendPassword(guess);
@@ -122,14 +120,14 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
                 {
                     cout<<"\nreturns guess\n score is "<<response.score<<"\n";
                 }
-                FileMap.insert({guess, response.score});
+                FileMap.insert({getPassword(guess, base), response.score});
                 cout<<"\nguess is "<<guess<<" " <<"response.score is "<<response.score<<"\n";
                 cout << ResponseMsg[response.rc] << " ";
                 return guess;
             }
             		
             guess = getGuess(i, j, base);
-            FileMap.insert({guess, response.score});
+            FileMap.insert({getPassword(guess, base), response.score});
             cout << ResponseMsg[response.rc] << " ";
       
         }
@@ -310,7 +308,7 @@ long long int Cracker::getPassword(string guess, double base)
 }
 
 string Cracker::binarySearch(int length, double base, Response &response, long long int g1,
-                             long long int  g2, map<string, long double> &FileMap)
+                             long long int  g2, map<long long int, long double> &FileMap)
 {
     long long int g3 = ceil((g1 + g2) / 2.0);
     string guess1;
@@ -329,28 +327,28 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     response = sendPassword(guess1);
     if (response.rc == ACCEPTED)
     {
-        FileMap.insert({guess1, s1});
+        FileMap.insert({getPassword(guess1, base), s1});
         return guess1;
     }
     s1 = response.score;
     response = sendPassword(guess2);
     if (response.rc == ACCEPTED)
     {
-        FileMap.insert({guess2, s2});
+        FileMap.insert({getPassword(guess2, base), s2});
         return guess2;
     }
     s2 = response.score;
     response = sendPassword(guess3);
     if (response.rc == ACCEPTED)
     {
-        FileMap.insert({guess3, s3});
+        FileMap.insert({getPassword(guess3, base), s3});
         return guess3;
     }
     s3 = response.score;
 
-    FileMap.insert({guess1, s1});
-    FileMap.insert({guess2, s2});
-    FileMap.insert({guess3, s3});
+    FileMap.insert({getPassword(guess1, base), s1});
+    FileMap.insert({getPassword(guess2, base), s2});
+    FileMap.insert({getPassword(guess3, base), s3});
 
 
 	// s1 is the min value
