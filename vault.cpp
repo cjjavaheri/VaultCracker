@@ -59,7 +59,7 @@ void Vault::setPW()
         password += ch;
     }
 
-    password = "qr@";
+    password = "mmm";
     cout << "Generated a random password\n" << password << endl;
 }
 

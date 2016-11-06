@@ -47,13 +47,13 @@ void Cracker::getCracking()
     response=sendPassword(truePassword);
 
 
-    // Brute force the password.
-  /*  if (max<5)
+  /*  // Brute force the password.
+    if (max<5)
     {
         truePassword = bruteForce(min, max, base, FileMap, response);
         cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
     }
-   */
+  */
     if (max == 4 && response.rc != ACCEPTED)
     {
         //globalMin = FindMax(length, base, response, g1, g2, FileMap);
@@ -332,9 +332,6 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     if (response.rc == ACCEPTED)
         return min;
 
-    else if (min == "")
-	return min;
-
     max = FindMax(length, base, response, g1, g2, FileMap);
 
 	if (max == "")
@@ -472,9 +469,15 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
 
     response = sendPassword(guess1);
     s1 = response.score;
+    if (response.rc == ACCEPTED)
+	return guess1;
     response = sendPassword(guess2);
     s2 = response.score;
+    if (response.rc == ACCEPTED)
+	return guess2;
     response = sendPassword(guess3);
+    if (response.rc == ACCEPTED)
+	return guess3;
     s3 = response.score;
 
 
@@ -484,6 +487,8 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     FileMap.insert({getPassword(guess3, base), s3});
 
 
+    if (g3 == pow(base, length) - 1)
+	return guess3;
 
     if (g3NextScore > s3 && g3PrevScore > s3)
         return guess3;
