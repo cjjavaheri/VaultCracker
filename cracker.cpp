@@ -25,6 +25,7 @@ void Cracker::getCracking()
     string truePassword = "";
     map<long long int, long double> FileMap;
     map<long long int, long double>::iterator fit;
+    string globalMin = "";
     Response response;
     ofstream fout;
 
@@ -45,16 +46,19 @@ void Cracker::getCracking()
     // through the bound callback function 'sendPassword'
     response=sendPassword(truePassword);
 
-	
-	 // Brute force the password.
-   /* if (max<5)
+
+    // Brute force the password.
+  /*  if (max<5)
     {
         truePassword = bruteForce(min, max, base, FileMap, response);
         cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
     }
-	*/
-	  //if (max == 4 && response.rc != ACCEPTED)
-   		 truePassword = binarySearch(length, base, response, g1, g2, FileMap);
+   */
+    if (max == 4 && response.rc != ACCEPTED)
+    {
+        //globalMin = FindMax(length, base, response, g1, g2, FileMap);
+        truePassword = binarySearch(length, base, response, g1, g2, FileMap, g1, g2);
+    }
 
 
 
@@ -71,7 +75,7 @@ void Cracker::getCracking()
     fout.close();
 
 
-     cout << "True password: " << truePassword << endl;
+    cout << "True password: " << truePassword << endl;
 
 }
 
@@ -102,34 +106,34 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
         return guess;
     }
 
-	// original: j <= max, j=min
+    // original: j <= max, j=min
     for (unsigned int j=3; j<=3; j++)
     {
-  		
+
         for (i = 0; i < int(pow(base, j)) ; i++)
         {
             cout<<endl<<guess<<endl;
             response = sendPassword(guess);
-            if (response.rc == ACCEPTED)
-            {
-                if (guess == "")
-                {
-                    cout << "\nThere is no password\n";
-                }
-                else
-                {
-                    cout<<"\nreturns guess\n score is "<<response.score<<"\n";
-                }
-                FileMap.insert({getPassword(guess, base), response.score});
-                cout<<"\nguess is "<<guess<<" " <<"response.score is "<<response.score<<"\n";
-                cout << ResponseMsg[response.rc] << " ";
-                return guess;
-            }
-            		
+            /* if (response.rc == ACCEPTED)
+             {
+                 if (guess == "")
+                 {
+                     cout << "\nThere is no password\n";
+                 }
+                 else
+                 {
+                     cout<<"\nreturns guess\n score is "<<response.score<<"\n";
+                 }
+                 FileMap.insert({getPassword(guess, base), response.score});
+                 cout<<"\nguess is "<<guess<<" " <<"response.score is "<<response.score<<"\n";
+                 cout << ResponseMsg[response.rc] << " ";
+                 return guess;
+             }
+            */
             guess = getGuess(i, j, base);
             FileMap.insert({getPassword(guess, base), response.score});
             cout << ResponseMsg[response.rc] << " ";
-      
+
         }
     }
     return guess;
@@ -308,134 +312,354 @@ long long int Cracker::getPassword(string guess, double base)
 }
 
 string Cracker::binarySearch(int length, double base, Response &response, long long int g1,
-                             long long int  g2, map<long long int, long double> &FileMap)
+                             long long int  g2, map<long long int, long double> &FileMap, long long int start, long long int end)
+{
+
+    string nextMax = "";
+    string nextMin = "";
+    string prevMax = "";
+    string prevMin = "";
+    string guess = "";
+    long long int initialMin;
+    long long int initialMax;
+    long long int temp;
+    string min;
+    string max;
+
+
+    min = FindMin(length, base, response, g1, g2, FileMap);
+
+    if (response.rc == ACCEPTED)
+        return min;
+
+    else if (min == "")
+	return min;
+
+    max = FindMax(length, base, response, g1, g2, FileMap);
+
+	if (max == "")
+	return max;
+
+
+    initialMin = getPassword(min, base);
+    initialMax = getPassword(max, base);
+
+
+    if (g1 == initialMin )
+	return getGuess(g1, length, base);
+
+    else if (g2 == initialMin )
+	return getGuess(g2, length, base);
+
+
+    if (initialMax > initialMin)
+    {
+        guess = binarySearch(length, base, response, initialMin, initialMax, FileMap, start, end);
+        if (response.rc == ACCEPTED)
+            return guess;
+
+	else if (guess == getGuess(initialMin, length, base))
+	{
+		guess = binarySearch(length, base, response, ceil ((initialMin + initialMax) / 2.0), 					initialMax, FileMap, start, end);
+
+		if (response.rc == ACCEPTED)
+			return guess;
+	}
+
+        guess = binarySearch(length, base, response, start, initialMin, FileMap, start, end);
+        if (response.rc == ACCEPTED)
+            return guess;
+
+	else if (guess == getGuess(initialMin, length, base))
+	{
+		guess = binarySearch(length, base, response, ceil((start + end) / 2.0), initialMin, 				FileMap, start, end);
+
+		if (response.rc == ACCEPTED)
+			return guess;
+	}
+
+        guess = binarySearch(length, base, response, initialMax, end, FileMap, start, end);
+        if (response.rc == ACCEPTED)
+            return guess;
+
+
+    }
+
+    else if (initialMin > initialMax)
+    {
+        guess = binarySearch(length, base, response, initialMax, initialMin , FileMap, start, end);
+        if (response.rc == ACCEPTED)
+            return guess;
+
+	else if (guess == getGuess(initialMin, length, base))
+	{
+		guess = binarySearch(length, base, response,  ((initialMin + 				initialMax) / 2.0), initialMin,  FileMap, start, end);
+
+		if (response.rc == ACCEPTED)
+			return guess;
+	}
+
+        guess = binarySearch(length, base, response, start , initialMax , FileMap, start, end);
+        if (response.rc == ACCEPTED)
+            return guess;
+
+
+        guess = binarySearch(length, base, response, initialMin , end , FileMap, start, end);
+        if (response.rc == ACCEPTED)
+            return guess;
+
+	else if (guess == getGuess(initialMin, length, base))
+	{
+		guess = binarySearch(length, base, response, ceil((initialMin + end) / 2.0), end, 				FileMap, start, end);
+
+	
+		if (response.rc == ACCEPTED)
+			return guess;
+	}
+
+	
+
+    }
+
+    else
+    {
+        guess = initialMax;
+        return guess;
+    }
+
+
+
+}
+
+string Cracker::FindMin(int length, double base, Response &response, long long int g1,
+                        long long int  g2, map<long long int, long double> &FileMap)
 {
     long long int g3 = ceil((g1 + g2) / 2.0);
     string guess1;
     string guess2;
     string guess3;
     string temp = "";
+    string empty = "";
     long double s1;
     long double s2;
     long double s3;
+    long double g3NextScore;
+    long double g3PrevScore;
+    string g3Next;
+    string g3Prev;
+
 
     guess1 = getGuess(g1, length, base);
     guess2 = getGuess(g2, length, base);
     guess3 = getGuess(g3, length, base);
 
 
+    g3Next = getGuess(g3 + 1, length, base);
+    g3Prev = getGuess(g3 - 1, length, base);
+
+    if (g3 + 1 == pow(base, length))
+        return empty;
+
+    if (g3 - 1 < 0)
+        return empty;
+
+
+    response = sendPassword(g3Next);
+    g3NextScore = response.score;
+    response = sendPassword(g3Prev);
+    g3PrevScore = response.score;
+
+
     response = sendPassword(guess1);
-    if (response.rc == ACCEPTED)
-    {
-        FileMap.insert({getPassword(guess1, base), s1});
-        return guess1;
-    }
     s1 = response.score;
     response = sendPassword(guess2);
-    if (response.rc == ACCEPTED)
-    {
-        FileMap.insert({getPassword(guess2, base), s2});
-        return guess2;
-    }
     s2 = response.score;
     response = sendPassword(guess3);
-    if (response.rc == ACCEPTED)
-    {
-        FileMap.insert({getPassword(guess3, base), s3});
-        return guess3;
-    }
     s3 = response.score;
 
-    FileMap.insert({getPassword(guess1, base), s1});
+
+
+    FileMap.insert({getPassword(guess1, base),  s1});
     FileMap.insert({getPassword(guess2, base), s2});
     FileMap.insert({getPassword(guess3, base), s3});
 
 
-	// s1 is the min value
-	if (s1 <= s3 && s1 <= s2)
-	{
 
-		return binarySearch(length, base, response, g1 + 1, g3 - 1, FileMap);
-	}
-
-	//s2 is the min value
-	else if (s2 <= s3 && s2 <= s1)
-	{
-
-		return binarySearch(length, base, response, g3 + 1, g2 - 1, FileMap);
-	}
+    if (g3NextScore > s3 && g3PrevScore > s3)
+        return guess3;
 
 
-	//s3 is the min value
-	else
-	{
+    // s1 is the min value
+    else if (s1 <= s3 && s1 <= s2)
+    {
+
+        return FindMin(length, base, response, g1 + 1, g3 - 1, FileMap);
+    }
+
+    //s2 is the min value
+    else if (s2 <= s3 && s2 <= s1)
+    {
+
+        return FindMin(length, base, response, g3 + 1, g2 - 1, FileMap);
+    }
 
 
-		if (s1 <= s2)
-			return binarySearch(length, base, response, g3 - 1, g1 + 1, FileMap);
-
-		else
-			return binarySearch(length, base, response, g3 + 1, g2 - 1, FileMap);
-	}
+    //s3 is the min value
+    else
+    {
 
 
+        if (s1 <= s2)
+            return FindMin(length, base, response, g3 - 1, g1 + 1, FileMap);
+
+        else
+            return FindMin(length, base, response, g3 + 1, g2 - 1, FileMap);
+    }
+
+}
 
 
+string Cracker::FindMax(int length, double base, Response &response, long long int g1,
+                        long long int  g2, map<long long int, long double> &FileMap)
+{
+    long long int g3 = ceil((g1 + g2) / 2.0);
+    string guess1;
+    string guess2;
+    string guess3;
+    string temp = "";
+    string empty = "";
+    long double s1;
+    long double s2;
+    long double s3;
+    long double g3NextScore;
+    long double g3PrevScore;
+    string g3Next;
+    string g3Prev;
+
+    guess1 = getGuess(g1, length, base);
+    guess2 = getGuess(g2, length, base);
+    guess3 = getGuess(g3, length, base);
+
+
+
+    if (g3 + 1 == pow(base, length))
+        return empty;
+
+    if (g3 - 1 < 0)
+        return empty;
+
+
+    g3Next = getGuess(g3 + 1, length, base);
+    g3Prev = getGuess(g3 - 1, length, base);
+
+
+    response = sendPassword(g3Next);
+    g3NextScore = response.score;
+    response = sendPassword(g3Prev);
+    g3PrevScore = response.score;
+
+
+    response = sendPassword(guess1);
+    s1 = response.score;
+    response = sendPassword(guess2);
+    s2 = response.score;
+    response = sendPassword(guess3);
+    s3 = response.score;
+
+
+
+
+    FileMap.insert({getPassword(guess1, base),  s1});
+    FileMap.insert({getPassword(guess2, base), s2});
+    FileMap.insert({getPassword(guess3, base), s3});
+
+
+
+    if (g3NextScore < s3 && g3PrevScore < s3)
+        return guess3;
+
+
+    // s1 is the max value
+    else if (s1 >= s3 && s1 >= s2)
+    {
+
+        return FindMax(length, base, response, g1 + 1, g3 - 1, FileMap);
+    }
+
+    //s2 is the max value
+    else if (s2 >= s3 && s2 >= s1)
+    {
+
+        return FindMax(length, base, response, g3 + 1, g2 - 1, FileMap);
+    }
+
+
+    //s3 is the max value
+    else
+    {
+
+
+        if (s1 >= s2)
+            return FindMax(length, base, response, g3 - 1, g1 + 1, FileMap);
+
+        else
+            return FindMax(length, base, response, g3 + 1, g2 - 1, FileMap);
+    }
 
 }
 
 
 char Cracker::getNextChar(char some_char, double base)
 {
-        map<char, int> CharacterMap;
-	map<char,int>::iterator cit;
+    map<char, int> CharacterMap;
+    map<char,int>::iterator cit;
 
-	CharacterMap = getMap();
+    CharacterMap = getMap();
 
 
-	cit = CharacterMap.find(some_char);
-	if (cit->second == base - 1)
-	{
-		return 'a';
-	}
-	else
-	{
-		cit++;
-		return cit->first;
-	}
+    cit = CharacterMap.find(some_char);
+    if (cit->second == base - 1)
+    {
+        return 'a';
+    }
+    else
+    {
+        cit++;
+        return cit->first;
+    }
 
 }
 
 char Cracker::getPrevChar(char some_char, double base)
 {
-        map<char, int> CharacterMap;
-	map<char,int>::iterator cit;
-	int i;
+    map<char, int> CharacterMap;
+    map<char,int>::iterator cit;
+    int i;
 
-	CharacterMap = getMap();
+    CharacterMap = getMap();
 
 
-	cit = CharacterMap.find(some_char);
-	if (cit->second == 0)
-	{
-		for (i = 0; i < base; i++)
-			cit++;
+    cit = CharacterMap.find(some_char);
+    if (cit->second == 0)
+    {
+        for (i = 0; i < base; i++)
+            cit++;
 
-		return cit->first;
-	}
-	else
-	{
-		cit--;
-		return cit->first;
-	}
+        return cit->first;
+    }
+    else
+    {
+        cit--;
+        return cit->first;
+    }
 
 }
 
 map<char,int> Cracker::getMap()
 {
-	static map<char, int> CharacterMap;
-	int i;
-	char nextChar = 'a';
+    static map<char, int> CharacterMap;
+    int i;
+    char nextChar = 'a';
 
     if (CharacterMap.empty())
     {
@@ -474,6 +698,6 @@ map<char,int> Cracker::getMap()
         CharacterMap.insert({ '[', 73 });
     }
 
-	return CharacterMap;
+    return CharacterMap;
 
 }

@@ -17,6 +17,8 @@
 
 using namespace std;
 
+#define PI 3.141592654
+
 /***************************************************************************//**
  * @class Vault
  *
@@ -51,6 +53,7 @@ private:
 
     string getGuess(long double value, unsigned int length, double base);
     long long int getInteger(string guess, double base);
+    long long int  CalculateLength(long double pass, long double min, long double scalar, long 		double length, long double intvalue, long double constant, long double period);
 };
 
 #endif

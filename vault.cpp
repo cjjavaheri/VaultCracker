@@ -59,7 +59,7 @@ void Vault::setPW()
         password += ch;
     }
 
-	password = "zzz";
+    password = "qr@";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -72,21 +72,21 @@ void Vault::setPW()
  ******************************************************************************/
 Response Vault::sendPassword(string guess)
 {
-
-    unsigned int i;
+    long double number_minimums = 2.0;
     // bool correct = false;
     long double score = 0.0;
     long double pass;
-    long double c;
-    long double scalar = 2 * 3.141592654;
-    long double min = 3 * 3.141592654 / 2;
-    long double length;
+    long double scalar = 2.0 * PI * number_minimums;
+    long double constant = scalar / pow(74, 3);
+    long double min = 3 * PI / 2;
+    long double length = 0;
     long double intvalue;
+    long double period = pow(74, 3) ;
     string temp = "";
     Response response(WAITING, 100.0);
     cout << "Vault::sendPassword(" << guess << ")\n";
-    
-    
+
+
 
 // Here is where you will take the password guess and compare it with the
 // password that you created.  If the guess is correct then you are required
@@ -102,60 +102,80 @@ Response Vault::sendPassword(string guess)
 // how easy or hard it will be to guess your password.
 
 
-
-								/*
+							/*
+    
     long long int psum=0;
     long long int gsum=0;
 
     for (i = 0; i < password.length(); i++)
-        psum=psum*74 + validChars.find(password[i]) + 1;
+    psum=psum*74 + validChars.find(password[i]) + 1;
     for (i = 0; i < guess.length(); i++)
-        gsum = gsum*74 + validChars.find(guess[i]) + 1;
+    gsum = gsum*74 + validChars.find(guess[i]) + 1;
 
     score=abs(gsum-psum);
     //sending score and the guess to a file plot.data for graphing
 
     if (score == 0)
     {
-        response = Response(ACCEPTED, score);
-        cout<<"\nscore is "<<score<<endl;
+    response = Response(ACCEPTED, score);
+    cout<<"\nscore is "<<score<<endl;
     }
     else
-        response = Response(WAITING, score);
+    response = Response(WAITING, score);
 
-				*/
-	pass = getPassword(guess, 74);
+    						*/
 
-	c = 2 * 3.141592654 / pow(74, 3);
-	cout<<endl<<pass<<" ";
-	
-	pass = pass * scalar;
 
-	min = min / c;
+					
+    pass = getPassword(guess, 74);
 
-	intvalue = getInteger(password, 74);
+    cout<<endl<<pass<<" ";
 
-	length = min - intvalue;
+    pass = pass * scalar;
 
-	// Shift left
-	if (length > 0)
-		score = (long double)sinl((long double)(pass + abs(length * c) ));
-	// Shift right
-	else
-		score = (long double)sinl((long double)(pass - abs(length * c) ));
-	cout<<score<<endl;
-	if(guess==password)
-        {return Response(ACCEPTED, score);}
-        
-	response = Response(WAITING, score);
-	
+    intvalue = getInteger(password, 74);
+
+    length = CalculateLength(pass, min, scalar, length, intvalue, constant, period);
+
+    // Shift left
+    if (length > 0)
+        score = (long double)sinl((long double)(pass + abs(length * constant) ));
+    // Shift right
+    else
+        score = (long double)sinl((long double)(pass - abs(length * constant) ));
+    cout<<score<<endl;
+    if(guess==password)
+    {
+        return Response(ACCEPTED, score);
+    }
+
+    response = Response(WAITING, score);
+
+						
+
 
     return response;
 }
 
 
 
+long long int  Vault::CalculateLength(long double pass, long double min, long double scalar, long double length, long double intvalue, long double constant, long double period)
+{
 
+    min = min / constant;
+
+    length = min - intvalue;
+
+
+    if (abs(length) <= period)
+        return length;
+    else
+    {
+
+        return CalculateLength(pass, min + period, scalar, length, intvalue, constant, period);
+
+    }
+}
 
 
 
@@ -293,7 +313,7 @@ long double Vault::getPassword(string guess, double base)
         cit = CharacterMap.find(guess[i]);
         sum += (cit->second * pow(base, j));
     }
-    
+
     //cout<<endl<<sum<<endl;
     //(long double)(sum)=((long double)(sum))/((long double)(pow(74,4)));
     //cout<<endl<<sum<<endl;
