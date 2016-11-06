@@ -47,8 +47,8 @@ void Cracker::getCracking()
     response=sendPassword(truePassword);
 
 
-  /*  // Brute force the password.
-    if (max<5)
+   // Brute force the password.
+  /*  if (max<5)
     {
         truePassword = bruteForce(min, max, base, FileMap, response);
         cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
@@ -314,117 +314,53 @@ long long int Cracker::getPassword(string guess, double base)
 string Cracker::binarySearch(int length, double base, Response &response, long long int g1,
                              long long int  g2, map<long long int, long double> &FileMap, long long int start, long long int end)
 {
-
     string nextMax = "";
     string nextMin = "";
     string prevMax = "";
     string prevMin = "";
     string guess = "";
-    long long int initialMin;
-    long long int initialMax;
+    long long int initialMin = 0;
+    long long int initialMax = 0;
     long long int temp;
     string min;
+    string firstMin;
+    string secondMin;
     string max;
+    bool found = false;
+    long double scalar =  2.0;
+    long double prevScore;
+    string g3Next;
+    string g3Prev;
+    long long int g3NextScore;
+    long long int g3PrevScore;
+    long long int g3;
+    long long int g3Score;
+    long double value = g2;
 
 
-    min = FindMin(length, base, response, g1, g2, FileMap);
+	/*firstMin = FindMin(length, base, response, ceil((g1 + g2) / 2.0), g2, FileMap);
+	response = sendPassword(firstMin);
+	if (response.rc == ACCEPTED)
+		return min;
 
-    if (response.rc == ACCEPTED)
-        return min;
+	secondMin = FindMin(length, base, response, g1, ceil((g1 + g2) / 2.0), FileMap);
+	response = sendPassword(secondMin);
+	if (response.rc == ACCEPTED)
+		return min;
+*/
+	firstMin = FindMin(length, base, response, 0, pow(base, length) - 1 , FileMap);
 
-    max = FindMax(length, base, response, g1, g2, FileMap);
+	/*guess = binarySearch(length, base, response, g1, ceil((g1 + g2) / 2.0), FileMap, g1, g2);
+	if (response.rc == ACCEPTED)
+		return min;
 
-	if (max == "")
-	return max;
+	guess = binarySearch(length, base, response, ceil((g1 + g2)/ 2.0), g2, FileMap, g1, g2);
+	if (response.rc == ACCEPTED)
+		return min;
+	*/
 
-
-    initialMin = getPassword(min, base);
-    initialMax = getPassword(max, base);
-
-
-    if (g1 == initialMin )
-	return getGuess(g1, length, base);
-
-    else if (g2 == initialMin )
-	return getGuess(g2, length, base);
-
-
-    if (initialMax > initialMin)
-    {
-        guess = binarySearch(length, base, response, initialMin, initialMax, FileMap, start, end);
-        if (response.rc == ACCEPTED)
-            return guess;
-
-	else if (guess == getGuess(initialMin, length, base))
-	{
-		guess = binarySearch(length, base, response, ceil ((initialMin + initialMax) / 2.0), 					initialMax, FileMap, start, end);
-
-		if (response.rc == ACCEPTED)
-			return guess;
-	}
-
-        guess = binarySearch(length, base, response, start, initialMin, FileMap, start, end);
-        if (response.rc == ACCEPTED)
-            return guess;
-
-	else if (guess == getGuess(initialMin, length, base))
-	{
-		guess = binarySearch(length, base, response, ceil((start + end) / 2.0), initialMin, 				FileMap, start, end);
-
-		if (response.rc == ACCEPTED)
-			return guess;
-	}
-
-        guess = binarySearch(length, base, response, initialMax, end, FileMap, start, end);
-        if (response.rc == ACCEPTED)
-            return guess;
-
-
-    }
-
-    else if (initialMin > initialMax)
-    {
-        guess = binarySearch(length, base, response, initialMax, initialMin , FileMap, start, end);
-        if (response.rc == ACCEPTED)
-            return guess;
-
-	else if (guess == getGuess(initialMin, length, base))
-	{
-		guess = binarySearch(length, base, response,  ((initialMin + 				initialMax) / 2.0), initialMin,  FileMap, start, end);
-
-		if (response.rc == ACCEPTED)
-			return guess;
-	}
-
-        guess = binarySearch(length, base, response, start , initialMax , FileMap, start, end);
-        if (response.rc == ACCEPTED)
-            return guess;
-
-
-        guess = binarySearch(length, base, response, initialMin , end , FileMap, start, end);
-        if (response.rc == ACCEPTED)
-            return guess;
-
-	else if (guess == getGuess(initialMin, length, base))
-	{
-		guess = binarySearch(length, base, response, ceil((initialMin + end) / 2.0), end, 				FileMap, start, end);
-
-	
-		if (response.rc == ACCEPTED)
-			return guess;
-	}
-
-	
-
-    }
-
-    else
-    {
-        guess = initialMax;
-        return guess;
-    }
-
-
+	return firstMin;
+  
 
 }
 
@@ -442,6 +378,14 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     long double s3;
     long double g3NextScore;
     long double g3PrevScore;
+    long double g1NextScore;
+    long double g1PrevScore;
+    long double g2NextScore;
+    long double g2PrevScore;
+    string g1Next;
+    string g1Prev;
+    string g2Next;
+    string g2Prev;
     string g3Next;
     string g3Prev;
 
@@ -451,16 +395,24 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     guess3 = getGuess(g3, length, base);
 
 
+    g1Next = getGuess(g1 + 1, length, base);
+    g1Prev = getGuess(g1 - 1, length, base);
+    g2Next = getGuess(g2 + 1, length, base);
+    g2Prev = getGuess(g2 - 1, length, base);
     g3Next = getGuess(g3 + 1, length, base);
     g3Prev = getGuess(g3 - 1, length, base);
 
-    if (g3 + 1 == pow(base, length))
-        return empty;
 
-    if (g3 - 1 < 0)
-        return empty;
+    response = sendPassword(g1Next);
+    g1NextScore = response.score;
+    response = sendPassword(g1Prev);
+    g1PrevScore = response.score;
 
-
+    response = sendPassword(g2Next);
+    g2NextScore = response.score;
+    response = sendPassword(g2Prev);
+    g2PrevScore = response.score;
+     
     response = sendPassword(g3Next);
     g3NextScore = response.score;
     response = sendPassword(g3Prev);
@@ -487,14 +439,14 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     FileMap.insert({getPassword(guess3, base), s3});
 
 
-    if (g3 == pow(base, length) - 1)
-	return guess3;
 
     if (g3NextScore > s3 && g3PrevScore > s3)
         return guess3;
 
+    else if (g1 == g3 || g2 == g3)
+		return guess3;
 
-    // s1 is the min value
+	// s1 is the min value
     else if (s1 <= s3 && s1 <= s2)
     {
 

@@ -59,7 +59,7 @@ void Vault::setPW()
         password += ch;
     }
 
-    password = "mmm";
+    password = "ZZZ";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -72,7 +72,7 @@ void Vault::setPW()
  ******************************************************************************/
 Response Vault::sendPassword(string guess)
 {
-    long double number_minimums = 2.0;
+    long double number_minimums = 4.0;
     // bool correct = false;
     long double score = 0.0;
     long double pass;
