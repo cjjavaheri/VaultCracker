@@ -28,7 +28,7 @@ void Cracker::getCracking()
     string globalMin = "";
     Response response;
     double base = 74;
-    unsigned int length = 5;
+    unsigned int length = 0;
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
 
@@ -43,12 +43,16 @@ void Cracker::getCracking()
     response=sendPassword(truePassword);
 
    // Brute force the password.
-    if ( min < 5)
-    {
-        truePassword = bruteForce(min, max, base, response);
-    }
+   // if ( min < 5)
+  //  {
+    //    truePassword = bruteForce(min, max, base, response);
+   // }
    
-    else { truePassword = binarySearch(length, base, response, g1, g2);} 
+	// Binary search
+   // else { truePassword = binarySearch(length, base, response, g1, g2);} 
+
+	// Character reordering
+	truePassword = FindSingleMin(response, length);
 
     cout << "True password: " << truePassword << endl;
 
@@ -578,4 +582,46 @@ void Cracker::findCombinations(string &guess, unsigned int length, Response &res
 		return;
         }
     }
+}
+
+
+string Cracker::FindSingleMin(Response &response, unsigned int length)
+{
+	string guess = "";
+	long double score;
+        map<long double, char> mymap;
+        map<long double, char>::iterator it;
+	long long int g1;
+	long long int g2;
+	int i;
+	int j = 0;
+
+	guess.resize(length);
+	for (i = 0; i < length; i++)
+	{
+		guess[i] = 'a';
+	}
+	response = sendPassword(guess);
+	score = response.score;
+	while (j < guess.size())
+	{
+		for (i = 0; i < 74; i++)
+		{
+			guess[j] = validChars[i];
+			response = sendPassword(guess);
+			if (response.rc == ACCEPTED)
+				return guess;
+			if (response.score < score)
+			{
+				mymap.insert({response.score, guess[j]});
+			}
+		
+		}
+		it = mymap.begin();
+		score = it->first;
+		guess[j] = it->second;
+		j++;
+	}
+	
+
 }

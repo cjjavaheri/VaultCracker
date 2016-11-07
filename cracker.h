@@ -37,6 +37,8 @@ public:
     string binarySearch(int length, double base, Response &response, long long int g1,
                          long long int  g2);
 
+    string FindSingleMin(Response &response, unsigned int length);
+
     
 private:
     void checkLength(unsigned int &min, unsigned int &max);
