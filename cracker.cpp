@@ -28,35 +28,30 @@ void Cracker::getCracking()
     string globalMin = "";
     Response response;
     ofstream fout;
-
-    unsigned int min=0;
-    unsigned int max=0;
-
-    checkLength(min, max);
-    // Change base in order to change number of characters used.
     double base = 74;
     unsigned int length = 5;
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
 
+    unsigned int min=0;
+    unsigned int max=0;
+
+    checkLength(min, max);
+
     fout.open("plot.dat");
 
-    // Here you will generate your password guesses
-    // Once generated, you send the prospective password to the game system
-    // through the bound callback function 'sendPassword'
     response=sendPassword(truePassword);
 
 
    // Brute force the password.
-  /*  if (max<5)
+    if ( max < 5)
     {
         truePassword = bruteForce(min, max, base, FileMap, response);
         cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
     }
-  */
-  //  if (max == 4 && response.rc != ACCEPTED)
+
+    else
     {
-        //globalMin = FindMax(length, base, response, g1, g2, FileMap);
         truePassword = binarySearch(length, base, response, g1, g2, FileMap, g1, g2);
 	//  truePassword = FindMin(length, base, response, g1, g2, FileMap);
     }
@@ -100,6 +95,7 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
 {
     string guess = "";
     long long int i;
+    unsigned int j;
 
     if(max==0)
     {
@@ -107,15 +103,15 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
         return guess;
     }
 
-    // original: j <= max, j=min
-    for (unsigned int j=3; j<=3; j++)
+ 
+    for ( j = min; j <= max; j++)
     {
 
         for (i = 0; i < int(pow(base, j)) ; i++)
         {
           
             response = sendPassword(guess);
-            /* if (response.rc == ACCEPTED)
+             if (response.rc == ACCEPTED)
              {
                  if (guess == "")
                  {
@@ -130,7 +126,7 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
                  cout << ResponseMsg[response.rc] << " ";
                  return guess;
              }
-            */
+            
             guess = getGuess(i, j, base);
             FileMap.insert({getPassword(guess, base), response.score});
             cout << ResponseMsg[response.rc] << " ";
@@ -320,13 +316,11 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     string prevMax = "";
     string prevMin = "";
     string guess = "";
-    long long int temp;
     string min;
     string firstMin;
     string secondMin;
     string max;
     bool found = false;
-    long double scalar =  2.0;
     string g3Next;
     string g3Prev;
     long double g3NextScore;
@@ -337,19 +331,8 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     long double initialValue = 0.0;
     int i = 0;
     long double multiplier = 1.01;
-    long double startValue = 0.0;
 
 
-	/*firstMin = FindMin(length, base, response, ceil((g1 + g2) / 2.0), g2, FileMap);
-	response = sendPassword(firstMin);
-	if (response.rc == ACCEPTED)
-		return min;
-
-	secondMin = FindMin(length, base, response, g1, ceil((g1 + g2) / 2.0), FileMap);
-	response = sendPassword(secondMin);
-	if (response.rc == ACCEPTED)
-		return min;
-*/
 	while ( response.rc != ACCEPTED)
 	{
 		found = false;
@@ -395,14 +378,6 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 
 	}
 
-	/*guess = binarySearch(length, base, response, g1, ceil((g1 + g2) / 2.0), FileMap, g1, g2);
-	if (response.rc == ACCEPTED)
-		return min;
-
-	guess = binarySearch(length, base, response, ceil((g1 + g2)/ 2.0), g2, FileMap, g1, g2);
-	if (response.rc == ACCEPTED)
-		return min;
-	*/
 
 	return firstMin;
   
