@@ -39,7 +39,7 @@ void Cracker::getCracking()
     checkLength(min, max);
 
     if (min == max)
-	length = min;
+	length = max;
 
     fout.open("plot.dat");
 
@@ -47,17 +47,13 @@ void Cracker::getCracking()
 
 
    // Brute force the password.
-    if ( max < 5)
+    if ( min < 5)
     {
         truePassword = bruteForce(min, max, base, FileMap, response);
       //  cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
     }
 
-    else
-    {
         truePassword = binarySearch(length, base, response, g1, g2, FileMap);
-	//  truePassword = FindMin(length, base, response, g1, g2, FileMap);
-    }
 
 
 
