@@ -52,7 +52,7 @@ void Cracker::getCracking()
 
     else
     {
-        truePassword = binarySearch(length, base, response, g1, g2, FileMap, g1, g2);
+        truePassword = binarySearch(length, base, response, g1, g2, FileMap);
 	//  truePassword = FindMin(length, base, response, g1, g2, FileMap);
     }
 
@@ -193,57 +193,21 @@ void Cracker::checkLength(unsigned int &min, unsigned int &max)
 
 string Cracker::getGuess(long double value, unsigned int length, double base)
 {
-    static map<int, char> CharacterMap;
+    static map<int, char> IntegerMap;
     map<int, char>::iterator cit;
-    int i;
     unsigned int digit;
-    static char nextChar = 'a';
     string guess = "";
     unsigned int counter;
 
-    if (CharacterMap.empty())
-    {
-        for (i = 0; i < 26; i++)
-        {
-            CharacterMap.insert({ i, nextChar });
-            nextChar += 1;
-        }
-        nextChar = 'A';
-        for (i = 26; i < 52; i++)
-        {
-            CharacterMap.insert({ i, nextChar });
-            nextChar += 1;
-        }
-        CharacterMap.insert({ 52, '!' });
-        CharacterMap.insert({ 53, '@' });
-        CharacterMap.insert({ 54, '#' });
-        CharacterMap.insert({ 55, '$' });
-        CharacterMap.insert({ 56, '%' });
-        CharacterMap.insert({ 57, '^' });
-        CharacterMap.insert({ 58, '&' });
-        CharacterMap.insert({ 59, '*' });
-        CharacterMap.insert({ 60, '(' });
-        CharacterMap.insert({ 61, ')' });
-        CharacterMap.insert({ 62, '_' });
-        CharacterMap.insert({ 63, '+' });
-        CharacterMap.insert({ 64, '=' });
-        CharacterMap.insert({ 65, ':' });
-        CharacterMap.insert({ 66, ';' });
-        CharacterMap.insert({ 67, '~' });
-        CharacterMap.insert({ 68, '?' });
-        CharacterMap.insert({ 69, '.' });
-        CharacterMap.insert({ 70, '<' });
-        CharacterMap.insert({ 71, '>' });
-        CharacterMap.insert({ 72, ']' });
-        CharacterMap.insert({ 73, '[' });
-    }
+    if (IntegerMap.empty())
+        IntegerMap = getIntegerMap();
 
     counter = 1;
     guess.resize(length);
     while (counter < length + 1)
     {
         digit = int(value / pow(base, length - counter));
-        cit = CharacterMap.find(digit);
+        cit = IntegerMap.find(digit);
         guess[guess.size() - length + (counter - 1)] = cit->second;
         value = (value / pow(base, length - counter) - digit) * pow(base, length - counter);
         value = nearbyint(value);
@@ -261,43 +225,8 @@ long long int Cracker::getPassword(string guess, double base)
     long long int sum = 0;
     static map<char, int> CharacterMap;
     map<char, int>::iterator cit;
-    char nextChar = 'a';
     if (CharacterMap.empty())
-    {
-        for (i = 0; i < 26; i++)
-        {
-            CharacterMap.insert({ nextChar, i });
-            nextChar += 1;
-        }
-        nextChar = 'A';
-        for (i = 26; i < 52; i++)
-        {
-            CharacterMap.insert({ nextChar, i });
-            nextChar += 1;
-        }
-        CharacterMap.insert({ '!', 52 });
-        CharacterMap.insert({ '@', 53 });
-        CharacterMap.insert({ '#', 54 });
-        CharacterMap.insert({ '$', 55 });
-        CharacterMap.insert({ '%', 56 });
-        CharacterMap.insert({ '^', 57 });
-        CharacterMap.insert({ '&', 58 });
-        CharacterMap.insert({ '*', 59 });
-        CharacterMap.insert({ '(', 60 });
-        CharacterMap.insert({ ')', 61 });
-        CharacterMap.insert({ '_', 62 });
-        CharacterMap.insert({ '+', 63 });
-        CharacterMap.insert({ '=', 64 });
-        CharacterMap.insert({ ':', 65 });
-        CharacterMap.insert({ ';', 66 });
-        CharacterMap.insert({ '~', 67 });
-        CharacterMap.insert({ '?', 68 });
-        CharacterMap.insert({ '.', 69 });
-        CharacterMap.insert({ '<', 70 });
-        CharacterMap.insert({ '>', 71 });
-        CharacterMap.insert({ ']', 72 });
-        CharacterMap.insert({ '[', 73 });
-    }
+	CharacterMap = getCharacterMap();
 
     for (i = guess.length() - 1; i > -1; i--, j++)
     {
@@ -309,28 +238,20 @@ long long int Cracker::getPassword(string guess, double base)
 }
 
 string Cracker::binarySearch(int length, double base, Response &response, long long int g1,
-                             long long int  g2, map<long long int, long double> &FileMap, long long int start, long long int end)
+                             long long int  g2, map<long long int, long double> &FileMap)
 {
-    string nextMax = "";
-    string nextMin = "";
-    string prevMax = "";
-    string prevMin = "";
-    string guess = "";
     string min;
     string firstMin;
-    string secondMin;
-    string max;
-    bool found = false;
     string g3Next;
     string g3Prev;
+    bool found = false;
+    long long int g3;
     long double g3NextScore;
     long double g3PrevScore;
-    long long int g3;
     long double g3Score;
     long double value = 1.0;
     long double initialValue = 0.0;
-    int i = 0;
-    long double multiplier = 1.01;
+    long double multiplier = 1.50;
 
 
 	while ( response.rc != ACCEPTED)
@@ -366,7 +287,7 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 			if (initialValue > pow(base, length) - 1)
 			{
 				found = true;
-				multiplier = multiplier * 2.0;
+				multiplier = multiplier - .05;
 				value = 1;
 				initialValue = 1.0;
 				
@@ -374,7 +295,6 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 
 		}
 
-		i++;
 
 	}
 
@@ -568,53 +488,8 @@ string Cracker::FindMax(int length, double base, Response &response, long long i
 }
 
 
-char Cracker::getNextChar(char some_char, double base)
-{
-    map<char, int> CharacterMap;
-    map<char,int>::iterator cit;
 
-    CharacterMap = getMap();
-
-
-    cit = CharacterMap.find(some_char);
-    if (cit->second == base - 1)
-    {
-        return 'a';
-    }
-    else
-    {
-        cit++;
-        return cit->first;
-    }
-
-}
-
-char Cracker::getPrevChar(char some_char, double base)
-{
-    map<char, int> CharacterMap;
-    map<char,int>::iterator cit;
-    int i;
-
-    CharacterMap = getMap();
-
-
-    cit = CharacterMap.find(some_char);
-    if (cit->second == 0)
-    {
-        for (i = 0; i < base; i++)
-            cit++;
-
-        return cit->first;
-    }
-    else
-    {
-        cit--;
-        return cit->first;
-    }
-
-}
-
-map<char,int> Cracker::getMap()
+map<char,int> Cracker::getCharacterMap()
 {
     static map<char, int> CharacterMap;
     int i;
@@ -659,4 +534,52 @@ map<char,int> Cracker::getMap()
 
     return CharacterMap;
 
+}
+
+
+map<int, char> Cracker::getIntegerMap()
+{
+
+    static map<int, char> IntegerMap;
+    map<int, char>::iterator cit;
+    int i;
+    static char nextChar = 'a';
+if (IntegerMap.empty())
+    {
+        for (i = 0; i < 26; i++)
+        {
+            IntegerMap.insert({ i, nextChar });
+            nextChar += 1;
+        }
+        nextChar = 'A';
+        for (i = 26; i < 52; i++)
+        {
+            IntegerMap.insert({ i, nextChar });
+            nextChar += 1;
+        }
+        IntegerMap.insert({ 52, '!' });
+        IntegerMap.insert({ 53, '@' });
+        IntegerMap.insert({ 54, '#' });
+        IntegerMap.insert({ 55, '$' });
+        IntegerMap.insert({ 56, '%' });
+        IntegerMap.insert({ 57, '^' });
+        IntegerMap.insert({ 58, '&' });
+        IntegerMap.insert({ 59, '*' });
+        IntegerMap.insert({ 60, '(' });
+        IntegerMap.insert({ 61, ')' });
+        IntegerMap.insert({ 62, '_' });
+        IntegerMap.insert({ 63, '+' });
+        IntegerMap.insert({ 64, '=' });
+        IntegerMap.insert({ 65, ':' });
+        IntegerMap.insert({ 66, ';' });
+        IntegerMap.insert({ 67, '~' });
+        IntegerMap.insert({ 68, '?' });
+        IntegerMap.insert({ 69, '.' });
+        IntegerMap.insert({ 70, '<' });
+        IntegerMap.insert({ 71, '>' });
+        IntegerMap.insert({ 72, ']' });
+        IntegerMap.insert({ 73, '[' });
+    }
+
+	return IntegerMap;
 }

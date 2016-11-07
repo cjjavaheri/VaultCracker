@@ -35,7 +35,7 @@ public:
     void getCracking(); /*!< Function to start the intrusion attempt */
     string bruteForce( unsigned int min, unsigned int max, double base, map<long long int, long double> &FileMap, Response 		&response);
     string binarySearch(int length, double base, Response &response, long long int g1,
-                         long long int  g2, map<long long int, long double> &FileMap, long long int start, long long int end);
+                         long long int  g2, map<long long int, long double> &FileMap);
 
     
 private:
@@ -43,7 +43,8 @@ private:
     string getGuess(long double value, unsigned int length, double base);
     long long int getPassword(string guess, double base);
     char getNextChar(char some_char, double base);
-    map<char, int> getMap();
+    map<char, int> getCharacterMap();
+    map<int, char> getIntegerMap();
     char getPrevChar(char some_char, double base);
     string FindMax(int length, double base, Response &response, long long int g1,
                              long long int  g2, map<long long int, long double> &FileMap);
