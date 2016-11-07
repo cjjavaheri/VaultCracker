@@ -35,7 +35,7 @@ void Cracker::getCracking()
     checkLength(min, max);
     // Change base in order to change number of characters used.
     double base = 74;
-    unsigned int length = 4;
+    unsigned int length = 5;
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
 
@@ -58,6 +58,7 @@ void Cracker::getCracking()
     {
         //globalMin = FindMax(length, base, response, g1, g2, FileMap);
         truePassword = binarySearch(length, base, response, g1, g2, FileMap, g1, g2);
+	//  truePassword = FindMin(length, base, response, g1, g2, FileMap);
     }
 
 
@@ -335,7 +336,7 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     long double value = 1.0;
     long double initialValue = 0.0;
     int i = 0;
-    long double multiplier = 3;
+    long double multiplier = 1.01;
     long double startValue = 0.0;
 
 
@@ -382,9 +383,9 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 			if (initialValue > pow(base, length) - 1)
 			{
 				found = true;
-				multiplier = multiplier / 2.0;
+				multiplier = multiplier * 2.0;
 				value = 1;
-				initialValue = 0.0;
+				initialValue = 1.0;
 				
 			}
 
@@ -428,8 +429,12 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     g3Next = getGuess(g3 + 1, length, base);
     g3Prev = getGuess(g3 - 1, length, base);
     response = sendPassword(g3Next);
+    if (response.rc == ACCEPTED)
+	return g3Next;
     g3NextScore = response.score;
     response = sendPassword(g3Prev);
+    if (response.rc == ACCEPTED)
+	return g3Prev;
     g3PrevScore = response.score;
 
 
@@ -440,10 +445,16 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
 
 
     response = sendPassword(guess1);
+    if (response.rc == ACCEPTED)
+	return guess1;
     s1 = response.score;
     response = sendPassword(guess2);
+    if (response.rc == ACCEPTED)
+	return guess2;
     s2 = response.score;
     response = sendPassword(guess3);
+    if (response.rc == ACCEPTED)
+	return guess3;
     s3 = response.score;
 
 
@@ -454,9 +465,11 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
 
    */
 
+	//If item is located at a minimum return the item
     if (g3NextScore > s3 && g3PrevScore > s3)
         	return guess3;
 
+	// If item is not found in search just return
     else if (g1 == g3 || g2 == g3)
 		return guess3;
 
