@@ -53,6 +53,8 @@ private:
     string FindMin(int length, double base, Response &response, long long int g1,
                             long long int g2);
 
+    void findCombinations(string &guess, unsigned int length, Response &response);
+
 
 };
 #endif

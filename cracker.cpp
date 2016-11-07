@@ -27,7 +27,6 @@ void Cracker::getCracking()
     //map<long long int, long double>::iterator fit;
     string globalMin = "";
     Response response;
-    ofstream fout;
     double base = 74;
     unsigned int length = 5;
     long long int g1 = 0;
@@ -41,10 +40,7 @@ void Cracker::getCracking()
     if (min == max)
 	length = max;
 
-    fout.open("plot.dat");
-
     response=sendPassword(truePassword);
-
 
    // Brute force the password.
     if ( min < 5)
@@ -52,7 +48,6 @@ void Cracker::getCracking()
         truePassword = bruteForce(min, max, base, response);
     }
    
-
     else { truePassword = binarySearch(length, base, response, g1, g2);} 
 
     cout << "True password: " << truePassword << endl;
@@ -77,27 +72,20 @@ void Cracker::getCracking()
 
 string Cracker::bruteForce(unsigned int min, unsigned int max, double base, Response &response)
 {
-    string guess = "";
-    long long int i;
-    unsigned int j;
-    
-    
-    for ( j = min; j <= max; j++)
-    {
+    string guess = "aaaa";
+    unsigned int i;
 
-        for (i = 0; i < int(pow(base, j)); i++)
-        {
-          
-            response = sendPassword(guess);
-             if (response.rc == ACCEPTED)
-             {
-                 return guess;
-             }
-            guess = getGuess(i, j, base);
-	    
-        }
-    }
-    return guess;
+	for (i = 4; i >= min; i--)
+	{
+		 findCombinations(guess, guess.size(), response);
+    	 	if (response.rc == ACCEPTED)
+			return guess;
+		else
+			guess.resize(guess.size() - 1);
+
+	}
+
+	return guess;
 
 }
 
@@ -565,4 +553,29 @@ if (IntegerMap.empty())
     }
 
 	return IntegerMap;
+}
+
+
+void Cracker::findCombinations(string &guess, unsigned int length, Response &response)
+{
+    if (length == 0)
+        return ;
+ 
+    else
+    {
+        for (int i = 0; i < 74; i++)
+        {
+	    response = sendPassword(guess);
+	    if (response.rc == ACCEPTED)
+		return;
+            guess[length - 1] = validChars[i];
+	    response = sendPassword(guess);
+	    if( response.rc == ACCEPTED)
+		return;
+            findCombinations(guess, length - 1, response);
+	   response = sendPassword(guess);
+	    if (response.rc == ACCEPTED)
+		return;
+        }
+    }
 }
