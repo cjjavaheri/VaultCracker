@@ -347,7 +347,7 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 	if (response.rc == ACCEPTED)
 		return min;
 */
-	while (i < 4)
+	while ( response.rc != ACCEPTED)
 	{
 		found = false;
 		while (!found)
@@ -359,10 +359,16 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 			g3Next = getGuess(g3 + 1, length, base);
 			g3Prev = getGuess(g3 - 1, length, base);
 			response = sendPassword(firstMin);
+			if (response.rc == ACCEPTED)
+				return firstMin;
 			g3Score = response.score;
 			response = sendPassword(g3Next);
+			if (response.rc == ACCEPTED)
+				return g3Next;
 			g3NextScore = response.score;
 			response = sendPassword(g3Prev);
+			if (response.rc == ACCEPTED)
+				return g3Prev;
 			g3PrevScore = response.score;
 			if (g3Score < g3NextScore && g3Score < g3PrevScore)
 			{
