@@ -319,8 +319,6 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     string prevMax = "";
     string prevMin = "";
     string guess = "";
-    long long int initialMin = 0;
-    long long int initialMax = 0;
     long long int temp;
     string min;
     string firstMin;
@@ -328,14 +326,15 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     string max;
     bool found = false;
     long double scalar =  2.0;
-    long double prevScore;
     string g3Next;
     string g3Prev;
-    long long int g3NextScore;
-    long long int g3PrevScore;
+    long double g3NextScore;
+    long double g3PrevScore;
     long long int g3;
-    long long int g3Score;
-    long double value = g2;
+    long double g3Score;
+    long double value = 1.0;
+    long double initialValue = 0.0;
+    int i = 0;
 
 
 	/*firstMin = FindMin(length, base, response, ceil((g1 + g2) / 2.0), g2, FileMap);
@@ -348,7 +347,34 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 	if (response.rc == ACCEPTED)
 		return min;
 */
-	firstMin = FindMin(length, base, response, 0, pow(base, length) - 1 , FileMap);
+	while (i < 4)
+	{
+		found = false;
+		while (!found)
+		{
+			firstMin = FindMin(length, base, response, initialValue,initialValue + value , 						FileMap);
+			initialValue = initialValue + value;
+			value *= 2;
+			g3 = getPassword(firstMin, base);
+			g3Next = getGuess(g3 + 1, length, base);
+			g3Prev = getGuess(g3 - 1, length, base);
+			response = sendPassword(firstMin);
+			g3Score = response.score;
+			response = sendPassword(g3Next);
+			g3NextScore = response.score;
+			response = sendPassword(g3Prev);
+			g3PrevScore = response.score;
+			if (g3Score < g3NextScore && g3Score < g3PrevScore)
+			{
+				found = true;
+				value = 1;
+				initialValue = g3;
+			}
+		}
+
+		i++;
+
+	}
 
 	/*guess = binarySearch(length, base, response, g1, ceil((g1 + g2) / 2.0), FileMap, g1, g2);
 	if (response.rc == ACCEPTED)
@@ -378,16 +404,15 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     long double s3;
     long double g3NextScore;
     long double g3PrevScore;
-    long double g1NextScore;
-    long double g1PrevScore;
-    long double g2NextScore;
-    long double g2PrevScore;
-    string g1Next;
-    string g1Prev;
-    string g2Next;
-    string g2Prev;
     string g3Next;
     string g3Prev;
+
+    g3Next = getGuess(g3 + 1, length, base);
+    g3Prev = getGuess(g3 - 1, length, base);
+    response = sendPassword(g3Next);
+    g3NextScore = response.score;
+    response = sendPassword(g3Prev);
+    g3PrevScore = response.score;
 
 
     guess1 = getGuess(g1, length, base);
@@ -395,41 +420,12 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     guess3 = getGuess(g3, length, base);
 
 
-    g1Next = getGuess(g1 + 1, length, base);
-    g1Prev = getGuess(g1 - 1, length, base);
-    g2Next = getGuess(g2 + 1, length, base);
-    g2Prev = getGuess(g2 - 1, length, base);
-    g3Next = getGuess(g3 + 1, length, base);
-    g3Prev = getGuess(g3 - 1, length, base);
-
-
-    response = sendPassword(g1Next);
-    g1NextScore = response.score;
-    response = sendPassword(g1Prev);
-    g1PrevScore = response.score;
-
-    response = sendPassword(g2Next);
-    g2NextScore = response.score;
-    response = sendPassword(g2Prev);
-    g2PrevScore = response.score;
-     
-    response = sendPassword(g3Next);
-    g3NextScore = response.score;
-    response = sendPassword(g3Prev);
-    g3PrevScore = response.score;
-
 
     response = sendPassword(guess1);
     s1 = response.score;
-    if (response.rc == ACCEPTED)
-	return guess1;
     response = sendPassword(guess2);
     s2 = response.score;
-    if (response.rc == ACCEPTED)
-	return guess2;
     response = sendPassword(guess3);
-    if (response.rc == ACCEPTED)
-	return guess3;
     s3 = response.score;
 
 
@@ -441,7 +437,7 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
 
 
     if (g3NextScore > s3 && g3PrevScore > s3)
-        return guess3;
+        	return guess3;
 
     else if (g1 == g3 || g2 == g3)
 		return guess3;
