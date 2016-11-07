@@ -254,7 +254,22 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     long double g3Score;
     long double value = 1.0;
     long double initialValue = 0.0;
-    long double multiplier = 1.50;
+    long double multiplier;
+
+    if (length <= 6)
+    {
+	multiplier = 1.50;
+    }
+
+    else if (length == 7)
+    {
+	multiplier = 1.01;
+    }
+
+    else
+    {
+	multiplier = 1.10;
+    }
 
 
 	while ( response.rc != ACCEPTED)
@@ -290,7 +305,18 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 			if (initialValue > pow(base, length) - 1)
 			{
 				found = true;
-				multiplier = multiplier - .05;
+				if (length <= 6)
+				{
+					multiplier = multiplier - .05;
+				}
+				else if (length == 7)
+				{
+					multiplier = multiplier - .15;
+				}
+				else
+				{
+					multiplier -= 0.02;
+				}
 				value = 1;
 				initialValue = 1.0;
 				
@@ -341,6 +367,7 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     guess3 = getGuess(g3, length, base);
 
 
+  //  cout << guess3 << endl;
 
     response = sendPassword(guess1);
     if (response.rc == ACCEPTED)
