@@ -59,7 +59,7 @@ void Vault::setPW()
         password += ch;
     }
 
-    password = "ZZZ";
+    password = "ZZZZ";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -72,7 +72,7 @@ void Vault::setPW()
  ******************************************************************************/
 Response Vault::sendPassword(string guess)
 {
-    long long int passwordLength = 3;
+    long long int passwordLength = 4;
     long double number_minimums = 1000.0;
     // bool correct = false;
     long double score = 0.0;
@@ -130,7 +130,7 @@ Response Vault::sendPassword(string guess)
 					
     pass = getPassword(guess, passwordLength, 74);
 
-    cout<<endl<<pass<<" ";
+    
 
     pass = pass * scalar;
 
@@ -144,7 +144,7 @@ Response Vault::sendPassword(string guess)
     // Shift right
     else
         score = (long double)sinl((long double)(pass - abs(length * constant) ));
-    cout<<score<<endl;
+
     if(guess==password)
     {
         return Response(ACCEPTED, score);

@@ -35,7 +35,7 @@ void Cracker::getCracking()
     checkLength(min, max);
     // Change base in order to change number of characters used.
     double base = 74;
-    unsigned int length = 3;
+    unsigned int length = 4;
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
 
@@ -54,7 +54,7 @@ void Cracker::getCracking()
         cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
     }
   */
-    if (max == 4 && response.rc != ACCEPTED)
+  //  if (max == 4 && response.rc != ACCEPTED)
     {
         //globalMin = FindMax(length, base, response, g1, g2, FileMap);
         truePassword = binarySearch(length, base, response, g1, g2, FileMap, g1, g2);
@@ -67,7 +67,7 @@ void Cracker::getCracking()
     fit = FileMap.begin();
     while (fit != FileMap.end())
     {
-        cout << fit->first << " " << fit->second << endl;
+      //  cout << fit->first << " " << fit->second << endl;
         fout << fit->first << " " <<  fit->second << endl;
         fit++;
     }
@@ -112,7 +112,7 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
 
         for (i = 0; i < int(pow(base, j)) ; i++)
         {
-            cout<<endl<<guess<<endl;
+          
             response = sendPassword(guess);
             /* if (response.rc == ACCEPTED)
              {
@@ -335,6 +335,8 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     long double value = 1.0;
     long double initialValue = 0.0;
     int i = 0;
+    long double multiplier = 3;
+    long double startValue = 0.0;
 
 
 	/*firstMin = FindMin(length, base, response, ceil((g1 + g2) / 2.0), g2, FileMap);
@@ -354,7 +356,7 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 		{
 			firstMin = FindMin(length, base, response, initialValue,initialValue + value , 						FileMap);
 			initialValue = initialValue + value;
-			value *= 2;
+			value *= multiplier;
 			g3 = getPassword(firstMin, base);
 			g3Next = getGuess(g3 + 1, length, base);
 			g3Prev = getGuess(g3 - 1, length, base);
@@ -376,6 +378,16 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 				value = 1;
 				initialValue = g3;
 			}
+
+			if (initialValue > pow(base, length) - 1)
+			{
+				found = true;
+				multiplier = multiplier / 2.0;
+				value = 1;
+				initialValue = 0.0;
+				
+			}
+
 		}
 
 		i++;
@@ -436,11 +448,11 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
 
 
 
-    FileMap.insert({getPassword(guess1, base),  s1});
+  /*  FileMap.insert({getPassword(guess1, base),  s1});
     FileMap.insert({getPassword(guess2, base), s2});
     FileMap.insert({getPassword(guess3, base), s3});
 
-
+   */
 
     if (g3NextScore > s3 && g3PrevScore > s3)
         	return guess3;
@@ -528,11 +540,11 @@ string Cracker::FindMax(int length, double base, Response &response, long long i
 
 
 
-    FileMap.insert({getPassword(guess1, base),  s1});
+ /*   FileMap.insert({getPassword(guess1, base),  s1});
     FileMap.insert({getPassword(guess2, base), s2});
     FileMap.insert({getPassword(guess3, base), s3});
 
-
+ */
 
     if (g3NextScore < s3 && g3PrevScore < s3)
         return guess3;
