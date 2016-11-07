@@ -38,6 +38,9 @@ void Cracker::getCracking()
 
     checkLength(min, max);
 
+    if (min == max)
+	length = min;
+
     fout.open("plot.dat");
 
     response=sendPassword(truePassword);
