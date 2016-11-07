@@ -59,7 +59,7 @@ void Vault::setPW()
         password += ch;
     }
 
-    password = "[[[";
+    password = "ZZZ";
     cout << "Generated a random password\n" << password << endl;
 }
 
@@ -72,16 +72,17 @@ void Vault::setPW()
  ******************************************************************************/
 Response Vault::sendPassword(string guess)
 {
+    long long int passwordLength = 3;
     long double number_minimums = 1000.0;
     // bool correct = false;
     long double score = 0.0;
     long double pass;
     long double scalar = 2.0 * PI * number_minimums;
-    long double constant = scalar / pow(74, 3);
+    long double constant = scalar / pow(74, passwordLength);
     long double min = 3 * PI / 2;
     long double length = 0;
     long double intvalue;
-    long double period = pow(74, 3) ;
+    long double period = pow(74, passwordLength) ;
     string temp = "";
     Response response(WAITING, 100.0);
     cout << "Vault::sendPassword(" << guess << ")\n";
@@ -127,7 +128,7 @@ Response Vault::sendPassword(string guess)
 
 
 					
-    pass = getPassword(guess, 74);
+    pass = getPassword(guess, passwordLength, 74);
 
     cout<<endl<<pass<<" ";
 
@@ -263,11 +264,11 @@ string Vault::getGuess(long double value, unsigned int length, double base)
 
 }
 
-long double Vault::getPassword(string guess, double base)
+long double Vault::getPassword(string guess, long long int passwordLength, double base)
 {
     long long int i;
     int j = 0;
-    long double sum = 0;
+    long long int sum = 0;
     static map<char, int> CharacterMap;
     map<char, int>::iterator cit;
     char nextChar = 'a';
@@ -317,7 +318,7 @@ long double Vault::getPassword(string guess, double base)
     //cout<<endl<<sum<<endl;
     //(long double)(sum)=((long double)(sum))/((long double)(pow(74,4)));
     //cout<<endl<<sum<<endl;
-    return (long double)(sum)/((long double)(pow(74,3)));
+    return (long double)(sum)/((long double)(pow(74,passwordLength)));
 }
 
 
