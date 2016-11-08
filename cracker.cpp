@@ -47,7 +47,7 @@ void Cracker::getCracking()
     if ( max < 5)
     {
         truePassword = bruteForce(min, max, base, FileMap, response);
-        cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
+      //  cout<<"\nafter true password "<<response.score<<" " <<truePassword<<"\n";
     }
 
     else
@@ -115,21 +115,21 @@ string Cracker::bruteForce(unsigned int min, unsigned int max, double base, map<
              {
                  if (guess == "")
                  {
-                     cout << "\nThere is no password\n";
+                   //  cout << "\nThere is no password\n";
                  }
                  else
                  {
-                     cout<<"\nreturns guess\n score is "<<response.score<<"\n";
+                  //   cout<<"\nreturns guess\n score is "<<response.score<<"\n";
                  }
                  FileMap.insert({getPassword(guess, base), response.score});
-                 cout<<"\nguess is "<<guess<<" " <<"response.score is "<<response.score<<"\n";
-                 cout << ResponseMsg[response.rc] << " ";
+                // cout<<"\nguess is "<<guess<<" " <<"response.score is "<<response.score<<"\n";
+               //  cout << ResponseMsg[response.rc] << " ";
                  return guess;
              }
             
             guess = getGuess(i, j, base);
             FileMap.insert({getPassword(guess, base), response.score});
-            cout << ResponseMsg[response.rc] << " ";
+//          cout << ResponseMsg[response.rc] << " ";
 
         }
     }

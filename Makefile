@@ -3,7 +3,7 @@ SOURCE = cracker.cpp \
          main.cpp \
          vault.cpp \
          baseVault.cpp \
-         baseCracker.cpp
+         baseCracker.cpp \
 
 OBJS = $(SOURCE:.cpp=.o)
 
@@ -18,7 +18,7 @@ CFLAGS = -Wall -O -std=c++11
 CXXFLAGS = $(CFLAGS)
 
 # Fill in special libraries needed here
-LIBS = -lglut -lGLU -lGL -lm -lpthread
+LIBS = -lglut -lGLU -lGL -lm -lpthread -Iinclude libVaults.a
 
 .PHONY: clean
 
