@@ -1,23 +1,23 @@
 /***************************************************************************//**
  * @file
  ******************************************************************************/
-#ifndef __LEVEL5A_H_
-#define __LEVEL5A_H_
+#ifndef __LEVEL5C_H_
+#define __LEVEL5C_H_
 #include <cmath>
 #include <ctime>
 #include <cstdlib>
 #include <iostream>
 #include <tuple>
 #include <thread>
+#include <vector>
+#include <algorithm>
 #include <unordered_map>
-#include <chrono>
-#include <thread>
 #include "baseVault.h"
 #include "response.h"
 
 using namespace std;
 
-namespace Level5a
+namespace Level5c
 {
 /***************************************************************************//**
  * @class Vault
@@ -31,6 +31,7 @@ class Vault : public BaseVault
    Range range;
    unsigned pwLen;
    string vChars;
+   vector<int> digits;
 
 public:
    /// Constructor
@@ -43,6 +44,7 @@ private:
    long double calculateScore(string);
    void setPW();
    void setRange(unsigned int, unsigned int);
+   void scrambleDigits();
 };
 }
 #endif

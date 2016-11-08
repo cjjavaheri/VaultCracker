@@ -12,9 +12,11 @@
 #include "level2.h"
 #include "level3.h"
 #include "level4a.h"
+#include "level4b.h"
 #include "level4c.h"
 #include "level5a.h"
 #include "level5b.h"
+#include "level5c.h"
 
 using namespace std;
 using namespace placeholders;
