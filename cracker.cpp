@@ -38,8 +38,6 @@ void Cracker::getCracking()
 
     checkLength(min, max);
 
-    cout << "Min: " << min << endl;
-    cout << "Max: " << max << endl;
 
     if (min == max)
         length = max;
@@ -282,7 +280,7 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
                 found = true;
                 if (length <= 6)
                 {
-                    multiplier = multiplier - .05;
+                    multiplier -= 0.05;
                 }
                 else if (length == 7)
                 {
@@ -290,7 +288,7 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
                 }
                 else
                 {
-                    multiplier -= 0.02;
+                    multiplier -=  0.02;
                 }
                 value = 1;
                 initialValue = 1.0;
@@ -620,8 +618,8 @@ void Cracker::findCombinations(string guess, int length, Response &response)
 
 list<char> Cracker::findOrdering(Response &response)
 {
-string guess = "aaaaaa";
-int i;
+string guess = "";
+unsigned int i;
 long double difference;
 map<char, long double> scores;
 map<char, long double>::iterator it;
@@ -635,6 +633,17 @@ list<char>::iterator orderingIt;
 long double pivotScore;
 long double differenceItScore;
 long double duplicatesItScore;
+unsigned int min = 0;
+unsigned int max = 0;
+
+checkLength(min, max);
+guess.resize(max);
+
+for (i = 0; i < guess.size(); i++)
+{
+	guess[i] = 'a';
+}
+
 for (i = 0; i < 74; i++)
 {
 	guess[guess.size() - 1] = validChars[i];
@@ -719,13 +728,13 @@ for (i = 0; i < 74; i++)
 	}
 
 	
-/*	cout << "The ordering is: " ;
+	cout << "The ordering is: " ;
 	orderingIt = ordering.begin();
 	while (orderingIt != ordering.end())
 	{
 		cout << *orderingIt;
 		orderingIt++;
 	}
-*/
+
 	return ordering;
 }
