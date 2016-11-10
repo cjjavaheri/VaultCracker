@@ -4,6 +4,7 @@
 #include <fstream>
 #include <map>
 #include <cmath>
+#include <list>
 
 string getGuess(double value, unsigned int length, double base);
 
@@ -45,7 +46,7 @@ void Cracker::getCracking()
 
     response=sendPassword(truePassword);
 
-    // Brute force the password.
+ /*   // Brute force the password.
      if ( min < 5)
      {
         bruteForce(min, max, base, response);
@@ -56,7 +57,8 @@ void Cracker::getCracking()
     {
        truePassword = binarySearch(length, base, response, g1, g2);
     }
-
+  */
+	findOrdering(response);
     // Character reordering
     //truePassword = FindSingleMin(response, length);
 
@@ -697,4 +699,139 @@ string Cracker::FindSingleMin(Response &response, unsigned int length)
     }
 
 
+}
+
+void Cracker::findOrdering(Response &response)
+{
+string guess = "aaaaaa";
+int i;
+long double difference;
+long double smallest = -1;
+map<char, long double> scores;
+map<char, long double>::iterator it;
+map<char, long double>::iterator compare;
+map<long double, char> scoreDifferences;
+map<long double, char> duplicates;
+map<long double, char>::iterator differenceIt;
+map<long double, char>::iterator duplicatesIt;
+list<char> ordering;
+list<char>::iterator orderingIt;
+long double pivotScore;
+long double differenceItScore;
+long double duplicatesItScore;
+long double startScore;
+long double endScore;
+long double secondScore;
+char smallestChar;
+int counter = 0;
+for (i = 0; i < 74; i++)
+{
+	guess[guess.size() - 1] = validChars[i];
+	response = sendPassword(guess);
+	scores.insert({guess[guess.size() - 1], response.score});
+}
+
+it = scores.begin();
+compare = it;
+for (i = 0; i < 74; i++)
+{
+	difference = abs(it->second - compare->second);
+	differenceIt = scoreDifferences.find(difference);
+
+	if (differenceIt == scoreDifferences.end())
+		scoreDifferences.insert({difference, compare->first});
+
+	else
+		duplicates.insert({difference, compare->first});
+	
+	compare++;
+}
+	cout << it->first << endl;
+	differenceIt = scoreDifferences.begin();
+	duplicatesIt = duplicates.begin();
+	ordering.push_back(differenceIt->second);
+	guess[guess.size() - 1] = differenceIt->second;
+	response = sendPassword(guess);
+	pivotScore = response.score;
+	differenceIt++;
+	while (differenceIt != scoreDifferences.end() && duplicatesIt != duplicates.end())
+	{
+		cout << "Difference: " <<  differenceIt->second << " " << differenceIt->first << endl;
+		cout << "Duplicate: " << duplicatesIt->second << " " << duplicatesIt->first << endl;
+		guess[guess.size() - 1] = differenceIt->second;
+		response = sendPassword(guess);
+		differenceItScore = response.score;
+		guess[guess.size() - 1] = duplicatesIt->second;
+		response = sendPassword(guess);
+		duplicatesItScore = response.score;
+		if (duplicatesItScore <= pivotScore && pivotScore <= differenceItScore)
+		{
+			ordering.push_front(duplicatesIt->second);
+			ordering.push_back(differenceIt->second);
+		}
+		else if (differenceItScore <= pivotScore && pivotScore <= duplicatesItScore)
+		{
+			ordering.push_front(differenceIt->second);
+			ordering.push_back(duplicatesIt->second);
+		}
+		else if (duplicatesItScore >= pivotScore && pivotScore >= differenceItScore)
+		{
+			ordering.push_front(duplicatesIt->second);
+			ordering.push_back(differenceIt->second);
+		}
+		else if (differenceItScore >= pivotScore && pivotScore >= duplicatesItScore)
+		{
+			ordering.push_front(differenceIt->second);
+			ordering.push_back(duplicatesIt->second);
+		}
+		// Case to consider for later
+	/*	else if (duplicatesItScore >= pivotScore && differenceItScore >= pivotScore)
+		{
+
+		}
+	*/
+		differenceIt++;
+		duplicatesIt++;
+	}
+	cout << endl;
+	while (differenceIt != scoreDifferences.end())
+	{
+		cout << "Difference: " <<  differenceIt->second << " " << differenceIt->first << endl;
+		guess[guess.size() - 1] = differenceIt->second;
+		response = sendPassword(guess);
+		differenceItScore = response.score;
+		if (differenceItScore >= pivotScore)
+		{
+			ordering.push_back(differenceIt->second);
+		}
+		else
+			ordering.push_front(differenceIt->second);
+
+		differenceIt++;
+	}
+
+	orderingIt = ordering.begin();
+	guess[guess.size() - 1] = *orderingIt;
+	response = sendPassword(guess);
+	startScore = response.score;
+	orderingIt = ordering.end();
+	orderingIt--;
+	guess[guess.size() - 1] = *orderingIt;
+	endScore = response.score;
+	orderingIt = ordering.begin();
+	orderingIt++;
+	guess[guess.size() -1] = *orderingIt;
+	response = sendPassword(guess);
+	secondScore = response.score;
+
+	if (abs(startScore - secondScore) > abs(startScore - endScore))
+		ordering.reverse();
+	
+	cout << "The ordering is: " ;
+	orderingIt = ordering.begin();
+	while (orderingIt != ordering.end())
+	{
+		cout << *orderingIt;
+		orderingIt++;
+	}
 }

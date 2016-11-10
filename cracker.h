@@ -57,6 +57,8 @@ private:
 
     void findCombinations(string guess, int length, Response &response);
 
+    void findOrdering(Response &response);
+
 
 };
 #endif
