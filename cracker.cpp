@@ -37,24 +37,29 @@ void Cracker::getCracking()
 
     checkLength(min, max);
 
+    cout << "Min: " << min << endl;
+    cout << "Max: " << max << endl;
+
     if (min == max)
-	length = max;
+        length = max;
 
     response=sendPassword(truePassword);
 
-   // Brute force the password.
-   // if ( min < 5)
-  //  {
-    //    truePassword = bruteForce(min, max, base, response);
-   // }
-   
-	// Binary search
-   // else { truePassword = binarySearch(length, base, response, g1, g2);} 
+    // Brute force the password.
+     if ( min < 5)
+     {
+        bruteForce(min, max, base, response);
+     }
 
-	// Character reordering
-	truePassword = FindSingleMin(response, length);
+    // Binary search
+     else { truePassword = binarySearch(length, base, response, g1, g2);}
 
-    cout << "True password: " << truePassword << endl;
+    // Character reordering
+    //truePassword = FindSingleMin(response, length);
+
+   // cout << "True password: " << truePassword << endl;
+
+	return;
 
 }
 
@@ -74,22 +79,35 @@ void Cracker::getCracking()
  * @return The actual password to the vault.
  ******************************************************************************/
 
-string Cracker::bruteForce(unsigned int min, unsigned int max, double base, Response &response)
+void Cracker::bruteForce(unsigned int min, unsigned int max, double base, Response &response)
 {
     string guess = "aaaa";
-    unsigned int i;
 
-	for (i = 4; i >= min; i--)
-	{
-		 findCombinations(guess, guess.size(), response);
-    	 	if (response.rc == ACCEPTED)
-			return guess;
-		else
-			guess.resize(guess.size() - 1);
+    findCombinations(guess, guess.size(), response);
 
-	}
+    if (response.rc == ACCEPTED)
+		return;
 
-	return guess;
+    guess.resize(3);
+   
+    findCombinations(guess, guess.size(), response);
+
+    if (response.rc == ACCEPTED)
+	return;
+
+    guess.resize(2);
+
+    findCombinations(guess, guess.size(), response);
+
+    if (response.rc == ACCEPTED)
+	return;
+
+    guess.resize(1);
+
+    findCombinations(guess, guess.size(), response);
+
+    if (response.rc == ACCEPTED)
+	return;
 
 }
 
@@ -182,7 +200,7 @@ long long int Cracker::getPassword(string guess, double base)
     static map<char, int> CharacterMap;
     map<char, int>::iterator cit;
     if (CharacterMap.empty())
-	CharacterMap = getCharacterMap();
+        CharacterMap = getCharacterMap();
 
     for (i = guess.length() - 1; i > -1; i--, j++)
     {
@@ -211,78 +229,78 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 
     if (length <= 6)
     {
-	multiplier = 1.01;
+        multiplier = 1.10;
     }
 
     else if (length == 7)
     {
-	multiplier = 1.01;
+        multiplier = 1.10;
     }
 
     else
     {
-	multiplier = 1.10;
+        multiplier = 1.10;
     }
 
 
-	while ( response.rc != ACCEPTED)
-	{
-		found = false;
-		while (!found)
-		{
-			firstMin = FindMin(length, base, response, initialValue,initialValue + value);
-			initialValue = initialValue + value;
-			value *= multiplier;
-			g3 = getPassword(firstMin, base);
-			g3Next = getGuess(g3 + 1, length, base);
-			g3Prev = getGuess(g3 - 1, length, base);
-			response = sendPassword(firstMin);
-			if (response.rc == ACCEPTED)
-				return firstMin;
-			g3Score = response.score;
-			response = sendPassword(g3Next);
-			if (response.rc == ACCEPTED)
-				return g3Next;
-			g3NextScore = response.score;
-			response = sendPassword(g3Prev);
-			if (response.rc == ACCEPTED)
-				return g3Prev;
-			g3PrevScore = response.score;
-			if (g3Score < g3NextScore && g3Score < g3PrevScore)
-			{
-				found = true;
-				value = 1;
-				initialValue = g3;
-			}
+    while ( response.rc != ACCEPTED)
+    {
+        found = false;
+        while (!found)
+        {
+            firstMin = FindMin(length, base, response, initialValue,initialValue + value);
+            initialValue = initialValue + value;
+            value *= multiplier;
+            g3 = getPassword(firstMin, base);
+            g3Next = getGuess(g3 + 1, length, base);
+            g3Prev = getGuess(g3 - 1, length, base);
+            response = sendPassword(firstMin);
+            if (response.rc == ACCEPTED)
+                return firstMin;
+            g3Score = response.score;
+            response = sendPassword(g3Next);
+            if (response.rc == ACCEPTED)
+                return g3Next;
+            g3NextScore = response.score;
+            response = sendPassword(g3Prev);
+            if (response.rc == ACCEPTED)
+                return g3Prev;
+            g3PrevScore = response.score;
+            if (g3Score < g3NextScore && g3Score < g3PrevScore)
+            {
+                found = true;
+                value = 1;
+                initialValue = g3;
+            }
 
-			if (initialValue > pow(base, length) - 1)
-			{
-				found = true;
-				if (length <= 6)
-				{
-					multiplier = multiplier - .05;
-				}
-				else if (length == 7)
-				{
-					multiplier = multiplier - .15;
-				}
-				else
-				{
-					multiplier -= 0.02;
-				}
-				value = 1;
-				initialValue = 1.0;
-				
-			}
+            if (initialValue > pow(base, length) - 1)
+            {
+                found = true;
+                if (length <= 6)
+                {
+                    multiplier = multiplier - .05;
+                }
+                else if (length == 7)
+                {
+                    multiplier -= 0.02;
+                }
+                else
+                {
+                    multiplier -= 0.02;
+                }
+                value = 1;
+                initialValue = 1.0;
 
-		}
+            }
 
-
-	}
+        }
 
 
-	return firstMin;
-  
+    }
+
+
+    return firstMin;
+
 
 }
 
@@ -307,11 +325,11 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     g3Prev = getGuess(g3 - 1, length, base);
     response = sendPassword(g3Next);
     if (response.rc == ACCEPTED)
-	return g3Next;
+        return g3Next;
     g3NextScore = response.score;
     response = sendPassword(g3Prev);
     if (response.rc == ACCEPTED)
-	return g3Prev;
+        return g3Prev;
     g3PrevScore = response.score;
 
 
@@ -320,30 +338,30 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     guess3 = getGuess(g3, length, base);
 
 
-  //  cout << guess3 << endl;
+    //  cout << guess3 << endl;
 
     response = sendPassword(guess1);
     if (response.rc == ACCEPTED)
-	return guess1;
+        return guess1;
     s1 = response.score;
     response = sendPassword(guess2);
     if (response.rc == ACCEPTED)
-	return guess2;
+        return guess2;
     s2 = response.score;
     response = sendPassword(guess3);
     if (response.rc == ACCEPTED)
-	return guess3;
+        return guess3;
     s3 = response.score;
 
-	//If item is located at a minimum return the item
+    //If item is located at a minimum return the item
     if (g3NextScore > s3 && g3PrevScore > s3)
-        	return guess3;
+        return guess3;
 
-	// If item is not found in search just return
+    // If item is not found in search just return
     else if (g1 == g3 || g2 == g3)
-		return guess3;
+        return guess3;
 
-	// s1 is the min value
+    // s1 is the min value
     else if (s1 <= s3 && s1 <= s2)
     {
 
@@ -427,7 +445,7 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
    // FileMap.insert({getPassword(guess2, base), s2});
    // FileMap.insert({getPassword(guess3, base), s3});
 
- 
+
 
     if (g3NextScore < s3 && g3PrevScore < s3)
         return guess3;
@@ -519,7 +537,7 @@ map<int, char> Cracker::getIntegerMap()
     map<int, char>::iterator cit;
     int i;
     static char nextChar = 'a';
-if (IntegerMap.empty())
+    if (IntegerMap.empty())
     {
         for (i = 0; i < 26; i++)
         {
@@ -556,72 +574,124 @@ if (IntegerMap.empty())
         IntegerMap.insert({ 73, '[' });
     }
 
-	return IntegerMap;
+    return IntegerMap;
 }
 
 
-void Cracker::findCombinations(string &guess, unsigned int length, Response &response)
+void Cracker::findCombinations(string guess, int length, Response &response)
 {
-    if (length == 0)
-        return ;
- 
-    else
+    int i;
+    int j;
+    int k;
+    int l;
+    if (length == 4)
     {
-        for (int i = 0; i < 74; i++)
+        for (l = 0; l < 74; l++)
         {
-	    response = sendPassword(guess);
-	    if (response.rc == ACCEPTED)
-		return;
-            guess[length - 1] = validChars[i];
-	    response = sendPassword(guess);
-	    if( response.rc == ACCEPTED)
-		return;
-            findCombinations(guess, length - 1, response);
-	   response = sendPassword(guess);
-	    if (response.rc == ACCEPTED)
-		return;
+            guess[guess.size() - 4] = validChars[l];
+            for (k = 0; k < 74; k++)
+            {
+                guess[guess.size() - 3] = validChars[k];
+                for (j = 0; j < 74; j++)
+                {
+                    guess[guess.size() - 2] = validChars[j];
+                    for (i = 0; i < 74; i++)
+                    {
+                        guess[guess.size() - 1] = validChars[i];
+			response = sendPassword(guess);
+			if (response.rc == ACCEPTED)
+				return;
+                    }
+                }
+            }
         }
     }
+
+    else if (length == 3)
+    {
+        for (k = 0; k < 74; k++)
+        {
+            guess[guess.size() - 3] = validChars[k];
+            for (j = 0; j < 74; j++)
+            {
+                guess[guess.size() - 2] = validChars[j];
+                for (i = 0; i < 74; i++)
+                {
+                    guess[guess.size() - 1] = validChars[i];
+		    response = sendPassword(guess);
+		    if (response.rc == ACCEPTED)
+			return;
+                }
+            }
+        }
+    }
+
+    else if (length == 2)
+    {
+        for (j = 0; j < 74; j++)
+        {
+            guess[guess.size() - 2] = validChars[j];
+            for (i = 0; i < 74; i++)
+            {
+                guess[guess.size() - 1] = validChars[i];
+		response = sendPassword(guess);
+		if (response.rc == ACCEPTED)
+			return;
+            }
+        }
+    }
+
+    else
+    {
+        for (i = 0; i < 74; i++)
+        {
+            guess[guess.size() - 1] = validChars[i];
+	    response = sendPassword(guess);
+	    if (response.rc == ACCEPTED)
+			return;
+        }
+    }
+
 }
 
 
 string Cracker::FindSingleMin(Response &response, unsigned int length)
 {
-	string guess = "";
-	long double score;
-        map<long double, char> mymap;
-        map<long double, char>::iterator it;
-	long long int g1;
-	long long int g2;
-	int i;
-	int j = 0;
+    string guess = "";
+    long double score;
+    map<long double, char> mymap;
+    map<long double, char>::iterator it;
+    long long int g1;
+    long long int g2;
+    int i;
+    int j = 0;
 
-	guess.resize(length);
-	for (i = 0; i < length; i++)
-	{
-		guess[i] = 'a';
-	}
-	response = sendPassword(guess);
-	score = response.score;
-	while (j < guess.size())
-	{
-		for (i = 0; i < 74; i++)
-		{
-			guess[j] = validChars[i];
-			response = sendPassword(guess);
-			if (response.rc == ACCEPTED)
-				return guess;
-			if (response.score < score)
-			{
-				mymap.insert({response.score, guess[j]});
-			}
-		
-		}
-		it = mymap.begin();
-		score = it->first;
-		guess[j] = it->second;
-		j++;
-	}
-	
+    guess.resize(length);
+    for (i = 0; i < length; i++)
+    {
+        guess[i] = 'a';
+    }
+    response = sendPassword(guess);
+    score = response.score;
+    while (j < guess.size())
+    {
+        for (i = 0; i < 74; i++)
+        {
+            guess[j] = validChars[i];
+            response = sendPassword(guess);
+            if (response.rc == ACCEPTED)
+                return guess;
+            if (response.score < score)
+            {
+                mymap.insert({response.score, guess[j]});
+            }
+
+        }
+        it = mymap.begin();
+        score = it->first;
+        guess[j] = it->second;
+        j++;
+    }
+
 
 }

@@ -33,7 +33,7 @@ public:
     Cracker(); /*!< Constructor */
 
     void getCracking(); /*!< Function to start the intrusion attempt */
-    string bruteForce( unsigned int min, unsigned int max, double base, Response &response);
+    void bruteForce( unsigned int min, unsigned int max, double base, Response &response);
     string binarySearch(int length, double base, Response &response, long long int g1,
                          long long int  g2);
 
@@ -55,7 +55,7 @@ private:
     string FindMin(int length, double base, Response &response, long long int g1,
                             long long int g2);
 
-    void findCombinations(string &guess, unsigned int length, Response &response);
+    void findCombinations(string guess, int length, Response &response);
 
 
 };
