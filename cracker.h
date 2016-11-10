@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <list>
 
 #include <fstream>
 #include <map>
@@ -37,7 +38,6 @@ public:
     string binarySearch(int length, double base, Response &response, long long int g1,
                          long long int  g2);
 
-    string FindSingleMin(Response &response, unsigned int length);
 
     
 private:
@@ -57,7 +57,7 @@ private:
 
     void findCombinations(string guess, int length, Response &response);
 
-    void findOrdering(Response &response);
+    list<char> findOrdering(Response &response);
 
 
 };

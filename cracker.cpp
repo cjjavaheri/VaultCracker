@@ -4,7 +4,6 @@
 #include <fstream>
 #include <map>
 #include <cmath>
-#include <list>
 
 string getGuess(double value, unsigned int length, double base);
 
@@ -32,6 +31,7 @@ void Cracker::getCracking()
     unsigned int length = 0;
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
+    list<char> ordering;
 
     unsigned int min=0;
     unsigned int max=0;
@@ -46,7 +46,7 @@ void Cracker::getCracking()
 
     response=sendPassword(truePassword);
 
- /*   // Brute force the password.
+    // Brute force the password.
      if ( min < 5)
      {
         bruteForce(min, max, base, response);
@@ -57,8 +57,7 @@ void Cracker::getCracking()
     {
        truePassword = binarySearch(length, base, response, g1, g2);
     }
-  */
-	findOrdering(response);
+  
     // Character reordering
     //truePassword = FindSingleMin(response, length);
 
@@ -489,47 +488,26 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
 
 map<char,int> Cracker::getCharacterMap()
 {
+    Response response;
     static map<char, int> CharacterMap;
+    static list<char> ordering;
+    list<char>::iterator orderingIt;
     int i;
-    char nextChar = 'a';
 
-    if (CharacterMap.empty())
-    {
-        for (i = 0; i < 26; i++)
-        {
-            CharacterMap.insert({ nextChar, i });
-            nextChar += 1;
-        }
-        nextChar = 'A';
-        for (i = 26; i < 52; i++)
-        {
-            CharacterMap.insert({ nextChar, i });
-            nextChar += 1;
-        }
-        CharacterMap.insert({ '!', 52 });
-        CharacterMap.insert({ '@', 53 });
-        CharacterMap.insert({ '#', 54 });
-        CharacterMap.insert({ '$', 55 });
-        CharacterMap.insert({ '%', 56 });
-        CharacterMap.insert({ '^', 57 });
-        CharacterMap.insert({ '&', 58 });
-        CharacterMap.insert({ '*', 59 });
-        CharacterMap.insert({ '(', 60 });
-        CharacterMap.insert({ ')', 61 });
-        CharacterMap.insert({ '_', 62 });
-        CharacterMap.insert({ '+', 63 });
-        CharacterMap.insert({ '=', 64 });
-        CharacterMap.insert({ ':', 65 });
-        CharacterMap.insert({ ';', 66 });
-        CharacterMap.insert({ '~', 67 });
-        CharacterMap.insert({ '?', 68 });
-        CharacterMap.insert({ '.', 69 });
-        CharacterMap.insert({ '<', 70 });
-        CharacterMap.insert({ '>', 71 });
-        CharacterMap.insert({ ']', 72 });
-        CharacterMap.insert({ '[', 73 });
-    }
 
+	if (ordering.empty())
+		ordering = findOrdering(response);
+
+	if (CharacterMap.empty())
+	{
+		orderingIt = ordering.begin();
+
+		for (i = 0; i < 74; i++)
+		{
+			CharacterMap.insert({*orderingIt, i});
+			orderingIt++;
+		}
+	}
     return CharacterMap;
 
 }
@@ -537,47 +515,26 @@ map<char,int> Cracker::getCharacterMap()
 
 map<int, char> Cracker::getIntegerMap()
 {
-
+    Response response;
+    static list<char> ordering;
     static map<int, char> IntegerMap;
+    list<char>::iterator orderingIt;
     map<int, char>::iterator cit;
     int i;
-    static char nextChar = 'a';
-    if (IntegerMap.empty())
-    {
-        for (i = 0; i < 26; i++)
-        {
-            IntegerMap.insert({ i, nextChar });
-            nextChar += 1;
-        }
-        nextChar = 'A';
-        for (i = 26; i < 52; i++)
-        {
-            IntegerMap.insert({ i, nextChar });
-            nextChar += 1;
-        }
-        IntegerMap.insert({ 52, '!' });
-        IntegerMap.insert({ 53, '@' });
-        IntegerMap.insert({ 54, '#' });
-        IntegerMap.insert({ 55, '$' });
-        IntegerMap.insert({ 56, '%' });
-        IntegerMap.insert({ 57, '^' });
-        IntegerMap.insert({ 58, '&' });
-        IntegerMap.insert({ 59, '*' });
-        IntegerMap.insert({ 60, '(' });
-        IntegerMap.insert({ 61, ')' });
-        IntegerMap.insert({ 62, '_' });
-        IntegerMap.insert({ 63, '+' });
-        IntegerMap.insert({ 64, '=' });
-        IntegerMap.insert({ 65, ':' });
-        IntegerMap.insert({ 66, ';' });
-        IntegerMap.insert({ 67, '~' });
-        IntegerMap.insert({ 68, '?' });
-        IntegerMap.insert({ 69, '.' });
-        IntegerMap.insert({ 70, '<' });
-        IntegerMap.insert({ 71, '>' });
-        IntegerMap.insert({ 72, ']' });
-        IntegerMap.insert({ 73, '[' });
-    }
+
+	if (ordering.empty())
+		ordering = findOrdering(response);
+
+	if (IntegerMap.empty())
+	{
+		orderingIt = ordering.begin();
+
+		for (i = 0; i < 74; i++)
+		{
+			IntegerMap.insert({i, *orderingIt});
+			orderingIt++;
+		}
+	}
 
     return IntegerMap;
 }
@@ -660,53 +617,12 @@ void Cracker::findCombinations(string guess, int length, Response &response)
 }
 
 
-string Cracker::FindSingleMin(Response &response, unsigned int length)
-{
-    string guess = "";
-    long double score;
-    map<long double, char> mymap;
-    map<long double, char>::iterator it;
-    long long int g1;
-    long long int g2;
-    int i;
-    int j = 0;
 
-    guess.resize(length);
-    for (i = 0; i < length; i++)
-    {
-        guess[i] = 'a';
-    }
-    response = sendPassword(guess);
-    score = response.score;
-    while (j < guess.size())
-    {
-        for (i = 0; i < 74; i++)
-        {
-            guess[j] = validChars[i];
-            response = sendPassword(guess);
-            if (response.rc == ACCEPTED)
-                return guess;
-            if (response.score < score)
-            {
-                mymap.insert({response.score, guess[j]});
-            }
-
-        }
-        it = mymap.begin();
-        score = it->first;
-        guess[j] = it->second;
-        j++;
-    }
-
-
-}
-
-void Cracker::findOrdering(Response &response)
+list<char> Cracker::findOrdering(Response &response)
 {
 string guess = "aaaaaa";
 int i;
 long double difference;
-long double smallest = -1;
 map<char, long double> scores;
 map<char, long double>::iterator it;
 map<char, long double>::iterator compare;
@@ -719,11 +635,6 @@ list<char>::iterator orderingIt;
 long double pivotScore;
 long double differenceItScore;
 long double duplicatesItScore;
-long double startScore;
-long double endScore;
-long double secondScore;
-char smallestChar;
-int counter = 0;
 for (i = 0; i < 74; i++)
 {
 	guess[guess.size() - 1] = validChars[i];
@@ -746,7 +657,6 @@ for (i = 0; i < 74; i++)
 	
 	compare++;
 }
-	cout << it->first << endl;
 	differenceIt = scoreDifferences.begin();
 	duplicatesIt = duplicates.begin();
 	ordering.push_back(differenceIt->second);
@@ -756,8 +666,6 @@ for (i = 0; i < 74; i++)
 	differenceIt++;
 	while (differenceIt != scoreDifferences.end() && duplicatesIt != duplicates.end())
 	{
-		cout << "Difference: " <<  differenceIt->second << " " << differenceIt->first << endl;
-		cout << "Duplicate: " << duplicatesIt->second << " " << duplicatesIt->first << endl;
 		guess[guess.size() - 1] = differenceIt->second;
 		response = sendPassword(guess);
 		differenceItScore = response.score;
@@ -793,10 +701,10 @@ for (i = 0; i < 74; i++)
 		differenceIt++;
 		duplicatesIt++;
 	}
-	cout << endl;
+
+
 	while (differenceIt != scoreDifferences.end())
 	{
-		cout << "Difference: " <<  differenceIt->second << " " << differenceIt->first << endl;
 		guess[guess.size() - 1] = differenceIt->second;
 		response = sendPassword(guess);
 		differenceItScore = response.score;
@@ -810,28 +718,14 @@ for (i = 0; i < 74; i++)
 		differenceIt++;
 	}
 
-	orderingIt = ordering.begin();
-	guess[guess.size() - 1] = *orderingIt;
-	response = sendPassword(guess);
-	startScore = response.score;
-	orderingIt = ordering.end();
-	orderingIt--;
-	guess[guess.size() - 1] = *orderingIt;
-	endScore = response.score;
-	orderingIt = ordering.begin();
-	orderingIt++;
-	guess[guess.size() -1] = *orderingIt;
-	response = sendPassword(guess);
-	secondScore = response.score;
-
-	if (abs(startScore - secondScore) > abs(startScore - endScore))
-		ordering.reverse();
 	
-	cout << "The ordering is: " ;
+/*	cout << "The ordering is: " ;
 	orderingIt = ordering.begin();
 	while (orderingIt != ordering.end())
 	{
 		cout << *orderingIt;
 		orderingIt++;
 	}
+*/
+	return ordering;
 }
