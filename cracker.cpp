@@ -52,7 +52,10 @@ void Cracker::getCracking()
      }
 
     // Binary search
-     else { truePassword = binarySearch(length, base, response, g1, g2);}
+    if (max > 4)
+    {
+       truePassword = binarySearch(length, base, response, g1, g2);
+    }
 
     // Character reordering
     //truePassword = FindSingleMin(response, length);
