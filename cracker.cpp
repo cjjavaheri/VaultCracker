@@ -736,7 +736,8 @@ map<long double, long double> Cracker::digitalOrdering(const unsigned int &lengt
 
     // A map for the significance of each digit. First = Significance, Second = Position
     map<long double, long double> whateverYouWant;
-
+    for (int x = 0; x < 100; x++)
+    {
         // DOC stands for Digital Ordering Cracker, because this string will be used to find significant digits
         string doc = "";
         // Generate a random string of the called in length
@@ -766,9 +767,16 @@ map<long double, long double> Cracker::digitalOrdering(const unsigned int &lengt
                 var += pow(avg - scores[k], 2);
             }
             var = var / (scores.size() - 1);
-            // Map the change in scores to the position
-            whateverYouWant[var] = i;
+            // Add all the position tests together
+            vars[i] += var;
         }
+    }
+
+    // Map the change in scores to the position
+    for (unsigned int i = 0; i < length; i++)
+    {
+        whateverYouWant[vars[i]] = i;
+    }
     // Return the map
     return whateverYouWant;
 }
