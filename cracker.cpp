@@ -28,9 +28,8 @@ void Cracker::getCracking()
     string globalMin = "";
     Response response;
     double base = 74;
-    unsigned int length = 0;
-    long long int g1 = 0;
-    long long int g2 = pow(base, length) - 1;
+    long long int g1;
+    long long int g2;
     list<char> ordering;
     map<long double, int> digitOrdering;
     map<long double, long double> digitalOrder;
@@ -41,13 +40,9 @@ void Cracker::getCracking()
 
     checkLength(min, max);
 
-    if (min == max)
-        length = max;
-
-
     response=sendPassword(truePassword);
 
-    digitOrdering = findDigitOrdering(length);
+    digitOrdering = findDigitOrdering(max);
 
     it = digitOrdering.begin();
     while (it != digitOrdering.end())
@@ -57,16 +52,17 @@ void Cracker::getCracking()
     }
 
 
-	cout << endl << endl << endl;
-    /*  // Brute force the password.
-      if ( min < 5)
-      {
-          bruteForce(min, max, base, response);
-      }
-    */
-    //  Binary search
+    cout << endl << endl << endl;
 
-    truePassword = binarySearch(length, base, response, g1, g2);
+    // Brute force the password.
+    if ( min < 5)
+        bruteForce(min, max, base, response);
+
+    g1 = 0;
+    g2 = pow(base, max);
+    //  Binary search
+    if (max > 4)
+        truePassword = binarySearch(min, max, base, response, g1, g2);
 
 
     return;
@@ -91,34 +87,22 @@ void Cracker::getCracking()
 
 void Cracker::bruteForce(unsigned int min, unsigned int max, double base, Response &response)
 {
-    string guess = "aaaa";
+    string guess = "";
+    unsigned int i;
+    unsigned int j;
+    guess.resize(min);
 
-    findCombinations(guess, guess.size(), response);
-
-    if (response.rc == ACCEPTED)
-        return;
-
-    guess.resize(3);
-
-    findCombinations(guess, guess.size(), response);
-
-    if (response.rc == ACCEPTED)
-        return;
-
-    guess.resize(2);
-
-    findCombinations(guess, guess.size(), response);
-
-    if (response.rc == ACCEPTED)
-        return;
-
-
-    if (response.rc == ACCEPTED)
-        return;
-
-    guess.resize(1);
-
-    findCombinations(guess, guess.size(), response);
+    j = 1;
+    while (guess.size() < 5)
+    {
+        for (i = 0; i < guess.size(); i++)
+            guess[i] = 'a';
+        findCombinations(guess, guess.size(), response);
+        if (response.rc == ACCEPTED)
+            return;
+        guess.resize(min + j);
+        j++;
+    }
 
 }
 
@@ -244,7 +228,7 @@ long long int Cracker::getPassword(string guess, double base)
     return sum;
 }
 
-string Cracker::binarySearch(int length, double base, Response &response, long long int g1,
+string Cracker::binarySearch(int smallestLength, int largestLength, double base, Response &response, long long int g1,
                              long long int  g2)
 {
     string min;
@@ -259,6 +243,14 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     long double value = 1.0;
     long double initialValue = 0.0;
     long double multiplier;
+    unsigned int length;
+
+
+    if (smallestLength == largestLength)
+        length = largestLength;
+
+    else
+        length = 5;
 
     if (length <= 6)
     {
@@ -767,7 +759,7 @@ map<long double, int> Cracker::findDigitOrdering(int length)
         scoreDifferences.clear();
 
     }
-	return ordering;
+    return ordering;
 
 }
 
