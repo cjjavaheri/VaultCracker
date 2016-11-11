@@ -724,42 +724,51 @@ for (i = 0; i < 74; i++)
 
 map<long double, long double> Cracker::digitalOrdering(const unsigned int &length)
 {
+    // Store the scores of all the tried passwords
     vector<long double> scores;
+
+    // Store all the variances
+    vector<long double> vars;
+    for (unsigned int i = 0; i < length; i++)
+    {
+        vars.push_back(0);
+    }
 
     // A map for the significance of each digit. First = Significance, Second = Position
     map<long double, long double> whateverYouWant;
 
-    // DOC stands for Digital Ordering Cracker, because this string will be used to find significant digits
-    string doc = "";
-    // Generate a random string of the called in length
-    for (int j = 0; j < length; j++)
-    {
-        doc += validChars[rand() % 74];
-    }
-    // test each position within DOC
-    for (int i = 0; i < doc.length(); i++)
-    {
-        // Record Scores of each position with all characters
-        for (int k = 0; k < 74; k++)
+        // DOC stands for Digital Ordering Cracker, because this string will be used to find significant digits
+        string doc = "";
+        // Generate a random string of the called in length
+        for (unsigned int j = 0; j < length; j++)
         {
-            doc[i] = validChars[k];
-            scores.push_back((sendPassword(doc)).score);
+            doc += validChars[rand() % 74];
         }
-        // Find the average of the scores
-        long double avg = 0;
-        for (int k = 0; k < scores.size(); k++)
-            avg += scores[k];
-        avg = avg / scores.size();
-        // Calculate the change in scores with variance
-        long double var = 0;
-        for (int k = 0; k < scores.size(); k++)
+        // test each position within DOC
+        for (unsigned int i = 0; i < doc.length(); i++)
         {
-            var += pow(avg - scores[k], 2);
+            scores.clear();
+            // Record Scores of each position with all characters
+            for (unsigned int k = 0; k < 74; k++)
+            {
+                doc[i] = validChars[k];
+                scores.push_back((sendPassword(doc)).score);
+            }
+            // Find the average of the scores
+            long double avg = 0;
+            for (unsigned int k = 0; k < scores.size(); k++)
+                avg += scores[k];
+            avg = avg / scores.size();
+            // Calculate the change in scores with variance
+            long double var = 0;
+            for (unsigned int k = 0; k < scores.size(); k++)
+            {
+                var += pow(avg - scores[k], 2);
+            }
+            var = var / (scores.size() - 1);
+            // Map the change in scores to the position
+            whateverYouWant[var] = i;
         }
-        var = var / (scores.size() - 1);
-        // Map the change in scores to the position
-        whateverYouWant[var] = i;
-    }
     // Return the map
     return whateverYouWant;
 }
