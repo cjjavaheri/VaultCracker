@@ -60,5 +60,9 @@ private:
     list<char> findOrdering(Response &response);
     map<long double, long double> digitalOrdering(const unsigned int &length); /// This function is called to find significant digits
 
+
+
+    map<long double, int> findDigitOrdering(int length);
+
 };
 #endif

@@ -32,8 +32,9 @@ void Cracker::getCracking()
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
     list<char> ordering;
+    map<long double, int> digitOrdering;
     map<long double, long double> digitalOrder;
-    map<long double, long double>::iterator it;
+    map<long double, int>::iterator it;
 
     unsigned int min=0;
     unsigned int max=0;
@@ -43,34 +44,37 @@ void Cracker::getCracking()
     if (min == max)
         length = max;
 
-    digitalOrder = digitalOrdering(length);
-    it = digitalOrder.begin();
-    while (it != digitalOrder.end())
-    {
-	cout << it->first << " " << it->second << endl;
-	it++;
-    }
+
 
     response=sendPassword(truePassword);
 
-  /*  // Brute force the password.
-     if ( min < 5)
-     {
-        bruteForce(min, max, base, response);
-     }
+    digitOrdering = findDigitOrdering(length);
 
-    // Binary search
-    if (max > 4)
-    {
-       truePassword = binarySearch(length, base, response, g1, g2);
-    }
-  */
+    it = digitOrdering.begin();
+    while (it != digitOrdering.end())
+	{
+		cout << it->first << " " << it->second << endl;
+		it++;
+	}
+
+    /*  // Brute force the password.
+       if ( min < 5)
+       {
+          bruteForce(min, max, base, response);
+       }
+
+      // Binary search
+      if (max > 4)
+      {
+         truePassword = binarySearch(length, base, response, g1, g2);
+      }
+    */
     // Character reordering
     //truePassword = FindSingleMin(response, length);
 
-   // cout << "True password: " << truePassword << endl;
+    // cout << "True password: " << truePassword << endl;
 
-	return;
+    return;
 
 }
 
@@ -97,28 +101,29 @@ void Cracker::bruteForce(unsigned int min, unsigned int max, double base, Respon
     findCombinations(guess, guess.size(), response);
 
     if (response.rc == ACCEPTED)
-		return;
+        return;
 
     guess.resize(3);
-   
+
     findCombinations(guess, guess.size(), response);
 
     if (response.rc == ACCEPTED)
-	return;
+        return;
 
     guess.resize(2);
 
     findCombinations(guess, guess.size(), response);
 
     if (response.rc == ACCEPTED)
-	return;
+        return;
+
+
+    if (response.rc == ACCEPTED)
+        return;
 
     guess.resize(1);
 
     findCombinations(guess, guess.size(), response);
-
-    if (response.rc == ACCEPTED)
-	return;
 
 }
 
@@ -502,19 +507,19 @@ map<char,int> Cracker::getCharacterMap()
     int i;
 
 
-	if (ordering.empty())
-		ordering = findOrdering(response);
+    if (ordering.empty())
+        ordering = findOrdering(response);
 
-	if (CharacterMap.empty())
-	{
-		orderingIt = ordering.begin();
+    if (CharacterMap.empty())
+    {
+        orderingIt = ordering.begin();
 
-		for (i = 0; i < 74; i++)
-		{
-			CharacterMap.insert({*orderingIt, i});
-			orderingIt++;
-		}
-	}
+        for (i = 0; i < 74; i++)
+        {
+            CharacterMap.insert({*orderingIt, i});
+            orderingIt++;
+        }
+    }
     return CharacterMap;
 
 }
@@ -529,19 +534,19 @@ map<int, char> Cracker::getIntegerMap()
     map<int, char>::iterator cit;
     int i;
 
-	if (ordering.empty())
-		ordering = findOrdering(response);
+    if (ordering.empty())
+        ordering = findOrdering(response);
 
-	if (IntegerMap.empty())
-	{
-		orderingIt = ordering.begin();
+    if (IntegerMap.empty())
+    {
+        orderingIt = ordering.begin();
 
-		for (i = 0; i < 74; i++)
-		{
-			IntegerMap.insert({i, *orderingIt});
-			orderingIt++;
-		}
-	}
+        for (i = 0; i < 74; i++)
+        {
+            IntegerMap.insert({i, *orderingIt});
+            orderingIt++;
+        }
+    }
 
     return IntegerMap;
 }
@@ -567,9 +572,9 @@ void Cracker::findCombinations(string guess, int length, Response &response)
                     for (i = 0; i < 74; i++)
                     {
                         guess[guess.size() - 1] = validChars[i];
-			response = sendPassword(guess);
-			if (response.rc == ACCEPTED)
-				return;
+                        response = sendPassword(guess);
+                        if (response.rc == ACCEPTED)
+                            return;
                     }
                 }
             }
@@ -587,9 +592,9 @@ void Cracker::findCombinations(string guess, int length, Response &response)
                 for (i = 0; i < 74; i++)
                 {
                     guess[guess.size() - 1] = validChars[i];
-		    response = sendPassword(guess);
-		    if (response.rc == ACCEPTED)
-			return;
+                    response = sendPassword(guess);
+                    if (response.rc == ACCEPTED)
+                        return;
                 }
             }
         }
@@ -603,9 +608,9 @@ void Cracker::findCombinations(string guess, int length, Response &response)
             for (i = 0; i < 74; i++)
             {
                 guess[guess.size() - 1] = validChars[i];
-		response = sendPassword(guess);
-		if (response.rc == ACCEPTED)
-			return;
+                response = sendPassword(guess);
+                if (response.rc == ACCEPTED)
+                    return;
             }
         }
     }
@@ -615,9 +620,9 @@ void Cracker::findCombinations(string guess, int length, Response &response)
         for (i = 0; i < 74; i++)
         {
             guess[guess.size() - 1] = validChars[i];
-	    response = sendPassword(guess);
-	    if (response.rc == ACCEPTED)
-			return;
+            response = sendPassword(guess);
+            if (response.rc == ACCEPTED)
+                return;
         }
     }
 
@@ -627,84 +632,84 @@ void Cracker::findCombinations(string guess, int length, Response &response)
 
 list<char> Cracker::findOrdering(Response &response)
 {
-string guess = "";
-unsigned int i;
-long double difference;
-map<char, long double> scores;
-map<char, long double>::iterator it;
-map<char, long double>::iterator compare;
-map<long double, char> scoreDifferences;
-map<long double, char> duplicates;
-map<long double, char>::iterator differenceIt;
-map<long double, char>::iterator duplicatesIt;
-list<char> ordering;
-list<char>::iterator orderingIt;
-unsigned int min = 0;
-unsigned int max = 0;
+    string guess = "";
+    unsigned int i;
+    long double difference;
+    map<char, long double> scores;
+    map<char, long double>::iterator it;
+    map<char, long double>::iterator compare;
+    map<long double, char> scoreDifferences;
+    map<long double, char> duplicates;
+    map<long double, char>::iterator differenceIt;
+    map<long double, char>::iterator duplicatesIt;
+    list<char> ordering;
+    list<char>::iterator orderingIt;
+    unsigned int min = 0;
+    unsigned int max = 0;
 
-checkLength(min, max);
-guess.resize(max);
+    checkLength(min, max);
+    guess.resize(max);
 
-for (i = 0; i < guess.size(); i++)
-{
-	guess[i] = 'a';
-}
+    for (i = 0; i < guess.size(); i++)
+    {
+        guess[i] = 'a';
+    }
 
-for (i = 0; i < 74; i++)
-{
-	guess[guess.size() - 1] = validChars[i];
-	response = sendPassword(guess);
-	scores.insert({guess[guess.size() - 1], response.score});
-}
+    for (i = 0; i < 74; i++)
+    {
+        guess[guess.size() - 1] = validChars[i];
+        response = sendPassword(guess);
+        scores.insert({guess[guess.size() - 1], response.score});
+    }
 
-it = scores.begin();
-compare = it;
-for (i = 0; i < 74; i++)
-{
-	difference = it->second - compare->second;
-	differenceIt = scoreDifferences.find(difference);
+    it = scores.begin();
+    compare = it;
+    for (i = 0; i < 74; i++)
+    {
+        difference = it->second - compare->second;
+        differenceIt = scoreDifferences.find(difference);
 
-		scoreDifferences.insert({difference, compare->first});
+        scoreDifferences.insert({difference, compare->first});
 
-/*	else
-		duplicates.insert({difference, compare->first});
-*/	
-	compare++;
-}
-
-
-/*	differenceIt = scoreDifferences.begin();
-	duplicatesIt = duplicates.begin();
-	ordering.push_back(differenceIt->second);
-	guess[guess.size() - 1] = differenceIt->second;
-	response = sendPassword(guess);
-	pivotScore = response.score;
-	differenceIt++;
-
-*/
-	i = 0;
-
- 	differenceIt = scoreDifferences.begin();
-	orderingIt = ordering.begin();
-	while (differenceIt != scoreDifferences.end())
-	{
-		
-		ordering.push_front(differenceIt->second);
-		i++;
-		differenceIt++;
-	}
+        /*	else
+        		duplicates.insert({difference, compare->first});
+        */
+        compare++;
+    }
 
 
-	
-	cout << "The ordering is: " ;
-	orderingIt = ordering.begin();
-	while (orderingIt != ordering.end())
-	{
-		cout << *orderingIt;
-		orderingIt++;
-	}
+    /*	differenceIt = scoreDifferences.begin();
+    	duplicatesIt = duplicates.begin();
+    	ordering.push_back(differenceIt->second);
+    	guess[guess.size() - 1] = differenceIt->second;
+    	response = sendPassword(guess);
+    	pivotScore = response.score;
+    	differenceIt++;
 
-	return ordering;
+    */
+    i = 0;
+
+    differenceIt = scoreDifferences.begin();
+    orderingIt = ordering.begin();
+    while (differenceIt != scoreDifferences.end())
+    {
+
+        ordering.push_front(differenceIt->second);
+        i++;
+        differenceIt++;
+    }
+
+
+
+    cout << "The ordering is: " ;
+    orderingIt = ordering.begin();
+    while (orderingIt != ordering.end())
+    {
+        cout << *orderingIt;
+        orderingIt++;
+    }
+
+    return ordering;
 }
 
 
@@ -779,4 +784,71 @@ map<long double, long double> Cracker::digitalOrdering(const unsigned int &lengt
     }
     // Return the map
     return whateverYouWant;
+}
+
+map<long double, int> Cracker::findDigitOrdering(int length)
+{
+    string guess;
+    unsigned int j;
+    unsigned int k;
+    Response response;
+    unsigned int i;
+    map<char, long double> scores;
+    map<char, long double>::iterator it;
+    map<char, long double>::iterator compare;
+    map<long double, char>::iterator differenceIt;
+    map<long double, char> scoreDifferences;
+    long double difference;
+    map<long double, int> ordering;
+    long double sum;
+
+    guess.resize(length);
+
+    for (i = 0; i < guess.size(); i++)
+    {
+        guess[i] = 'a';
+    }
+
+    for (j = 1; j <= guess.size(); j++)
+    {
+        cout << "j " << j << endl;
+
+        for (i = 0; i < 74; i++)
+        {
+            guess[guess.size() - j] = validChars[i];
+            response = sendPassword(guess);
+            scores.insert({guess[guess.size() - j], response.score});
+        }
+
+        it = scores.begin();
+        compare = it;
+        for (i = 0; i < 74; i++)
+        {
+            difference = abs(it->second - compare->second);
+            differenceIt = scoreDifferences.find(difference);
+
+            scoreDifferences.insert({difference, compare->first});
+
+            compare++;
+        }
+
+        differenceIt = scoreDifferences.begin();
+	sum = 0;
+        while (differenceIt != scoreDifferences.end())
+        {
+	    sum = sum + differenceIt->first;
+            cout << differenceIt->first << " " << differenceIt->second << endl;
+            differenceIt++;
+        }
+	sum = sum / 74.0;
+	ordering.insert({sum, j});
+	cout << "Sum " << sum << endl;
+        cout << endl << endl << endl;
+        scores.clear();
+        scoreDifferences.clear();
+	
+    }
+
+	return ordering;
+
 }
