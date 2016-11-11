@@ -697,3 +697,60 @@ for (i = 0; i < 74; i++)
 
 	return ordering;
 }
+
+
+/***************************************************************************//**
+ * @brief digitalOrdering function is used to find the significance of digits
+ *
+ * @par Description
+ *    This function will test each digit for scores. The digit with the largest
+ *    change in score, calculated by variance, will be the most significant.
+ *    The digit with the smallest change in score will be the least significant.
+ *    Everything else will be in between.
+ *
+ * @param[in] min - The length of the password digitalOrdering is testing
+ *
+ * @return Returns a map pairing password positions and their significance
+ ******************************************************************************/
+
+map<long double, long double> Cracker::digitalOrdering(const unsigned int &length)
+{
+    vector<long double> scores;
+
+    // A map for the significance of each digit. First = Significance, Second = Position
+    map<long double, long double> whateverYouWant;
+
+    // DOC stands for Digital Ordering Cracker, because this string will be used to find significant digits
+    string doc = "";
+    // Generate a random string of the called in length
+    for (int j = 0; j < length; j++)
+    {
+        doc += validChars[rand() % 74];
+    }
+    // test each position within DOC
+    for (int i = 0; i < doc.length(); i++)
+    {
+        // Record Scores of each position with all characters
+        for (int k = 0; k < 74; k++)
+        {
+            doc[i] = validChars[k];
+            scores.push_back((sendPassword(doc)).score);
+        }
+        // Find the average of the scores
+        long double avg;
+        for (int k = 0; k < scores.size(); k++)
+            avg += scores[k];
+        avg = avg / scores.size();
+        // Calculate the change in scores with variance
+        long double var;
+        for (int k = 0; k < scores.size(); k++)
+        {
+            var += pow(avg - scores[k], 2);
+        }
+        var = var / (scores.size() - 1);
+        // Map the change in scores to the position
+        whateverYouWant[var] = i;
+    }
+    // Return the map
+    return whateverYouWant;
+}

@@ -58,7 +58,7 @@ private:
     void findCombinations(string guess, int length, Response &response);
 
     list<char> findOrdering(Response &response);
-
+    map<long double, long double> digitalOrdering(const unsigned int &length) /// This function is called to find significant digits
 
 };
 #endif
