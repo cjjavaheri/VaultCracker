@@ -224,6 +224,7 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
     guess.resize(length);
     digitIt = digitOrdering.end();
     digitIt--;
+    cout << "value: " << value << endl;
     while (counter < length + 1)
     {
         digit = int(value / pow(base, length - counter));
@@ -234,7 +235,7 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
         digitIt--;
         counter++;
     }
-
+	cout << "Resulting string: " << guess << endl;
     return guess;
 
 }
@@ -289,7 +290,7 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 
     if (length <= 6)
     {
-        multiplier = 1.10;
+        multiplier = 1.05;
     }
 
     else if (length == 7)
@@ -338,7 +339,7 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
                 found = true;
                 if (length <= 6)
                 {
-                    multiplier = multiplier - 0.01;
+                    multiplier = multiplier - 0.0001;
                 }
                 else if (length == 7)
                 {
@@ -346,10 +347,10 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
                 }
                 else
                 {
-                    multiplier = multiplier - 0.001;
+                    multiplier = multiplier - 0.0001;
                 }
                 value = 1;
-                initialValue = 1.0;
+                initialValue = 0.0;
 
             }
 
