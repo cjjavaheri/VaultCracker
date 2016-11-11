@@ -630,9 +630,6 @@ map<long double, char>::iterator differenceIt;
 map<long double, char>::iterator duplicatesIt;
 list<char> ordering;
 list<char>::iterator orderingIt;
-long double pivotScore;
-long double differenceItScore;
-long double duplicatesItScore;
 unsigned int min = 0;
 unsigned int max = 0;
 
@@ -655,77 +652,39 @@ it = scores.begin();
 compare = it;
 for (i = 0; i < 74; i++)
 {
-	difference = abs(it->second - compare->second);
+	difference = it->second - compare->second;
 	differenceIt = scoreDifferences.find(difference);
 
-	if (differenceIt == scoreDifferences.end())
 		scoreDifferences.insert({difference, compare->first});
 
-	else
+/*	else
 		duplicates.insert({difference, compare->first});
-	
+*/	
 	compare++;
 }
-	differenceIt = scoreDifferences.begin();
+
+
+/*	differenceIt = scoreDifferences.begin();
 	duplicatesIt = duplicates.begin();
 	ordering.push_back(differenceIt->second);
 	guess[guess.size() - 1] = differenceIt->second;
 	response = sendPassword(guess);
 	pivotScore = response.score;
 	differenceIt++;
-	while (differenceIt != scoreDifferences.end() && duplicatesIt != duplicates.end())
-	{
-		guess[guess.size() - 1] = differenceIt->second;
-		response = sendPassword(guess);
-		differenceItScore = response.score;
-		guess[guess.size() - 1] = duplicatesIt->second;
-		response = sendPassword(guess);
-		duplicatesItScore = response.score;
-		if (duplicatesItScore <= pivotScore && pivotScore <= differenceItScore)
-		{
-			ordering.push_front(duplicatesIt->second);
-			ordering.push_back(differenceIt->second);
-		}
-		else if (differenceItScore <= pivotScore && pivotScore <= duplicatesItScore)
-		{
-			ordering.push_front(differenceIt->second);
-			ordering.push_back(duplicatesIt->second);
-		}
-		else if (duplicatesItScore >= pivotScore && pivotScore >= differenceItScore)
-		{
-			ordering.push_front(duplicatesIt->second);
-			ordering.push_back(differenceIt->second);
-		}
-		else if (differenceItScore >= pivotScore && pivotScore >= duplicatesItScore)
-		{
-			ordering.push_front(differenceIt->second);
-			ordering.push_back(duplicatesIt->second);
-		}
-		// Case to consider for later
-	/*	else if (duplicatesItScore >= pivotScore && differenceItScore >= pivotScore)
-		{
 
-		}
-	*/
-		differenceIt++;
-		duplicatesIt++;
-	}
+*/
+	i = 0;
 
-
+ 	differenceIt = scoreDifferences.begin();
+	orderingIt = ordering.begin();
 	while (differenceIt != scoreDifferences.end())
 	{
-		guess[guess.size() - 1] = differenceIt->second;
-		response = sendPassword(guess);
-		differenceItScore = response.score;
-		if (differenceItScore >= pivotScore)
-		{
-			ordering.push_back(differenceIt->second);
-		}
-		else
-			ordering.push_front(differenceIt->second);
-
+		
+		ordering.push_front(differenceIt->second);
+		i++;
 		differenceIt++;
 	}
+
 
 	
 	cout << "The ordering is: " ;
