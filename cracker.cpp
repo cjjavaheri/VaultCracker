@@ -32,19 +32,28 @@ void Cracker::getCracking()
     long long int g1 = 0;
     long long int g2 = pow(base, length) - 1;
     list<char> ordering;
+    map<long double, long double> digitalOrder;
+    map<long double, long double>::iterator it;
 
     unsigned int min=0;
     unsigned int max=0;
 
     checkLength(min, max);
 
-
     if (min == max)
         length = max;
 
+    digitalOrder = digitalOrdering(length);
+    it = digitalOrder.begin();
+    while (it != digitalOrder.end())
+    {
+	cout << it->first << " " << it->second << endl;
+	it++;
+    }
+
     response=sendPassword(truePassword);
 
-    // Brute force the password.
+  /*  // Brute force the password.
      if ( min < 5)
      {
         bruteForce(min, max, base, response);
@@ -55,7 +64,7 @@ void Cracker::getCracking()
     {
        truePassword = binarySearch(length, base, response, g1, g2);
     }
-  
+  */
     // Character reordering
     //truePassword = FindSingleMin(response, length);
 
@@ -737,12 +746,12 @@ map<long double, long double> Cracker::digitalOrdering(const unsigned int &lengt
             scores.push_back((sendPassword(doc)).score);
         }
         // Find the average of the scores
-        long double avg;
+        long double avg = 0;
         for (int k = 0; k < scores.size(); k++)
             avg += scores[k];
         avg = avg / scores.size();
         // Calculate the change in scores with variance
-        long double var;
+        long double var = 0;
         for (int k = 0; k < scores.size(); k++)
         {
             var += pow(avg - scores[k], 2);
