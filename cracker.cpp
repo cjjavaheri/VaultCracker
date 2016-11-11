@@ -35,7 +35,10 @@ void Cracker::getCracking()
     map<long double, int> digitOrdering;
     map<long double, long double> digitalOrder;
     map<long double, int>::iterator it;
+<<<<<<< HEAD
     string temp;
+=======
+>>>>>>> a69000f7f33fb91666643104b0b4870ef43118ab
 
     unsigned int min=0;
     unsigned int max=0;
@@ -46,6 +49,7 @@ void Cracker::getCracking()
         length = max;
 
 
+<<<<<<< HEAD
 
     response=sendPassword(truePassword);
 
@@ -57,9 +61,12 @@ void Cracker::getCracking()
         cout << it->first << " " << it->second << endl;
         it++;
     }
+=======
+>>>>>>> a69000f7f33fb91666643104b0b4870ef43118ab
 
     cout << endl << endl;
 
+<<<<<<< HEAD
   /*  // Brute force the password.
     if ( min < 5)
     {
@@ -73,6 +80,34 @@ void Cracker::getCracking()
   
   
 
+=======
+    digitOrdering = findDigitOrdering(length);
+
+    it = digitOrdering.begin();
+    while (it != digitOrdering.end())
+	{
+		cout << it->first << " " << it->second << endl;
+		it++;
+	}
+
+    /*  // Brute force the password.
+       if ( min < 5)
+       {
+          bruteForce(min, max, base, response);
+       }
+
+      // Binary search
+      if (max > 4)
+      {
+         truePassword = binarySearch(length, base, response, g1, g2);
+      }
+    */
+    // Character reordering
+    //truePassword = FindSingleMin(response, length);
+
+    // cout << "True password: " << truePassword << endl;
+
+>>>>>>> a69000f7f33fb91666643104b0b4870ef43118ab
     return;
 
 }
@@ -569,9 +604,12 @@ list<char> Cracker::findOrdering(Response &response)
     map<long double, char> duplicates;
     map<long double, char>::iterator differenceIt;
     map<long double, char>::iterator duplicatesIt;
+<<<<<<< HEAD
     map<long double, int> digitOrdering;
     map<long double, int>::iterator digitIt;
     unsigned int j;
+=======
+>>>>>>> a69000f7f33fb91666643104b0b4870ef43118ab
     list<char> ordering;
     list<char>::iterator orderingIt;
     unsigned int min = 0;
@@ -580,10 +618,13 @@ list<char> Cracker::findOrdering(Response &response)
     checkLength(min, max);
     guess.resize(max);
 
+<<<<<<< HEAD
     digitOrdering = findDigitOrdering(guess.size());
     digitIt = digitOrdering.begin();
     j = digitIt->second;
 
+=======
+>>>>>>> a69000f7f33fb91666643104b0b4870ef43118ab
     for (i = 0; i < guess.size(); i++)
     {
         guess[i] = 'a';
@@ -591,9 +632,15 @@ list<char> Cracker::findOrdering(Response &response)
 
     for (i = 0; i < 74; i++)
     {
+<<<<<<< HEAD
         guess[guess.size() - j] = validChars[i];
         response = sendPassword(guess);
         scores.insert({guess[guess.size() - j], response.score});
+=======
+        guess[guess.size() - 1] = validChars[i];
+        response = sendPassword(guess);
+        scores.insert({guess[guess.size() - 1], response.score});
+>>>>>>> a69000f7f33fb91666643104b0b4870ef43118ab
     }
 
     it = scores.begin();
@@ -605,16 +652,38 @@ list<char> Cracker::findOrdering(Response &response)
 
         scoreDifferences.insert({difference, compare->first});
 
+<<<<<<< HEAD
+=======
+        /*	else
+        		duplicates.insert({difference, compare->first});
+        */
+>>>>>>> a69000f7f33fb91666643104b0b4870ef43118ab
         compare++;
     }
 
 
+<<<<<<< HEAD
+=======
+    /*	differenceIt = scoreDifferences.begin();
+    	duplicatesIt = duplicates.begin();
+    	ordering.push_back(differenceIt->second);
+    	guess[guess.size() - 1] = differenceIt->second;
+    	response = sendPassword(guess);
+    	pivotScore = response.score;
+    	differenceIt++;
+
+    */
+>>>>>>> a69000f7f33fb91666643104b0b4870ef43118ab
     i = 0;
 
     differenceIt = scoreDifferences.begin();
     orderingIt = ordering.begin();
     while (differenceIt != scoreDifferences.end())
     {
+<<<<<<< HEAD
+=======
+
+>>>>>>> a69000f7f33fb91666643104b0b4870ef43118ab
         ordering.push_front(differenceIt->second);
         i++;
         differenceIt++;
@@ -711,6 +780,10 @@ map<long double, int> Cracker::findDigitOrdering(int length)
 {
     string guess;
     unsigned int j;
+<<<<<<< HEAD
+=======
+    unsigned int k;
+>>>>>>> a69000f7f33fb91666643104b0b4870ef43118ab
     Response response;
     unsigned int i;
     map<char, long double> scores;
@@ -731,6 +804,10 @@ map<long double, int> Cracker::findDigitOrdering(int length)
 
     for (j = 1; j <= guess.size(); j++)
     {
+<<<<<<< HEAD
+=======
+        cout << "j " << j << endl;
+>>>>>>> a69000f7f33fb91666643104b0b4870ef43118ab
 
         for (i = 0; i < 74; i++)
         {
@@ -752,6 +829,7 @@ map<long double, int> Cracker::findDigitOrdering(int length)
         }
 
         differenceIt = scoreDifferences.begin();
+<<<<<<< HEAD
         sum = 0;
         while (differenceIt != scoreDifferences.end())
         {
@@ -766,5 +844,24 @@ map<long double, int> Cracker::findDigitOrdering(int length)
     }
 
     return ordering;
+=======
+	sum = 0;
+        while (differenceIt != scoreDifferences.end())
+        {
+	    sum = sum + differenceIt->first;
+            cout << differenceIt->first << " " << differenceIt->second << endl;
+            differenceIt++;
+        }
+	sum = sum / 74.0;
+	ordering.insert({sum, j});
+	cout << "Sum " << sum << endl;
+        cout << endl << endl << endl;
+        scores.clear();
+        scoreDifferences.clear();
+	
+    }
+
+	return ordering;
+>>>>>>> a69000f7f33fb91666643104b0b4870ef43118ab
 
 }
