@@ -49,15 +49,8 @@ void Cracker::getCracking()
 
     digitOrdering = findDigitOrdering(length);
 
-    it = digitOrdering.begin();
-    while (it != digitOrdering.end())
-    {
-        cout << it->first << " " << it->second << endl;
-        it++;
-    }
 
-    cout << endl << endl;
-
+	cout << endl << endl << endl;
     /*  // Brute force the password.
       if ( min < 5)
       {
@@ -80,22 +73,6 @@ void Cracker::getCracking()
         it++;
     }
 
-    /*  // Brute force the password.
-       if ( min < 5)
-       {
-          bruteForce(min, max, base, response);
-       }
-
-      // Binary search
-      if (max > 4)
-      {
-         truePassword = binarySearch(length, base, response, g1, g2);
-      }
-    */
-    // Character reordering
-    //truePassword = FindSingleMin(response, length);
-
-    // cout << "True password: " << truePassword << endl;
 
     return;
 
@@ -224,7 +201,7 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
     guess.resize(length);
     digitIt = digitOrdering.end();
     digitIt--;
-    cout << "value: " << value << endl;
+
     while (counter < length + 1)
     {
         digit = int(value / pow(base, length - counter));
@@ -235,7 +212,7 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
         digitIt--;
         counter++;
     }
-	cout << "Resulting string: " << guess << endl;
+
     return guess;
 
 }
