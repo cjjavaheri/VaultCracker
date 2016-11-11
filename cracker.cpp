@@ -49,6 +49,13 @@ void Cracker::getCracking()
 
     digitOrdering = findDigitOrdering(length);
 
+    it = digitOrdering.begin();
+    while (it != digitOrdering.end())
+    {
+        cout << it->first << " " << it->second << endl;
+        it++;
+    }
+
 
 	cout << endl << endl << endl;
     /*  // Brute force the password.
@@ -60,18 +67,6 @@ void Cracker::getCracking()
     //  Binary search
 
     truePassword = binarySearch(length, base, response, g1, g2);
-
-
-
-
-    digitOrdering = findDigitOrdering(length);
-
-    it = digitOrdering.begin();
-    while (it != digitOrdering.end())
-    {
-        cout << it->first << " " << it->second << endl;
-        it++;
-    }
 
 
     return;
@@ -563,6 +558,7 @@ void Cracker::findCombinations(string guess, int length, Response &response)
 
 list<char> Cracker::findOrdering(Response &response)
 {
+    cout << "Entered character ordering function    --------------------------------- " << endl;
     string guess = "";
     unsigned int i;
     long double difference;
@@ -598,9 +594,9 @@ list<char> Cracker::findOrdering(Response &response)
         guess[guess.size() - j] = validChars[i];
         response = sendPassword(guess);
         scores.insert({guess[guess.size() - j], response.score});
-        guess[guess.size() - 1] = validChars[i];
+        guess[guess.size() - j] = validChars[i];
         response = sendPassword(guess);
-        scores.insert({guess[guess.size() - 1], response.score});
+        scores.insert({guess[guess.size() - j], response.score});
     }
 
     it = scores.begin();
