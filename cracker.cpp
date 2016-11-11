@@ -231,17 +231,17 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
 
     if (length <= 6)
     {
-        multiplier = 1.10;
+        multiplier = 1.20;
     }
 
     else if (length == 7)
     {
-        multiplier = 1.10;
+        multiplier = 1.20;
     }
 
     else
     {
-        multiplier = 1.10;
+        multiplier = 1.50;
     }
 
 
@@ -280,15 +280,15 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
                 found = true;
                 if (length <= 6)
                 {
-                    multiplier -= 0.05;
+                    multiplier = cbrt(pow(multiplier, 2));
                 }
                 else if (length == 7)
                 {
-                    multiplier -= 0.02;
+                    multiplier = cbrt(pow(multiplier, 2));
                 }
                 else
                 {
-                    multiplier -=  0.02;
+                    multiplier = cbrt(pow(multiplier, 2));
                 }
                 value = 1;
                 initialValue = 1.0;
