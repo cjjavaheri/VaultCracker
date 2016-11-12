@@ -164,6 +164,10 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
 {
     static map<int, char> IntegerMap;
     static map<long double, int> digitOrdering;
+    static map<long double, int> digit5;
+    static map<long double, int> digit6;
+    static map<long double, int> digit7;
+    static map<long double, int> digit8;
     static map<long double, int>::iterator digitIt;
     map<int, char>::iterator cit;
     unsigned int digit;
@@ -173,8 +177,31 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
     if (IntegerMap.empty())
         IntegerMap = getIntegerMap();
 
-    if (digitOrdering.empty())
-        digitOrdering = findDigitOrdering(length);
+
+    if (digit5.empty())
+        digit5 = findDigitOrdering(5);
+
+    if (digit6.empty())
+        digit6 = findDigitOrdering(6);
+
+    if (digit7.empty())
+        digit7 = findDigitOrdering(7);
+
+    if (digit8.empty())
+        digit8 = findDigitOrdering(8);
+
+    if (length == 5)
+        digitOrdering = digit5;
+
+    if (length == 6)
+        digitOrdering = digit6;
+
+    if (length == 7)
+        digitOrdering = digit7;
+
+    if (length == 8)
+        digitOrdering = digit8;
+
 
     counter = 1;
     guess.resize(length);
@@ -204,6 +231,10 @@ long long int Cracker::getPassword(string guess, double base)
     long long int sum = 0;
     static map<char, int> CharacterMap;
     static map<long double, int> digitOrdering;
+    static map<long double, int> digit5;
+    static map<long double, int> digit6;
+    static map<long double, int> digit7;
+    static map<long double, int> digit8;
     static map<long double, int>::iterator digitIt;
     map<char, int>::iterator cit;
 
@@ -212,8 +243,29 @@ long long int Cracker::getPassword(string guess, double base)
         CharacterMap = getCharacterMap();
 
 
-    if (digitOrdering.empty())
-        digitOrdering = findDigitOrdering(guess.size());
+    if (digit5.empty())
+        digit5 = findDigitOrdering(5);
+
+    if (digit6.empty())
+        digit6 = findDigitOrdering(6);
+
+    if (digit7.empty())
+        digit7 = findDigitOrdering(7);
+
+    if (digit8.empty())
+        digit8 = findDigitOrdering(8);
+
+    if (guess.size() == 5)
+        digitOrdering = digit5;
+
+    if (guess.size() == 6)
+        digitOrdering = digit6;
+
+    if (guess.size() == 7)
+        digitOrdering = digit7;
+
+    if (guess.size() == 8)
+        digitOrdering = digit8;
 
     digitIt = digitOrdering.begin();
 
@@ -244,6 +296,7 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
     long double initialValue = 0.0;
     long double multiplier;
     unsigned int length;
+    long long int counter = 0;
 
 
     if (smallestLength == largestLength)
@@ -274,6 +327,7 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
         while (!found)
         {
             firstMin = FindMin(length, base, response, initialValue,initialValue + value);
+            counter++;
             initialValue = initialValue + value;
             value *= multiplier;
             g3 = getPassword(firstMin, base);
@@ -322,7 +376,6 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
 
 
     }
-
 
     return firstMin;
 
