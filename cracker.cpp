@@ -295,7 +295,7 @@ long long int Cracker::getPassword(string guess, double base)
     return sum;
 }
 
-string Cracker::fixedBinarySearch(int smallestLength, int largestLength, double base, Response &response, long long int g1,
+string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int largestLength, double base, Response &response, long long int g1,
                              long long int  g2)
 {
     string min;
@@ -339,6 +339,7 @@ string Cracker::fixedBinarySearch(int smallestLength, int largestLength, double 
         {
             firstMin = FindMin(length, base, response, initialValue,initialValue + value);
             counter++;
+	  //  cout << counter << endl;
             initialValue = initialValue + value;
             value *= multiplier;
             g3 = getPassword(firstMin, base);
@@ -394,7 +395,7 @@ string Cracker::fixedBinarySearch(int smallestLength, int largestLength, double 
 }
 
 
-   string Cracker::variableBinarySearch(int smallestLength, int largestLength, double base, Response &response, long long int g1, long long int  g2)
+   string Cracker::variableBinarySearch(unsigned int smallestLength, unsigned int largestLength, double base, Response &response, long long int g1, long long int  g2)
 {
     string min;
     string firstMin;
@@ -426,17 +427,17 @@ string Cracker::fixedBinarySearch(int smallestLength, int largestLength, double 
 
     if (length <= 6)
     {
-        multiplier = 1.05;
+        multiplier = 1.20;
     }
 
     else if (length == 7)
     {
-        multiplier = 1.05;
+        multiplier = 1.20;
     }
 
     else
     {
-        multiplier = 1.05;
+        multiplier = 1.20;
     }
 
 
@@ -447,6 +448,7 @@ string Cracker::fixedBinarySearch(int smallestLength, int largestLength, double 
         {
             firstMin = FindMin(length, base, response, initialValue,initialValue + value);
             counter++;
+	   // cout << counter << endl;
             initialValue = initialValue + value;
             value *= multiplier;
             g3 = getPassword(firstMin, base);
@@ -491,13 +493,24 @@ string Cracker::fixedBinarySearch(int smallestLength, int largestLength, double 
 
             }
 
-	    if (counter > 10000)
+	    if (counter > 4000)
 	    {
+		multiplier = 1.10;
 		counter = 0;
 		value = 1;
 		initialValue = 0.0;
 		length++;
 	    }
+
+	    if (length > largestLength)
+	    {
+		if (smallestLength > 4)
+			length = smallestLength;
+
+		else
+			length = 5;
+
+            }
 
         }
 

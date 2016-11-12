@@ -35,10 +35,10 @@ public:
 
     void getCracking(); /*!< Function to start the intrusion attempt */
     void bruteForce( unsigned int min, unsigned int max, double base, Response &response);
-    string fixedBinarySearch(int smallestLength, int largestLength, double base, Response &response, long long int g1,
+    string fixedBinarySearch(unsigned int smallestLength, unsigned int largestLength, double base, Response &response, long long int g1,
                          long long int  g2);
 
-    string variableBinarySearch(int smallestLength, int largestLength, double base, Response &response, long long int g1,
+    string variableBinarySearch(unsigned int smallestLength, unsigned int largestLength, double base, Response &response, long long int g1,
                          long long int  g2);
 
 
