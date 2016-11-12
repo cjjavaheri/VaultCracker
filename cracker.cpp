@@ -491,6 +491,14 @@ string Cracker::fixedBinarySearch(int smallestLength, int largestLength, double 
 
             }
 
+	    if (counter > 10000)
+	    {
+		counter = 0;
+		value = 1;
+		initialValue = 0.0;
+		length++;
+	    }
+
         }
 
 
