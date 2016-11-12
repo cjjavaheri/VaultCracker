@@ -34,6 +34,12 @@ void Cracker::getCracking()
     map<long double, int> digitOrdering;
     map<long double, long double> digitalOrder;
     map<long double, int>::iterator it;
+    string guess = "aaaaaa";
+    long double result = 0.0;
+
+    response = sendPassword(guess);
+	cout << "Guess ---------------------------------------" << guess << endl;
+	cout << "Response.score -------------------------------" << response.score << endl;
 
     unsigned int min=0;
     unsigned int max=0;
@@ -54,7 +60,7 @@ void Cracker::getCracking()
 
     cout << endl << endl << endl;
 
-    // Brute force the password.
+  /*  // Brute force the password.
     if ( min < 5)
         bruteForce(min, max, base, response);
 
@@ -78,8 +84,10 @@ void Cracker::getCracking()
 
 	else
 		g2 = pow(base, 8);
-	truePassword = variableBinarySearch(min, max, base, response, g1, g2);
+	
+truePassword = variableBinarySearch(min, max, base, response, g1, g2);
 
+*/
     return;
 
 }
