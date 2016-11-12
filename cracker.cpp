@@ -58,12 +58,27 @@ void Cracker::getCracking()
     if ( min < 5)
         bruteForce(min, max, base, response);
 
-    g1 = 0;
-    g2 = pow(base, max);
     //  Binary search
-    if (max > 4)
-        truePassword = binarySearch(min, max, base, response, g1, g2);
+    if (max > 4 && min == max)
+	{
+		g1 = 0;
+   	        g2 = pow(base, max);
+        	truePassword = fixedBinarySearch(min, max, base, response, g1, g2);
+	}
 
+	g1 = 0;
+	if (min <= 5)
+		g2 = pow(base, 5);
+
+	else if (min == 6)
+		g2 = pow(base, 6);
+
+	else if (min == 7)
+		g2 = pow(base, 7);
+
+	else
+		g2 = pow(base, 8);
+	truePassword = variableBinarySearch(min, max, base, response, g1, g2);
 
     return;
 
@@ -280,7 +295,7 @@ long long int Cracker::getPassword(string guess, double base)
     return sum;
 }
 
-string Cracker::binarySearch(int smallestLength, int largestLength, double base, Response &response, long long int g1,
+string Cracker::fixedBinarySearch(int smallestLength, int largestLength, double base, Response &response, long long int g1,
                              long long int  g2)
 {
     string min;
@@ -299,11 +314,7 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
     long long int counter = 0;
 
 
-    if (smallestLength == largestLength)
-        length = largestLength;
-
-    else
-        length = 5;
+    length = largestLength;
 
     if (length <= 6)
     {
@@ -380,6 +391,112 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
     return firstMin;
 
 
+}
+
+
+   string Cracker::variableBinarySearch(int smallestLength, int largestLength, double base, Response &response, long long int g1, long long int  g2)
+{
+    string min;
+    string firstMin;
+    string g3Next;
+    string g3Prev;
+    bool found = false;
+    long long int g3;
+    long double g3NextScore;
+    long double g3PrevScore;
+    long double g3Score;
+    long double value = 1.0;
+    long double initialValue = 0.0;
+    long double multiplier;
+    unsigned int length;
+    long long int counter = 0;
+
+
+    if (smallestLength <= 5)
+	length = 5;
+
+    else if (smallestLength == 6)
+	length = 6;
+
+    else if (smallestLength == 7)
+	length = 7;
+
+    else
+	length = 8;
+
+    if (length <= 6)
+    {
+        multiplier = 1.05;
+    }
+
+    else if (length == 7)
+    {
+        multiplier = 1.05;
+    }
+
+    else
+    {
+        multiplier = 1.05;
+    }
+
+
+    while ( response.rc != ACCEPTED)
+    {
+        found = false;
+        while (!found)
+        {
+            firstMin = FindMin(length, base, response, initialValue,initialValue + value);
+            counter++;
+            initialValue = initialValue + value;
+            value *= multiplier;
+            g3 = getPassword(firstMin, base);
+            g3Next = getGuess(g3 + 1, length, base);
+            g3Prev = getGuess(g3 - 1, length, base);
+            response = sendPassword(firstMin);
+            if (response.rc == ACCEPTED)
+                return firstMin;
+            g3Score = response.score;
+            response = sendPassword(g3Next);
+            if (response.rc == ACCEPTED)
+                return g3Next;
+            g3NextScore = response.score;
+            response = sendPassword(g3Prev);
+            if (response.rc == ACCEPTED)
+                return g3Prev;
+            g3PrevScore = response.score;
+            if (g3Score < g3NextScore && g3Score < g3PrevScore)
+            {
+                found = true;
+                value = 1;
+                initialValue = g3;
+            }
+
+            if (initialValue > pow(base, length) - 1)
+            {
+                found = true;
+                if (length <= 6)
+                {
+                    multiplier = multiplier - 0.0001;
+                }
+                else if (length == 7)
+                {
+                    multiplier = multiplier - 0.001;
+                }
+                else
+                {
+                    multiplier = multiplier - 0.0001;
+                }
+                value = 1;
+                initialValue = 0.0;
+
+            }
+
+        }
+
+
+    }
+
+    return firstMin;
 }
 
 string Cracker::FindMin(int length, double base, Response &response, long long int g1,
