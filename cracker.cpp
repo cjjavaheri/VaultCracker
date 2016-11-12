@@ -38,8 +38,8 @@ void Cracker::getCracking()
     long double result = 0.0;
 
     response = sendPassword(guess);
-	cout << "Guess ---------------------------------------" << guess << endl;
-	cout << "Response.score -------------------------------" << response.score << endl;
+	//cout << "Guess ---------------------------------------" << guess << endl;
+	//cout << "Response.score -------------------------------" << response.score << endl;
 
     unsigned int min=0;
     unsigned int max=0;
@@ -50,17 +50,17 @@ void Cracker::getCracking()
 
     digitOrdering = findDigitOrdering(max);
 
-    it = digitOrdering.begin();
+    /*it = digitOrdering.begin();
     while (it != digitOrdering.end())
     {
         cout << it->first << " " << it->second << endl;
         it++;
-    }
+    }*/
 
 
     cout << endl << endl << endl;
 
-  /*  // Brute force the password.
+    // Brute force the password.
     if ( min < 5)
         bruteForce(min, max, base, response);
 
@@ -87,7 +87,7 @@ void Cracker::getCracking()
 	
 truePassword = variableBinarySearch(min, max, base, response, g1, g2);
 
-*/
+
     return;
 
 }
@@ -236,7 +236,7 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
         digit = int(value / pow(base, length - counter));
         cit = IntegerMap.find(digit);
         guess[guess.size() - digitIt->second] = cit->second;
-        value = (value / pow(base, length - counter) - digit) * pow(base, length - 			counter);
+        value = (value / ((long double)pow(base, length - counter)) - ((long double)digit)) * ((long double)pow(base, length - counter));
         value = nearbyint(value);
         digitIt--;
         counter++;
@@ -290,8 +290,42 @@ long long int Cracker::getPassword(string guess, double base)
     if (guess.size() == 8)
         digitOrdering = digit8;
 
-    digitIt = digitOrdering.begin();
+    digitIt = digit5.begin();
+    cout << endl << "Digit 5 ordering -------------------------------" << endl;
+    while (digitIt != digit5.end())
+    {
+	cout << digitIt->first << " " << digitIt->second << endl;
+	digitIt++;
 
+    }
+	digitIt = digit6.begin();
+	cout << endl << "Digit 6 ordering -------------------------------" << endl;
+   while (digitIt != digit6.end())
+    {
+	cout << digitIt->first << " " << digitIt->second << endl;
+	digitIt++;
+
+    }
+
+	digitIt = digit7.begin();
+	cout << endl << "Digit 7 ordering -------------------------------" << endl;
+   while (digitIt != digit7.end())
+    {
+	cout << digitIt->first << " " << digitIt->second << endl;
+	digitIt++;
+
+    }
+
+	digitIt = digit8.begin();
+	cout << endl << "Digit 8 ordering -------------------------------" << endl;
+   while (digitIt != digit8.end())
+    {
+	cout << digitIt->first << " " << digitIt->second << endl;
+	digitIt++;
+
+    }
+exit(1);
+	digitIt = digitOrdering.begin();
     while (digitIt != digitOrdering.end())
     {
         cit = CharacterMap.find(guess[guess.size() - digitIt->second]);
@@ -326,17 +360,17 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
 
     if (length <= 6)
     {
-        multiplier = 1.05;
+        multiplier = 1.20;
     }
 
     else if (length == 7)
     {
-        multiplier = 1.05;
+        multiplier = 1.20;
     }
 
     else
     {
-        multiplier = 1.05;
+        multiplier = 1.20;
     }
 
 
@@ -347,7 +381,7 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
         {
             firstMin = FindMin(length, base, response, initialValue,initialValue + value);
             counter++;
-	  //  cout << counter << endl;
+	    cout << counter << endl;
             initialValue = initialValue + value;
             value *= multiplier;
             g3 = getPassword(firstMin, base);
@@ -381,7 +415,7 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
                 }
                 else if (length == 7)
                 {
-                    multiplier = multiplier - 0.001;
+                    multiplier = multiplier - 0.0001;
                 }
                 else
                 {
@@ -391,6 +425,15 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
                 initialValue = 0.0;
 
             }
+
+	    if (counter > 4000)
+	    {
+
+		multiplier = ((long double)cbrt(pow(multiplier, 2)));
+		value = 1;
+		initialValue = 0;
+		counter = 0;
+	    }
 
         }
 
@@ -435,17 +478,17 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
 
     if (length <= 6)
     {
-        multiplier = 1.20;
+        multiplier = 1.50;
     }
 
     else if (length == 7)
     {
-        multiplier = 1.20;
+        multiplier = 1.50;
     }
 
     else
     {
-        multiplier = 1.20;
+        multiplier = 1.50;
     }
 
 
@@ -486,15 +529,15 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
                 found = true;
                 if (length <= 6)
                 {
-                    multiplier = multiplier - 0.0001;
+                    multiplier = multiplier - 0.000001;
                 }
                 else if (length == 7)
                 {
-                    multiplier = multiplier - 0.001;
+                    multiplier = multiplier - 0.000001;
                 }
                 else
                 {
-                    multiplier = multiplier - 0.0001;
+                    multiplier = multiplier - 0.000001;
                 }
                 value = 1;
                 initialValue = 0.0;
@@ -503,7 +546,7 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
 
 	    if (counter > 4000)
 	    {
-		multiplier = 1.10;
+		multiplier = multiplier - 0.000001;
 		counter = 0;
 		value = 1;
 		initialValue = 0.0;
@@ -512,6 +555,8 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
 
 	    if (length > largestLength)
 	    {
+
+		multiplier = ((long double)cbrt(pow(multiplier, 2)));
 		if (smallestLength > 4)
 			length = smallestLength;
 
@@ -544,6 +589,8 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     long double g3PrevScore;
     string g3Next;
     string g3Prev;
+    static int counter = 0;
+
 
     g3Next = getGuess(g3 + 1, length, base);
     g3Prev = getGuess(g3 - 1, length, base);
@@ -560,6 +607,7 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     guess1 = getGuess(g1, length, base);
     guess2 = getGuess(g2, length, base);
     guess3 = getGuess(g3, length, base);
+
 
 
 
@@ -749,7 +797,7 @@ void Cracker::findCombinations(string guess, int length, Response &response)
 
 list<char> Cracker::findOrdering(Response &response)
 {
-    cout << "Entered character ordering function    --------------------------------- " << endl;
+   // cout << "Entered character ordering function    --------------------------------- " << endl;
     string guess = "";
     unsigned int i;
     long double difference;
@@ -816,13 +864,13 @@ list<char> Cracker::findOrdering(Response &response)
 
 
 
-    cout << "The ordering is: " ;
+   /* cout << "The ordering is: " ;
     orderingIt = ordering.begin();
     while (orderingIt != ordering.end())
     {
         cout << *orderingIt;
         orderingIt++;
-    }
+    }*/
 
     return ordering;
 }
@@ -961,4 +1009,3 @@ map<long double, int> Cracker::findDigitOrdering(int length)
     return ordering;
 
 }
-

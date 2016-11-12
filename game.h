@@ -17,6 +17,8 @@
 #include "level5a.h"
 #include "level5b.h"
 #include "level5c.h"
+#include "level6.h"
+#include "level7.h"
 
 using namespace std;
 using namespace placeholders;
