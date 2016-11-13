@@ -1,28 +1,29 @@
-/******************************************************************************//**
+/*************************************************************************//**
  * @file main.cpp
- *
- * @brief A Red-Blue cyber security program
+ * 
+ * @brief A red blue cyber security program.
  *
  * @mainpage Program 2 - Red-Blue Cyber security exercise
  *
  * @section course_section Course Information
- * 
+ *
  * @author Cameron Javaheri, Garfield Tong, Soham Naik
  *
- * @date 13th Nov, 2016
+ * @date due 13th Nov, 2016
  *
  * @par Professor:
- *           Dr. Paul Hinker
+ *		Paul Hinker
  *
  * @par Course:
- *           CSC300 - 1 - 10am 11am
- *           CSC300 - 2 - 2pm 3pm
+ *      CSC300 - 1 - 10am 11am
+ *      CSC300 - 2 - 2pm 3pm
+ *
  *
  * @par Location:
- *           McLaury 310 
+		McLaury - 310
  *
- * @details 
- *	This program is an exercise in red-blue cybersecurity. The goal
+ *
+ * @details This program is an exercise in red-blue cybersecurity. The goal
  * 	was to create a cracker that could find the password that a vault
  *	generated. There were a few rules that the vault had to abide by.
  *	The password had to be at a local minimum, the cracker had a specific
@@ -30,20 +31,37 @@
  *	reordering, some vaults had multiple minimums, and some vaults had a
  *	combination of the latter. The main goal of this program was to develop
  *	algorithms and data structures to solve the given problem.
+ * 
+ *  @section compile_section Compiling and Usage
  *
- * @par Compiling instructions:
+ * @par Compiling Instructions:
  *           Use cracker.cpp for the following vaults:
  *           vault5a, vault6
- *           Use cracker2.cpp for the rest, that is:
+ *           , and Use cracker2.cpp for the rest, that is:
  *           vault0, vault1, vault2, vault3, vault4a, vault4b, vault4c,5b,5c7
  *
  *           When using the respective vaults, please change the cracker name in the
  *           makefile.
  *
+ * @par Usage:
+   @verbatim
+   % make
+   % main
+   @endverbatim
+ *
+ * @section todo_bugs_modification_section Todo, Bugs, and Modifications
+ *
+ * @bug none
+ *
+ * @todo none
+ *
  * @par Modifications and Development Timeline:
- *  < href="https://gitlab.mcs.sdsmt.edu/7394551/PA2.git">
- * 
- ******************************************************************************/
+   @verbatim
+   Gitlab Repository: https://gitlab.mcs.sdsmt.edu/7394551/PA2.git
+   @endverbatim
+ *
+ *
+ ****************************************************************************/
 
 #include <iostream>
 #include <functional>
