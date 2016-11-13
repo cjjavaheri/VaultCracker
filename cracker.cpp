@@ -31,31 +31,73 @@ void Cracker::getCracking()
     long long int g1;
     long long int g2;
     list<char> ordering;
-    map<long double, int> digitOrdering;
-    map<long double, long double> digitalOrder;
+    static map<long double, int> digitOrdering;
+    static map<long double, int> digit5;
+    static map<long double, int> digit6;
+    static map<long double, int> digit7;
+    static map<long double, int> digit8;
+    unsigned int length = 0;
+    vector<map<long double, int>> correctOrdering;
     map<long double, int>::iterator it;
     string guess = "aaaaaa";
+    unsigned int min=0;
+    unsigned int max=0;
     long double result = 0.0;
 
     response = sendPassword(guess);
-	//cout << "Guess ---------------------------------------" << guess << endl;
-	//cout << "Response.score -------------------------------" << response.score << endl;
+    //cout << "Guess ---------------------------------------" << guess << endl;
+    //cout << "Response.score -------------------------------" << response.score << endl;
 
-    unsigned int min=0;
-    unsigned int max=0;
+
+    if (digit5.empty())
+    {
+        digit5 = findDigitOrdering(5);
+        correctOrdering.push_back(digit5);
+    }
+
+    if (digit6.empty())
+    {
+        digit6 = findDigitOrdering(6);
+        correctOrdering.push_back(digit6);
+    }
+    if (digit7.empty())
+    {
+        digit7 = findDigitOrdering(7);
+        correctOrdering.push_back(digit7);
+    }
+    if (digit8.empty())
+    {
+        digit8 = findDigitOrdering(8);
+        correctOrdering.push_back(digit8);
+    }
+
+    cout << "before digitordering in getcracking----------" << endl;
+    if (digitOrdering.empty())
+        digitOrdering = findLength(correctOrdering);
+
+    cout << "after digitordering in getcracking-----------" << endl;
+
+    it = digitOrdering.begin();
+    if (it == digitOrdering.end())
+        cout << "It is equal to digitordering.end()) " << endl;
+    while (it != digitOrdering.end())
+    {
+        cout << it->first << " " << it->second << endl;
+        it++;
+    }
 
     checkLength(min, max);
 
     response=sendPassword(truePassword);
 
-    digitOrdering = findDigitOrdering(max);
+    length = digitOrdering.size();
 
-    /*it = digitOrdering.begin();
+    it = digitOrdering.begin();
     while (it != digitOrdering.end())
     {
         cout << it->first << " " << it->second << endl;
         it++;
-    }*/
+    }
 
 
     cout << endl << endl << endl;
@@ -65,28 +107,29 @@ void Cracker::getCracking()
         bruteForce(min, max, base, response);
 
     //  Binary search
-    if (max > 4 && min == max)
-	{
-		g1 = 0;
-   	        g2 = pow(base, max);
-        	truePassword = fixedBinarySearch(min, max, base, response, g1, g2);
-	}
+    if (max > 4)
+    {
+        g1 = 0;
+        g2 = pow(base, length);
+        truePassword = fixedBinarySearch(min, max, base, response, g1, g2);
+    }
 
-	g1 = 0;
-	if (min <= 5)
-		g2 = pow(base, 5);
+    /*  g1 = 0;
+      if (min <= 5)
+          g2 = pow(base, 5);
 
-	else if (min == 6)
-		g2 = pow(base, 6);
+      else if (min == 6)
+          g2 = pow(base, 6);
 
-	else if (min == 7)
-		g2 = pow(base, 7);
+      else if (min == 7)
+          g2 = pow(base, 7);
 
-	else
-		g2 = pow(base, 8);
-	
-truePassword = variableBinarySearch(min, max, base, response, g1, g2);
+      else
+          g2 = pow(base, 8);
 
+      truePassword = variableBinarySearch(min, max, base, response, g1, g2);
+
+    */
 
     return;
 
@@ -192,39 +235,110 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
     static map<long double, int> digit7;
     static map<long double, int> digit8;
     static map<long double, int>::iterator digitIt;
+    vector<map<long double, int>> correctOrdering;
     map<int, char>::iterator cit;
     unsigned int digit;
     string guess = "";
     unsigned int counter;
+    static int attempt = 0;
+
+    attempt++;
+
+
 
     if (IntegerMap.empty())
         IntegerMap = getIntegerMap();
 
 
     if (digit5.empty())
+    {
         digit5 = findDigitOrdering(5);
+        correctOrdering.push_back(digit5);
+    }
 
     if (digit6.empty())
+    {
         digit6 = findDigitOrdering(6);
-
+        correctOrdering.push_back(digit6);
+    }
     if (digit7.empty())
+    {
         digit7 = findDigitOrdering(7);
-
+        correctOrdering.push_back(digit7);
+    }
     if (digit8.empty())
+    {
         digit8 = findDigitOrdering(8);
+        correctOrdering.push_back(digit8);
+    }
 
-    if (length == 5)
-        digitOrdering = digit5;
+    /*
+        if (length == 5)
+            digitOrdering = digit5;
 
-    if (length == 6)
-        digitOrdering = digit6;
+        if (length == 6)
+            digitOrdering = digit6;
 
-    if (length == 7)
-        digitOrdering = digit7;
+        if (length == 7)
+            digitOrdering = digit7;
 
-    if (length == 8)
-        digitOrdering = digit8;
+        if (length == 8)
+            digitOrdering = digit8;
+    */
 
+
+    /*  digitIt = digit5.begin();
+      cout << endl << "Digit 5 ordering -------------------------------" << endl;
+      while (digitIt != digit5.end())
+      {
+          cout << digitIt->first << " " << digitIt->second << endl;
+          digitIt++;
+
+      }
+      digitIt = digit6.begin();
+      cout << endl << "Digit 6 ordering -------------------------------" << endl;
+      while (digitIt != digit6.end())
+      {
+          cout << digitIt->first << " " << digitIt->second << endl;
+          digitIt++;
+
+      }
+
+      digitIt = digit7.begin();
+      cout << endl << "Digit 7 ordering -------------------------------" << endl;
+      while (digitIt != digit7.end())
+      {
+          cout << digitIt->first << " " << digitIt->second << endl;
+          digitIt++;
+
+      }
+
+      digitIt = digit8.begin();
+      cout << endl << "Digit 8 ordering -------------------------------" << endl;
+      while (digitIt != digit8.end())
+      {
+          cout << digitIt->first << " " << digitIt->second << endl;
+          digitIt++;
+
+      }
+
+    */
+    if (digitOrdering.empty())
+        digitOrdering = findLength(correctOrdering);
+
+    if (attempt == 1)
+    {
+        digitIt = digitOrdering.begin();
+        cout << endl << "Digit ordering we calculate-----------------------" << endl;
+        while (digitIt != digitOrdering.end())
+        {
+            cout << digitIt->first << " " << digitIt->second << endl;
+            digitIt++;
+        }
+    }
+
+
+    length = digitOrdering.size();
 
     counter = 1;
     guess.resize(length);
@@ -241,6 +355,8 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
         digitIt--;
         counter++;
     }
+
+
 
     return guess;
 
@@ -259,73 +375,113 @@ long long int Cracker::getPassword(string guess, double base)
     static map<long double, int> digit7;
     static map<long double, int> digit8;
     static map<long double, int>::iterator digitIt;
+    vector<map<long double, int>> correctOrdering;
     map<char, int>::iterator cit;
+    static int counter = 0;
+
+    counter++;
 
 
     if (CharacterMap.empty())
         CharacterMap = getCharacterMap();
 
 
+
     if (digit5.empty())
+    {
         digit5 = findDigitOrdering(5);
+        correctOrdering.push_back(digit5);
+    }
 
     if (digit6.empty())
+    {
         digit6 = findDigitOrdering(6);
-
+        correctOrdering.push_back(digit6);
+    }
     if (digit7.empty())
+    {
         digit7 = findDigitOrdering(7);
-
+        correctOrdering.push_back(digit7);
+    }
     if (digit8.empty())
+    {
         digit8 = findDigitOrdering(8);
-
-    if (guess.size() == 5)
-        digitOrdering = digit5;
-
-    if (guess.size() == 6)
-        digitOrdering = digit6;
-
-    if (guess.size() == 7)
-        digitOrdering = digit7;
-
-    if (guess.size() == 8)
-        digitOrdering = digit8;
-
-    digitIt = digit5.begin();
-    cout << endl << "Digit 5 ordering -------------------------------" << endl;
-    while (digitIt != digit5.end())
-    {
-	cout << digitIt->first << " " << digitIt->second << endl;
-	digitIt++;
-
-    }
-	digitIt = digit6.begin();
-	cout << endl << "Digit 6 ordering -------------------------------" << endl;
-   while (digitIt != digit6.end())
-    {
-	cout << digitIt->first << " " << digitIt->second << endl;
-	digitIt++;
-
+        correctOrdering.push_back(digit8);
     }
 
-	digitIt = digit7.begin();
-	cout << endl << "Digit 7 ordering -------------------------------" << endl;
-   while (digitIt != digit7.end())
-    {
-	cout << digitIt->first << " " << digitIt->second << endl;
-	digitIt++;
+    /*
+        if (length == 5)
+            digitOrdering = digit5;
 
+        if (length == 6)
+            digitOrdering = digit6;
+
+        if (length == 7)
+            digitOrdering = digit7;
+
+        if (length == 8)
+            digitOrdering = digit8;
+
+    */
+
+
+
+    /*
+       digitIt = digit5.begin();
+       cout << endl << "Digit 5 ordering -------------------------------" << endl;
+       while (digitIt != digit5.end())
+       {
+           cout << digitIt->first << " " << digitIt->second << endl;
+           digitIt++;
+
+       }
+       digitIt = digit6.begin();
+       cout << endl << "Digit 6 ordering -------------------------------" << endl;
+       while (digitIt != digit6.end())
+       {
+           cout << digitIt->first << " " << digitIt->second << endl;
+           digitIt++;
+
+       }
+
+       digitIt = digit7.begin();
+       cout << endl << "Digit 7 ordering -------------------------------" << endl;
+       while (digitIt != digit7.end())
+       {
+           cout << digitIt->first << " " << digitIt->second << endl;
+           digitIt++;
+
+       }
+
+       digitIt = digit8.begin();
+       cout << endl << "Digit 8 ordering -------------------------------" << endl;
+       while (digitIt != digit8.end())
+       {
+           cout << digitIt->first << " " << digitIt->second << endl;
+           digitIt++;
+
+       }
+
+    */
+   // cout << "before find length---------------------" << endl;
+    if (digitOrdering.empty())
+        digitOrdering = findLength(correctOrdering);
+
+    if (counter == 1)
+    {
+        digitIt = digitOrdering.begin();
+        cout << endl << "Digit ordering we calculate-----------------------" << endl;
+        while (digitIt != digitOrdering.end())
+        {
+            cout << digitIt->first << " " << digitIt->second << endl;
+            digitIt++;
+        }
     }
 
-	digitIt = digit8.begin();
-	cout << endl << "Digit 8 ordering -------------------------------" << endl;
-   while (digitIt != digit8.end())
-    {
-	cout << digitIt->first << " " << digitIt->second << endl;
-	digitIt++;
+    guess.resize(digitOrdering.size());
 
-    }
-exit(1);
-	digitIt = digitOrdering.begin();
+
+    digitIt = digitOrdering.begin();
     while (digitIt != digitOrdering.end())
     {
         cit = CharacterMap.find(guess[guess.size() - digitIt->second]);
@@ -334,11 +490,13 @@ exit(1);
         digitIt++;
     }
 
+
+
     return sum;
 }
 
 string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int largestLength, double base, Response &response, long long int g1,
-                             long long int  g2)
+                                  long long int  g2)
 {
     string min;
     string firstMin;
@@ -360,17 +518,17 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
 
     if (length <= 6)
     {
-        multiplier = 1.20;
+        multiplier = 1.50;
     }
 
     else if (length == 7)
     {
-        multiplier = 1.20;
+        multiplier = 1.50;
     }
 
     else
     {
-        multiplier = 1.20;
+        multiplier = 1.50;
     }
 
 
@@ -381,7 +539,7 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
         {
             firstMin = FindMin(length, base, response, initialValue,initialValue + value);
             counter++;
-	    cout << counter << endl;
+            cout << counter << endl;
             initialValue = initialValue + value;
             value *= multiplier;
             g3 = getPassword(firstMin, base);
@@ -426,15 +584,6 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
 
             }
 
-	    if (counter > 4000)
-	    {
-
-		multiplier = ((long double)cbrt(pow(multiplier, 2)));
-		value = 1;
-		initialValue = 0;
-		counter = 0;
-	    }
-
         }
 
 
@@ -446,7 +595,7 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
 }
 
 
-   string Cracker::variableBinarySearch(unsigned int smallestLength, unsigned int largestLength, double base, Response &response, long long int g1, long long int  g2)
+string Cracker::variableBinarySearch(unsigned int smallestLength, unsigned int largestLength, double base, Response &response, long long int g1, long long int  g2)
 {
     string min;
     string firstMin;
@@ -465,16 +614,16 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
 
 
     if (smallestLength <= 5)
-	length = 5;
+        length = 5;
 
     else if (smallestLength == 6)
-	length = 6;
+        length = 6;
 
     else if (smallestLength == 7)
-	length = 7;
+        length = 7;
 
     else
-	length = 8;
+        length = 8;
 
     if (length <= 6)
     {
@@ -499,7 +648,7 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
         {
             firstMin = FindMin(length, base, response, initialValue,initialValue + value);
             counter++;
-	   // cout << counter << endl;
+            // cout << counter << endl;
             initialValue = initialValue + value;
             value *= multiplier;
             g3 = getPassword(firstMin, base);
@@ -544,24 +693,24 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
 
             }
 
-	    if (counter > 4000)
-	    {
-		multiplier = multiplier - 0.000001;
-		counter = 0;
-		value = 1;
-		initialValue = 0.0;
-		length++;
-	    }
+            if (counter > 4000)
+            {
+                multiplier = multiplier - 0.000001;
+                counter = 0;
+                value = 1;
+                initialValue = 0.0;
+                length++;
+            }
 
-	    if (length > largestLength)
-	    {
+            if (length > largestLength)
+            {
 
-		multiplier = ((long double)cbrt(pow(multiplier, 2)));
-		if (smallestLength > 4)
-			length = smallestLength;
+                multiplier = ((long double)cbrt(pow(multiplier, 2)));
+                if (smallestLength > 4)
+                    length = smallestLength;
 
-		else
-			length = 5;
+                else
+                    length = 5;
 
             }
 
@@ -797,7 +946,7 @@ void Cracker::findCombinations(string guess, int length, Response &response)
 
 list<char> Cracker::findOrdering(Response &response)
 {
-   // cout << "Entered character ordering function    --------------------------------- " << endl;
+    // cout << "Entered character ordering function    --------------------------------- " << endl;
     string guess = "";
     unsigned int i;
     long double difference;
@@ -864,13 +1013,13 @@ list<char> Cracker::findOrdering(Response &response)
 
 
 
-   /* cout << "The ordering is: " ;
-    orderingIt = ordering.begin();
-    while (orderingIt != ordering.end())
-    {
-        cout << *orderingIt;
-        orderingIt++;
-    }*/
+    /* cout << "The ordering is: " ;
+     orderingIt = ordering.begin();
+     while (orderingIt != ordering.end())
+     {
+         cout << *orderingIt;
+         orderingIt++;
+     }*/
 
     return ordering;
 }
@@ -1009,3 +1158,281 @@ map<long double, int> Cracker::findDigitOrdering(int length)
     return ordering;
 
 }
+
+
+map<long double, int> Cracker::findLength(vector<map<long double, int>> digitOrderings)
+{
+
+    int i;
+    unsigned int min = 0;
+    unsigned int max = 0;
+    map<long double, int>::iterator digit5It;
+    map<long double, int>::iterator digit6It;
+    map<long double, int>::iterator digit7It;
+    map<long double, int>::iterator digit8It;
+    long double score;
+
+    checkLength(min, max);
+
+
+    digit5It =  digitOrderings[0].begin();
+    digit6It = digitOrderings[1].begin();
+    digit7It = digitOrderings[2].begin();
+    digit8It = digitOrderings[3].begin();
+
+    if (min == 5 && max == 5)
+        return digitOrderings[0];
+
+    if (min == 6 && max == 6)
+        return digitOrderings[1];
+
+    if (min == 7 && max == 7)
+        return digitOrderings[2];
+
+    if (min == 8 && max == 8)
+        return digitOrderings[3];
+
+    //cout << "Before min == 6 and max == 8" << endl;
+    if (min == 6 && max == 8)
+    {
+        while (digit6It != digitOrderings[1].end())
+        {
+           // cout << "entered first while loop " << endl;
+            if (digit6It->first < digit7It->first && digit6It->first < digit8It->first)
+                return digitOrderings[1];
+
+            if (digit7It->first < digit6It->first && digit7It->first < digit8It->first)
+                return digitOrderings[2];
+
+            if (digit8It->first < digit6It->first && digit8It->first < digit7It->first)
+                return digitOrderings[3];
+
+            if (digit6It->first == digit7It->first && digit6It->first == digit8It->first && digit7It->first == digit8It->first)
+            {
+                digit6It++;
+                digit7It++;
+                digit8It++;
+            }
+
+            else if (digit6It->first == digit7It->first)
+            {
+                //cout << "Entered 2nd else if " << endl;
+                while (digit6It != digitOrderings[1].end())
+                {
+                    //cout << "Entered 6 == 7 while loop " << endl;
+                    if (digit6It->first < digit7It->first)
+                        return digitOrderings[1];
+
+                    else if (digit7It->first < digit6It->first)
+                        return digitOrderings[2];
+
+                    else if (digit6It->first == digit7It->first)
+                    {
+                        digit6It++;
+                        digit7It++;
+                    }
+                }
+
+                return digitOrderings[2];
+            }
+
+            else if (digit6It->first == digit8It->first)
+            {
+                while (digit6It != digitOrderings[1].end())
+                {
+                   // cout << "Entered 6 == 8 while loop " << endl;
+                    if (digit6It->first < digit8It->first)
+                        return digitOrderings[1];
+
+                    else if (digit8It->first < digit6It->first)
+                        return digitOrderings[3];
+
+                    else if (digit6It->first == digit8It->first)
+                    {
+                        digit6It++;
+                        digit8It++;
+                    }
+                }
+
+                return digitOrderings[3];
+            }
+
+            else if (digit7It->first == digit8It->first)
+            {
+                while (digit7It != digitOrderings[2].end())
+                {
+                   // cout << "Entered 7 == 8 " << endl;
+                    if (digit7It->first < digit8It->first)
+                        return digitOrderings[2];
+
+                    else if (digit8It->first < digit7It->first)
+                        return digitOrderings[3];
+
+                    else if (digit7It->first == digit8It->first)
+                    {
+                        digit7It++;
+                        digit8It++;
+                    }
+                }
+
+                return digitOrderings[3];
+            }
+
+
+
+        }
+
+        while (digit7It != digitOrderings[2].end())
+        {
+            if (digit7It->first < digit8It->first)
+                return digitOrderings[2];
+
+            if (digit8It->first < digit7It->first)
+                return digitOrderings[3];
+
+            else
+		{
+                	digit7It++;
+            		digit8It++;
+		}
+        }
+
+        return digitOrderings[3];
+
+    }
+
+
+
+
+
+
+
+    if (min == 5 && max == 7)
+    {
+        while (digit5It != digitOrderings[0].end())
+        {
+          //  cout << "entered first while loop " << endl;
+            if (digit5It->first < digit6It->first && digit5It->first < digit7It->first)
+                return digitOrderings[0];
+
+            if (digit6It->first < digit5It->first && digit6It->first < digit7It->first)
+                return digitOrderings[1];
+
+            if (digit7It->first < digit5It->first && digit7It->first < digit6It->first)
+                return digitOrderings[2];
+
+            if (digit5It->first == digit6It->first && digit5It->first == digit7It->first && digit6It->first == digit7It->first)
+            {
+                digit5It++;
+                digit6It++;
+                digit7It++;
+            }
+
+            else if (digit5It->first == digit6It->first)
+            {
+                cout << "Entered 2nd else if " << endl;
+                while (digit5It != digitOrderings[0].end())
+                {
+                    cout << "Entered 6 == 7 while loop " << endl;
+                    if (digit5It->first < digit6It->first)
+                        return digitOrderings[0];
+
+                    else if (digit6It->first < digit5It->first)
+                        return digitOrderings[1];
+
+                    else if (digit5It->first == digit6It->first)
+                    {
+                        digit5It++;
+                        digit6It++;
+                    }
+                }
+
+                return digitOrderings[1];
+            }
+
+            else if (digit5It->first == digit7It->first)
+            {
+                while (digit5It != digitOrderings[0].end())
+                {
+                   // cout << "Entered 5 == 7 while loop " << endl;
+                    if (digit5It->first < digit7It->first)
+                        return digitOrderings[0];
+
+                    else if (digit7It->first < digit5It->first)
+                        return digitOrderings[2];
+
+                    else if (digit5It->first == digit7It->first)
+                    {
+                        digit5It++;
+                        digit7It++;
+                    }
+                }
+
+                return digitOrderings[2];
+            }
+
+            else if (digit6It->first == digit7It->first)
+            {
+                while (digit6It != digitOrderings[1].end())
+                {
+                   // cout << "Entered 7 == 8 " << endl;
+                    if (digit6It->first < digit7It->first)
+                        return digitOrderings[1];
+
+                    else if (digit7It->first < digit6It->first)
+                        return digitOrderings[2];
+
+                    else if (digit6It->first == digit7It->first)
+                    {
+                        digit6It++;
+                        digit7It++;
+                    }
+                }
+
+                return digitOrderings[2];
+            }
+
+
+
+        }
+
+        while (digit6It != digitOrderings[1].end())
+        {
+            if (digit6It->first < digit7It->first)
+                return digitOrderings[1];
+
+            if (digit7It->first < digit6It->first)
+                return digitOrderings[2];
+
+            else
+		{
+                	digit6It++;
+            		digit7It++;
+		}
+        }
+
+        return digitOrderings[2];
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

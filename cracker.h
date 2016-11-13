@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <vector>
 
 #include <fstream>
 #include <map>
@@ -66,6 +67,8 @@ private:
 
 
     map<long double, int> findDigitOrdering(int length);
+
+    map<long double, int> findLength(vector<map<long double, int>> digitOrderings);
 
 };
 #endif
