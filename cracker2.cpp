@@ -684,15 +684,15 @@ string Cracker::variableBinarySearch(unsigned int smallestLength, unsigned int l
                 found = true;
                 if (length <= 6)
                 {
-                    multiplier = multiplier - 0.001;
+                    multiplier = multiplier - 0.00001;
                 }
                 else if (length == 7)
                 {
-                    multiplier = multiplier - 0.001;
+                    multiplier = multiplier - 0.00001;
                 }
                 else
                 {
-                    multiplier = multiplier - 0.001;
+                    multiplier = multiplier - 0.00001;
                 }
                 value = 1;
                 initialValue = 0.0;
@@ -701,7 +701,7 @@ string Cracker::variableBinarySearch(unsigned int smallestLength, unsigned int l
 
             if (counter > 4000)
             {
-                multiplier = multiplier - 0.01;;
+                multiplier = multiplier - 0.0001;;
                 counter = 0;
                 value = 1;
                 initialValue = 0.0;
@@ -710,7 +710,7 @@ string Cracker::variableBinarySearch(unsigned int smallestLength, unsigned int l
 
             if (length > largestLength)
             {
-		multiplier = pow(multiplier, 0.0000001);
+		multiplier = pow(multiplier, 0.05);
                // multiplier = multiplier - 0.001;
                 if (smallestLength > 4)
                     length = smallestLength;
