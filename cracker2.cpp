@@ -701,7 +701,7 @@ string Cracker::variableBinarySearch(unsigned int smallestLength, unsigned int l
 
             if (counter > 4000)
             {
-                multiplier = multiplier - 0.000001;
+                multiplier = multiplier - 0.001;;
                 counter = 0;
                 value = 1;
                 initialValue = 0.0;
@@ -711,7 +711,7 @@ string Cracker::variableBinarySearch(unsigned int smallestLength, unsigned int l
             if (length > largestLength)
             {
 
-                multiplier = ((long double)cbrt(pow(multiplier, 2)));
+                multiplier = multiplier - 0.001;
                 if (smallestLength > 4)
                     length = smallestLength;
 
@@ -821,7 +821,7 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
         return guess3;
 
    
-    else if (abs(g1 - g2) < 7)
+    else if (abs(g1 - g2) < 4)
 		return guess3;
 
    
