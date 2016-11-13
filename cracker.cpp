@@ -100,7 +100,7 @@ void Cracker::getCracking()
     }
 
 
-    cout << endl << endl << endl;
+    cout << endl << endl << endl << endl << endl;
 
     // Brute force the password.
     if ( min < 5)
@@ -109,6 +109,8 @@ void Cracker::getCracking()
     //  Binary search
     if (max > 4)
     {
+	min = length;
+	max = length;
         g1 = 0;
         g2 = pow(base, length);
         truePassword = fixedBinarySearch(min, max, base, response, g1, g2);
@@ -286,8 +288,9 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
             digitOrdering = digit8;
     */
 
-
-    /*  digitIt = digit5.begin();
+	if (attempt == 1)
+	{
+      digitIt = digit5.begin();
       cout << endl << "Digit 5 ordering -------------------------------" << endl;
       while (digitIt != digit5.end())
       {
@@ -321,8 +324,9 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
           digitIt++;
 
       }
-
-    */
+	}
+   
+   // exit(1);
     if (digitOrdering.empty())
         digitOrdering = findLength(correctOrdering);
 
@@ -518,17 +522,17 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
 
     if (length <= 6)
     {
-        multiplier = 1.50;
+        multiplier = 1.01;
     }
 
     else if (length == 7)
     {
-        multiplier = 1.50;
+        multiplier = 1.01;
     }
 
     else
     {
-        multiplier = 1.50;
+        multiplier = 1.01;
     }
 
 
@@ -539,6 +543,7 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
         {
             firstMin = FindMin(length, base, response, initialValue,initialValue + value);
             counter++;
+	    cout << firstMin << endl;
             cout << counter << endl;
             initialValue = initialValue + value;
             value *= multiplier;
@@ -569,20 +574,21 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
                 found = true;
                 if (length <= 6)
                 {
-                    multiplier = multiplier - 0.0001;
+                    multiplier = multiplier - 0.001;
                 }
                 else if (length == 7)
                 {
-                    multiplier = multiplier - 0.0001;
+                    multiplier = multiplier - 0.001;
                 }
                 else
                 {
-                    multiplier = multiplier - 0.0001;
+                   multiplier = multiplier - 0.001;
                 }
                 value = 1;
                 initialValue = 0.0;
 
             }
+
 
         }
 
@@ -739,6 +745,10 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     string g3Next;
     string g3Prev;
     static int counter = 0;
+    static deque<long long int> vg1;
+    static deque<long long int> vg2;
+
+
 
 
     g3Next = getGuess(g3 + 1, length, base);
@@ -773,8 +783,37 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
         return guess3;
     s3 = response.score;
 
+/*
+	vg1.push_front(g1);
+	vg2.push_front(g2);
+
+ 	if (vg1.size() > 15000)
+	{
+		long long int a = vg1[0];
+		long long int b = vg1[1];
+		long long int c = vg2[0];
+		long long int d = vg2[1];
+		int timesa;
+		timesa = count(vg1.begin(), vg1.begin() + 200, a);
+		int timesb;
+		timesb = count(vg1.begin(), vg1.begin() + 200, b);
+		int timesc;
+		timesc = count(vg2.begin(), vg2.begin() + 200, c);
+		int timesd;
+		timesd = count(vg2.begin(), vg2.begin() + 200, d);
+
+		if (timesa > 80 && timesb > 80 && timesc > 80 && timesd > 80)
+		{
+			return guess3;
+		}
+
+		vg1.clear();
+		vg2.clear();
+	}
+	*/
+
     //If item is located at a minimum return the item
-    if (g3NextScore > s3 && g3PrevScore > s3)
+      if (g3NextScore > s3 && g3PrevScore > s3)
         return guess3;
 
     // If item is not found in search just return
@@ -1170,7 +1209,10 @@ map<long double, int> Cracker::findLength(vector<map<long double, int>> digitOrd
     map<long double, int>::iterator digit6It;
     map<long double, int>::iterator digit7It;
     map<long double, int>::iterator digit8It;
+    map<long double, int>::iterator prev;
     long double score;
+    int counter;
+    unsigned int possibleLength;
 
     checkLength(min, max);
 
@@ -1195,6 +1237,54 @@ map<long double, int> Cracker::findLength(vector<map<long double, int>> digitOrd
     //cout << "Before min == 6 and max == 8" << endl;
     if (min == 6 && max == 8)
     {
+	counter = 0;
+	possibleLength = 8;
+	prev = digitOrderings[3].begin();
+	digit8It++;
+
+	while (digit8It != digitOrderings[3].end())
+	{
+		if (nearbyint(digit8It->first / prev->first) == 1)
+		{
+			if (counter == 0)
+				possibleLength--;
+
+			counter++;
+		}
+		prev++;
+		digit8It++;
+	}
+	counter = 0;
+	prev = digitOrderings[2].begin();
+	digit7It++;
+
+	while (digit7It != digitOrderings[2].end())
+	{
+		if (nearbyint(digit7It->first / prev->first) == 1)
+		{
+			if (counter == 0)
+				possibleLength--;
+
+			counter++;
+		
+		}
+		prev++;
+		digit7It++;
+	}
+
+	cout << "Possible Length ---------------------------------- " << possibleLength << endl;
+
+	if (possibleLength == 6)
+		return digitOrderings[1];
+
+
+	if (possibleLength == 7)
+		return digitOrderings[2];
+
+	digit8It = digitOrderings[3].begin();
+	digit7It = digitOrderings[2].begin();
+
+
         while (digit6It != digitOrderings[1].end())
         {
            // cout << "entered first while loop " << endl;
@@ -1309,6 +1399,55 @@ map<long double, int> Cracker::findLength(vector<map<long double, int>> digitOrd
 
     if (min == 5 && max == 7)
     {
+
+	counter = 0;
+	possibleLength = 7;
+	prev = digitOrderings[2].begin();
+	digit7It++;
+
+	while (digit7It != digitOrderings[2].end())
+	{
+		if (nearbyint(digit7It->first / prev->first) == 1)
+		{
+			if (counter == 0)
+				possibleLength--;
+
+			counter++;
+		}
+		prev++;
+		digit7It++;
+	}
+	counter = 0;
+	prev = digitOrderings[1].begin();
+	digit6It++;
+
+	while (digit6It != digitOrderings[1].end())
+	{
+		if (nearbyint(digit6It->first / prev->first) == 1)
+		{
+			if (counter == 0)
+				possibleLength--;
+
+			counter++;
+		}
+		prev++;
+		digit6It++;
+	}
+
+
+	if (possibleLength == 5)
+		return digitOrderings[0];
+
+	if (possibleLength == 6)
+	{
+		return digitOrderings[1];
+	}
+
+	digit7It = digitOrderings[2].begin();
+	digit6It = digitOrderings[1].begin();
+
+
+
         while (digit5It != digitOrderings[0].end())
         {
           //  cout << "entered first while loop " << endl;
