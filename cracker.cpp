@@ -349,8 +349,6 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     string g3Next;
     string g3Prev;
 
-	cout << g1 << " " <<  g2 << endl;
-
     g3Next = getGuess(g3 + 1, length, base);
     g3Prev = getGuess(g3 - 1, length, base);
     response = sendPassword(g3Next);
@@ -388,7 +386,7 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
         return guess3;
 
 
-    else if (abs(g1 - g2) < 10)
+    else if (abs(g1 - g2) < 7)
 		return guess3;
 
     // If item is not found in search just return

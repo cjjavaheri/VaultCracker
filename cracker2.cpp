@@ -820,11 +820,11 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     else if (g1 == g3 || g2 == g3)
         return guess3;
 
-   /*
-    else if (abs(g1 - g2) < 10)
+   
+    else if (abs(g1 - g2) < 7)
 		return guess3;
 
-   */
+   
 
     // s1 is the min value
     else if (s1 <= s3 && s1 <= s2)
