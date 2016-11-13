@@ -50,10 +50,12 @@ void Cracker::getCracking()
         bruteForce(min, max, base, response);
      }
 
+	g1 = 0;
+	g2 = pow(base, 8);
     // Binary search
     if (max > 4)
     {
-       truePassword = binarySearch(length, base, response, g1, g2);
+       truePassword = binarySearch(min, max, base, response, g1, g2);
     }
   
     // Character reordering
@@ -213,7 +215,7 @@ long long int Cracker::getPassword(string guess, double base)
     return sum;
 }
 
-string Cracker::binarySearch(int length, double base, Response &response, long long int g1,
+string Cracker::binarySearch(int smallestLength, int largestLength, double base, Response &response, long long int g1,
                              long long int  g2)
 {
     string min;
@@ -228,6 +230,14 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
     long double value = 1.0;
     long double initialValue = 0.0;
     long double multiplier;
+    int counter = 0;
+    int length;
+
+    if (smallestLength <= 5)
+	length = 5;
+
+    if (smallestLength == 6)
+	length = 6;
 
     if (length <= 6)
     {
@@ -251,6 +261,7 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
         while (!found)
         {
             firstMin = FindMin(length, base, response, initialValue,initialValue + value);
+	    counter++;
             initialValue = initialValue + value;
             value *= multiplier;
             g3 = getPassword(firstMin, base);
@@ -280,20 +291,35 @@ string Cracker::binarySearch(int length, double base, Response &response, long l
                 found = true;
                 if (length <= 6)
                 {
-                    multiplier = cbrt(pow(multiplier, 2));
+                    multiplier = multiplier - .001;
                 }
                 else if (length == 7)
                 {
-                    multiplier = cbrt(pow(multiplier, 2));
+                    multiplier = multiplier - .001;
                 }
                 else
                 {
-                    multiplier = cbrt(pow(multiplier, 2));
+                    multiplier = multiplier - .001;
                 }
                 value = 1;
                 initialValue = 1.0;
 
             }
+
+	    if (counter > 4000)
+	    {
+ 
+		counter = 0;
+		value = 1;
+		initialValue = 1.0;
+		length++;
+	   }
+
+
+	   if (length > largestLength)
+           {
+		length = smallestLength;
+	   }
 
         }
 
@@ -322,6 +348,8 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     long double g3PrevScore;
     string g3Next;
     string g3Prev;
+
+	cout << g1 << " " <<  g2 << endl;
 
     g3Next = getGuess(g3 + 1, length, base);
     g3Prev = getGuess(g3 - 1, length, base);
@@ -358,6 +386,10 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     //If item is located at a minimum return the item
     if (g3NextScore > s3 && g3PrevScore > s3)
         return guess3;
+
+
+    else if (abs(g1 - g2) < 10)
+		return guess3;
 
     // If item is not found in search just return
     else if (g1 == g3 || g2 == g3)
