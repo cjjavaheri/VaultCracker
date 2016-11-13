@@ -9,9 +9,6 @@
 #include <iostream>
 #include <string>
 #include <list>
-#include <vector>
-#include <deque>
-#include <algorithm>
 
 #include <fstream>
 #include <map>
@@ -38,10 +35,7 @@ public:
 
     void getCracking(); /*!< Function to start the intrusion attempt */
     void bruteForce( unsigned int min, unsigned int max, double base, Response &response);
-    string fixedBinarySearch(unsigned int smallestLength, unsigned int largestLength, double base, Response &response, long long int g1,
-                         long long int  g2);
-
-    string variableBinarySearch(unsigned int smallestLength, unsigned int largestLength, double base, Response &response, long long int g1,
+    string binarySearch(int length, double base, Response &response, long long int g1,
                          long long int  g2);
 
 
@@ -64,13 +58,8 @@ private:
     void findCombinations(string guess, int length, Response &response);
 
     list<char> findOrdering(Response &response);
-    map<long double, long double> digitalOrdering(const unsigned int &length); /// This function is called to find significant digits
 
-
-
-    map<long double, int> findDigitOrdering(int length);
-
-    map<long double, int> findLength(vector<map<long double, int>> digitOrderings);
 
 };
 #endif
+

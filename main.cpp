@@ -10,8 +10,8 @@ using namespace std;
 int main()
 {
     BaseCracker *cracker = new Cracker();
-    BaseVault *vault = new Level7::Vault(6, 8);
-    Game game(vault, 6, 8);
+    BaseVault *vault = new Level4c::Vault(7, 7);
+    Game game(vault, 7, 7);
 
     // This sets the sendPassword callback for the Cracker object
     game.sendPasswordFunc(cracker->sendPassword);
