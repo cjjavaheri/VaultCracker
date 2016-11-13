@@ -262,6 +262,7 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
         {
             firstMin = FindMin(length, base, response, initialValue,initialValue + value);
 	    counter++;
+	    //cout << "Multiplier ------------------------------- " << multiplier << endl;
             initialValue = initialValue + value;
             value *= multiplier;
             g3 = getPassword(firstMin, base);
@@ -291,15 +292,15 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
                 found = true;
                 if (length <= 6)
                 {
-                    multiplier = multiplier - .001;
+                    multiplier = multiplier - 0.001;
                 }
                 else if (length == 7)
                 {
-                    multiplier = multiplier - .001;
+                    multiplier = multiplier - 0.001;
                 }
                 else
                 {
-                    multiplier = multiplier - .001;
+                    multiplier = multiplier - 0.001;
                 }
                 value = 1;
                 initialValue = 1.0;
@@ -308,7 +309,7 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
   
 	    if (counter > 4000)
 	    {
- 		multiplier = multiplier - 0.01;
+ 		multiplier = multiplier - 0.001;
 		counter = 0;
 		value = 1;
 		initialValue = 1.0;
@@ -318,7 +319,7 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
 
 	   if (length > largestLength)
            {
-		 multiplier = pow(multiplier, 0.0000001);
+		multiplier = sqrt(exp(multiplier));
                 if (smallestLength > 4)
                     length = smallestLength;
 
@@ -327,6 +328,7 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
 
 
 	   }
+
 
    
 
