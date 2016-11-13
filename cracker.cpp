@@ -241,12 +241,12 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
 
     if (length <= 6)
     {
-        multiplier = 1.20;
+        multiplier = 1.50;
     }
 
     else if (length == 7)
     {
-        multiplier = 1.20;
+        multiplier = 1.50;
     }
 
     else
@@ -305,10 +305,10 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
                 initialValue = 1.0;
 
             }
-
+  
 	    if (counter > 4000)
 	    {
- 
+ 		multiplier = multiplier - 0.01;
 		counter = 0;
 		value = 1;
 		initialValue = 1.0;
@@ -318,8 +318,17 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
 
 	   if (length > largestLength)
            {
-		length = smallestLength;
+		 multiplier = pow(multiplier, 0.0000001);
+                if (smallestLength > 4)
+                    length = smallestLength;
+
+                else
+                    length = 5;
+
+
 	   }
+
+   
 
         }
 
