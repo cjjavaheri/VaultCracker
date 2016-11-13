@@ -522,17 +522,17 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
 
     if (length <= 6)
     {
-        multiplier = 1.01;
+        multiplier = 1.06;
     }
 
     else if (length == 7)
     {
-        multiplier = 1.01;
+        multiplier = 1.04;
     }
 
     else
     {
-        multiplier = 1.01;
+        multiplier = 1.02;
     }
 
 
@@ -543,8 +543,8 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
         {
             firstMin = FindMin(length, base, response, initialValue,initialValue + value);
             counter++;
-	    cout << firstMin << endl;
-            cout << counter << endl;
+	    //cout << firstMin << endl;
+           // cout << counter << endl;
             initialValue = initialValue + value;
             value *= multiplier;
             g3 = getPassword(firstMin, base);
@@ -574,15 +574,15 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
                 found = true;
                 if (length <= 6)
                 {
-                    multiplier = multiplier - 0.001;
+                    multiplier = multiplier - .001;
                 }
                 else if (length == 7)
                 {
-                    multiplier = multiplier - 0.001;
+                    multiplier = multiplier - .001;
                 }
                 else
                 {
-                   multiplier = multiplier - 0.001;
+                   multiplier = multiplier - .001;
                 }
                 value = 1;
                 initialValue = 0.0;
@@ -1281,6 +1281,9 @@ map<long double, int> Cracker::findLength(vector<map<long double, int>> digitOrd
 	if (possibleLength == 7)
 		return digitOrderings[2];
 
+	if (possibleLength == 8 )
+		return digitOrderings[3];
+
 	digit8It = digitOrderings[3].begin();
 	digit7It = digitOrderings[2].begin();
 
@@ -1442,6 +1445,9 @@ map<long double, int> Cracker::findLength(vector<map<long double, int>> digitOrd
 	{
 		return digitOrderings[1];
 	}
+
+	if (possibleLength == 7 )
+		return digitOrderings[2];
 
 	digit7It = digitOrderings[2].begin();
 	digit6It = digitOrderings[1].begin();
