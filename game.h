@@ -23,20 +23,46 @@
 using namespace std;
 using namespace placeholders;
 
+/***************************************************************************//**
+ * @class Game
+ *
+ * @par Description
+ *    Sets the game up
+ ******************************************************************************/
 class Game
 {
+   ///pointer to BaseVault
    BaseVault *vault;
+   
+   ///pointer to BaseCracker
    BaseCracker *cracker;
+   
+   ///Range of the password
    Range range;
+   
+   ///timer for vault
    chrono::duration<double> vaultTime;
+   
+   ///timer for cracker
    chrono::duration<double> crackTime;
+   
+   ///timer
    chrono::time_point<chrono::system_clock> startVault, startCrack;
+   
+   ///time limit for timer
    double timeLimit;
 public:
+
+   ///constructor which sets the initial game up
    Game(BaseVault *v, int minLen, int maxLen, double maxTime=10.0);
 
+   ///binds .. 
    void sendPasswordFunc(function<Response(string)>& callback);
+   
+   ///this function takes in a guess and sends it to the vault and returns a response
    Response sendPassword(string str);
+   
+   ///starts game
    void startGame(BaseCracker *c);
 };
 

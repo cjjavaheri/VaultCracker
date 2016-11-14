@@ -202,7 +202,6 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
         //checking to make sure the remainder is an integer
         value = nearbyint(value);
         
-        //incrementing counter
         counter++;
     }
 
@@ -327,14 +326,14 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
             //integer value of a minimum in a seached section
             g3 = getPassword(firstMin, base);
             
-            //the very next value of the minimun
+            //the very next value of the minimum
             g3Next = getGuess(g3 + 1, length, base);
             
             //the previous value of the minimum
             g3Prev = getGuess(g3 - 1, length, base);
             
             //checks to see if the minimum, the next value and the prev value is the 
-            //paswword
+            //password
             response = sendPassword(firstMin);
             if (response.rc == ACCEPTED)
                 return firstMin;
@@ -379,6 +378,7 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
                 initialValue = 1.0;
 
             }
+            
             //searches each length 4000 times and if its not found, we increment the
             //length and restart the search
 	    if (counter > 4000)
@@ -685,7 +685,7 @@ void Cracker::findCombinations(string guess, int length, Response &response)
 }
 
 /***************************************************************************//**
- * @author Cameron Javaheri
+ * @author Cameron Javaheri, Soham Naik
  *
  * @par Description findOrdering function finds the correct character ordering by
  * first sending 74 guesses of the least significant digit. It then stores those

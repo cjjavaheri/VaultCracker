@@ -12,6 +12,9 @@
 
 using namespace std;
 
+/*!
+ * @brief its a constant
+ */
 #define MAX_ALLOWED 24
 
 /***************************************************************************//**
@@ -25,7 +28,7 @@ class BaseCracker
 public:
     BaseCracker(); /*!< Constructor */
 
-    virtual void getCracking() = 0; /*! Function to start the intrusion attempt*/
+    virtual void getCracking() = 0; /*!< Function to start the intrusion attempt */
 
     /// A function pointer exposed so that a callback can be set
     function<Response(string)> sendPassword;
