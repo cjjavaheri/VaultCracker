@@ -13,6 +13,8 @@ string getGuess(double value, unsigned int length, double base);
 Cracker::Cracker() {}
 
 /***************************************************************************//**
+ * @author Cameron Javaheri, Soham Naik, Garfield Tong
+ *
  * @brief This is called to start the intrusion attempt
  *
  * @par Description
@@ -58,6 +60,8 @@ void Cracker::getCracking()
 }
 
 /***************************************************************************//**
+ * @author Cameron Javaheri, Garfield Tong, Soham Naik
+ *
  * @brief A brute force algorithm to find the password for lengths 1-4
  *
  * @par Description
@@ -71,7 +75,6 @@ void Cracker::getCracking()
  *
  * @return The actual password to the vault.
  ******************************************************************************/
-
 void Cracker::bruteForce(unsigned int min, unsigned int max, double base, Response &response)
 {
     string guess = "aaaa";
@@ -108,6 +111,8 @@ void Cracker::bruteForce(unsigned int min, unsigned int max, double base, Respon
 }
 
 /***************************************************************************//**
+ * @author Garfield Tong, Soham Naik
+ *
  * @brief checkLength is called to find the exact length of the password
  *
  * @par Description
@@ -117,7 +122,6 @@ void Cracker::bruteForce(unsigned int min, unsigned int max, double base, Respon
  * @param[in,out] min - will pass back the range minimum.
  * @param[in,out] max - will pass back the range maximum.
  ******************************************************************************/
-
 void Cracker::checkLength(unsigned int &min, unsigned int &max)
 {
     string checklen="";
@@ -143,6 +147,7 @@ void Cracker::checkLength(unsigned int &min, unsigned int &max)
 }
 
 /***************************************************************************//**
+ * @author Cameron Javaheri
  * @brief getGuess is an algorithm used to generate a password guess given a number.
  *
  * @par Description
@@ -206,6 +211,7 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
 }
 
 /***************************************************************************//**
+ * @author Cameron Javaheri
  * @par Description
  *    Converts a password guess to a long long integer which will be graphed
  *
@@ -240,6 +246,8 @@ long long int Cracker::getPassword(string guess, double base)
 }
 
 /***************************************************************************//**
+ * @author Cameron Javaheri, Soham Naik
+ *
  * @brief binarySeach is an algorithm used to find the correct password using a binary search
  * algorithm section by section.
  *
@@ -404,10 +412,10 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
 }
 
 /***************************************************************************//**
- * @brief binarySeach 
+ * @author Cameron Javaheri, Soham Naik
  *
- * @par Description
- *    
+ * @par Description Navigates itself to the minimum value of a specific search space
+ *      in the vault using binary search algorithm
  *
  * @param[in] length - length of the guess
  * @param[in] base - base 74
@@ -415,7 +423,8 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
  * @param[in] g1 - left integer representation of the string of the range to be searched
  * @param[in] g2 - right integer representation of the string of the range to be searched
  *
- * @return 
+ * @return the minimum of the range between g1 and g2
+ * @return the mid value of g1 and g2 if the minimum is not found
  ******************************************************************************/
 string Cracker::FindMin(int length, double base, Response &response, long long int g1,
                         long long int  g2)
@@ -434,8 +443,12 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     string g3Next;
     string g3Prev;
 
+    //gets the guess just after the minimum value
     g3Next = getGuess(g3 + 1, length, base);
+    
+    //gets the guess just before the minimum value
     g3Prev = getGuess(g3 - 1, length, base);
+    
     response = sendPassword(g3Next);
     if (response.rc == ACCEPTED)
         return g3Next;
@@ -445,22 +458,22 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
         return g3Prev;
     g3PrevScore = response.score;
 
+    //gets the string representation of the integer values passed in
+    guess1 = getGuess(g1, length, base); // left
+    guess2 = getGuess(g2, length, base); // right
+    guess3 = getGuess(g3, length, base); // mid
 
-    guess1 = getGuess(g1, length, base);
-    guess2 = getGuess(g2, length, base);
-    guess3 = getGuess(g3, length, base);
-
-
-    //  cout << guess3 << endl;
-
+    //checks if g1, g2 or g3 is the password
     response = sendPassword(guess1);
     if (response.rc == ACCEPTED)
         return guess1;
     s1 = response.score;
+    
     response = sendPassword(guess2);
     if (response.rc == ACCEPTED)
         return guess2;
     s2 = response.score;
+    
     response = sendPassword(guess3);
     if (response.rc == ACCEPTED)
         return guess3;
@@ -470,34 +483,31 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     if (g3NextScore > s3 && g3PrevScore > s3)
         return guess3;
 
-
+    //to prevent the function from going into an infinite loop as sometimes
+    //the left is never equal to the right and so it never exits the binary search
+    //function
     else if (abs(g1 - g2) < 7)
 		return guess3;
 
-    // If item is not found in search just return
+    // If item is not found in search just return the mid guess
     else if (g1 == g3 || g2 == g3)
         return guess3;
 
     // s1 is the min value
     else if (s1 <= s3 && s1 <= s2)
     {
-
         return FindMin(length, base, response, g1 + 1, g3 - 1);
     }
 
     //s2 is the min value
     else if (s2 <= s3 && s2 <= s1)
     {
-
         return FindMin(length, base, response, g3 + 1, g2 - 1);
     }
-
 
     //s3 is the min value
     else
     {
-
-
         if (s1 <= s2)
             return FindMin(length, base, response, g3 - 1, g1 + 1);
 
@@ -507,14 +517,22 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
 
 }
 
+/***************************************************************************//**
+ * @author Cameron Javaheri
+ *
+ * @par Description This function creates a map with the correct character
+ * ordering by calling the findOrdering function.
+ *
+ * @return A map with characters mapped to digits
+ ******************************************************************************/
 map<char,int> Cracker::getCharacterMap()
 {
     Response response;
-    static map<char, int> CharacterMap;
+    //initializing only once to speed program up
+    static map<char, int> CharacterMap; 
     static list<char> ordering;
+    
     list<char>::iterator orderingIt;
-    int i;
-
 
 	if (ordering.empty())
 		ordering = findOrdering(response);
@@ -523,22 +541,34 @@ map<char,int> Cracker::getCharacterMap()
 	{
 		orderingIt = ordering.begin();
 
-		for (i = 0; i < 74; i++)
+		for (int i = 0; i < 74; i++)
 		{
+			//mapping each character to a digit
 			CharacterMap.insert({*orderingIt, i});
 			orderingIt++;
 		}
 	}
+	
     return CharacterMap;
 
 }
 
-
+/***************************************************************************//**
+ * @author Cameron Javaheri
+ *
+ * @par Description Maps integers to characters by calling findOrdering function.
+ * The difference between this function and the getCharacterMap function is that 
+ * this function maps integers to characters and the opposite in the latter.
+ *
+ * @return A map with integers mapped to characters
+ ******************************************************************************/
 map<int, char> Cracker::getIntegerMap()
 {
     Response response;
+    //initialzing only once to speed up program
     static list<char> ordering;
     static map<int, char> IntegerMap;
+    
     list<char>::iterator orderingIt;
     map<int, char>::iterator cit;
     int i;
@@ -552,6 +582,7 @@ map<int, char> Cracker::getIntegerMap()
 
 		for (i = 0; i < 74; i++)
 		{
+			//mapping integer to character
 			IntegerMap.insert({i, *orderingIt});
 			orderingIt++;
 		}
@@ -560,7 +591,16 @@ map<int, char> Cracker::getIntegerMap()
     return IntegerMap;
 }
 
-
+/***************************************************************************//**
+ * @author Cameron Javaheri, Soham Naik
+ *
+ * @par Description Brute forces every possible combination for length 1-4
+ *
+ * @param[in] guess - string representation of the guess
+ * @param[in] length - length of the guess
+ * @param[in,out] response - response sent by the vault
+ *
+ ******************************************************************************/
 void Cracker::findCombinations(string guess, int length, Response &response)
 {
     int i;
@@ -644,86 +684,80 @@ void Cracker::findCombinations(string guess, int length, Response &response)
 
 }
 
-
-
+/***************************************************************************//**
+ * @author Cameron Javaheri
+ *
+ * @par Description findOrdering function finds the correct character ordering by
+ * first sending 74 guesses of the least significant digit. It then stores those
+ * values in a map. Then it looks at the specific score of one of the password guesses
+ * and compares that score to the other 73 scores by taking the difference of the scores.
+ * These differences end up giving the correct character ordering by looking at all of 
+ * the scores with the negative values all the way to the scores with high positive values.  
+ *
+ * @param[in,out] response - response sent by the vault
+ *
+ * @return A list with the correct character ordering
+ ******************************************************************************/
 list<char> Cracker::findOrdering(Response &response)
 {
-string guess = "";
-unsigned int i;
-long double difference;
-map<char, long double> scores;
-map<char, long double>::iterator it;
-map<char, long double>::iterator compare;
-map<long double, char> scoreDifferences;
-map<long double, char> duplicates;
-map<long double, char>::iterator differenceIt;
-map<long double, char>::iterator duplicatesIt;
-list<char> ordering;
-list<char>::iterator orderingIt;
-unsigned int min = 0;
-unsigned int max = 0;
+	string guess = "";
+	unsigned int i;
+	long double difference;
+	map<char, long double> scores;
+	map<char, long double>::iterator it;
+	map<char, long double>::iterator compare;
+	map<long double, char> scoreDifferences;
+	map<long double, char> duplicates;
+	map<long double, char>::iterator differenceIt;
+	map<long double, char>::iterator duplicatesIt;
+	list<char> ordering;
+	list<char>::iterator orderingIt;
+	unsigned int min = 0;
+	unsigned int max = 0;
+	
+	//checks range of password
+	checkLength(min, max);
+	guess.resize(max);
 
-checkLength(min, max);
-guess.resize(max);
+	//fills the string with 'a' till full	
+	for (i = 0; i < guess.size(); i++)
+	{
+		guess[i] = 'a';
+	}
 
-for (i = 0; i < guess.size(); i++)
-{
-	guess[i] = 'a';
-}
+	//changes last letter one at a time 74 times and stores scores
+	for (i = 0; i < 74; i++)
+	{
+		guess[guess.size() - 1] = validChars[i];
+		response = sendPassword(guess);
+		scores.insert({guess[guess.size() - 1], response.score});
+	}
 
-for (i = 0; i < 74; i++)
-{
-	guess[guess.size() - 1] = validChars[i];
-	response = sendPassword(guess);
-	scores.insert({guess[guess.size() - 1], response.score});
-}
-
-it = scores.begin();
-compare = it;
-for (i = 0; i < 74; i++)
-{
-	difference = it->second - compare->second;
-	differenceIt = scoreDifferences.find(difference);
+	it = scores.begin();
+	compare = it;
+	//compares 73 scores to 1 specific score
+	for (i = 0; i < 74; i++)
+	{
+		difference = it->second - compare->second;
+		differenceIt = scoreDifferences.find(difference);
 
 		scoreDifferences.insert({difference, compare->first});
-
-/*	else
-		duplicates.insert({difference, compare->first});
-*/	
-	compare++;
-}
+	
+		compare++;
+	}
 
 
-/*	differenceIt = scoreDifferences.begin();
-	duplicatesIt = duplicates.begin();
-	ordering.push_back(differenceIt->second);
-	guess[guess.size() - 1] = differenceIt->second;
-	response = sendPassword(guess);
-	pivotScore = response.score;
-	differenceIt++;
-
-*/
 	i = 0;
 
  	differenceIt = scoreDifferences.begin();
 	orderingIt = ordering.begin();
+	//filling the list with the ordering
 	while (differenceIt != scoreDifferences.end())
 	{
-		
 		ordering.push_front(differenceIt->second);
 		i++;
 		differenceIt++;
 	}
-
-
 	
-	cout << "The ordering is: " ;
-	orderingIt = ordering.begin();
-	while (orderingIt != ordering.end())
-	{
-		cout << *orderingIt;
-		orderingIt++;
-	}
-
 	return ordering;
 }
