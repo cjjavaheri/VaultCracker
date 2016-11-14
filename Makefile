@@ -1,4 +1,4 @@
-SOURCE = cracker2.cpp \
+SOURCE = cracker.cpp \
          game.cpp \
          main.cpp \
          vault.cpp \

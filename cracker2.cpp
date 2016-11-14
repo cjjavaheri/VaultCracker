@@ -436,11 +436,17 @@ string Cracker::fixedBinarySearch(unsigned int smallestLength, unsigned int larg
 
             }
 
-	    if (counter > 4000)
+	    if (counter > 5000)
 	    {
 		counter = 0;
-		multiplier = pow(multiplier, 0.20);
+		multiplier = sqrt(exp(multiplier));
             }
+
+
+	    if (multiplier > 10.0)
+	    {
+		multiplier = pow(multiplier, 0.20);
+	    }
 
 
         }
