@@ -1,5 +1,15 @@
-/***************************************************************************//**
- * @file
+/**************************************************************************//**
+ * @file cracker.h
+ * 
+ * @brief The file which contains all of the function prototypes for cracker.
+ *
+ * @author: Cameron Javaheri, Garfield Tong, Soham Naik
+ *
+ * @par Class:
+ * CSC300 Data Structures
+ *
+ * @date:   Fall 2016
+ *
  ******************************************************************************/
 #ifndef __CRACKER_H
 #define __CRACKER_H
@@ -47,7 +57,6 @@ public:
 
 
     
-private:
     ///checks range of password
     void checkLength(unsigned int &min, unsigned int &max);
     

@@ -1,11 +1,23 @@
+/**************************************************************************//**
+ * @file cracker.cpp
+ *
+ * @brief The file which contains all of the function definitions for cracker.h
+ *
+ * @author: Cameron Javaheri, Garfield Tong, Soham Naik
+ *
+ * @par Class:
+ * CSC300 Data Structures
+ *
+ * @date:   Fall 2016
+ *
+ ******************************************************************************/
+
 #include "cracker.h"
 #include <time.h>
 #include <vector>
 #include <fstream>
 #include <map>
 #include <cmath>
-
-string getGuess(double value, unsigned int length, double base);
 
 /***************************************************************************//**
  * @brief Constructor
@@ -42,17 +54,17 @@ void Cracker::getCracking()
     checkLength(min, max);
 
     // Brute force the password.
-     if ( min < 5)
-     {
+    if ( min < 5)
+    {
         bruteForce(min, max, base, response);
-     }
+    }
 
     g1 = 0;
     g2 = pow(base, 8);
-    // using binary search on length's greater than 4 
+    // using binary search on length's greater than 4
     if (max > 4)
     {
-       truePassword = binarySearch(min, max, base, response, g1, g2);
+        truePassword = binarySearch(min, max, base, response, g1, g2);
     }
 
     return;
@@ -79,18 +91,18 @@ void Cracker::bruteForce(unsigned int min, unsigned int max, double base, Respon
 {
     string guess = "aaaa";
 
-    //does the actual brute forcing for length 4 and gets response 
+    //does the actual brute forcing for length 4 and gets response
     findCombinations(guess, guess.size(), response);
 
     if (response.rc == ACCEPTED)
-		return;
+        return;
 
     guess.resize(3);
     //brute forces length 3
     findCombinations(guess, guess.size(), response);
 
     if (response.rc == ACCEPTED)
-	return;
+        return;
 
     //brute forces length 2
     guess.resize(2);
@@ -98,7 +110,7 @@ void Cracker::bruteForce(unsigned int min, unsigned int max, double base, Respon
     findCombinations(guess, guess.size(), response);
 
     if (response.rc == ACCEPTED)
-	return;
+        return;
 
     //brute forces length 1
     guess.resize(1);
@@ -106,7 +118,7 @@ void Cracker::bruteForce(unsigned int min, unsigned int max, double base, Respon
     findCombinations(guess, guess.size(), response);
 
     if (response.rc == ACCEPTED)
-	return;
+        return;
 
 }
 
@@ -136,7 +148,7 @@ void Cracker::checkLength(unsigned int &min, unsigned int &max)
             min++;
         }
         max++;
-        
+
         if (getlen.rc == PW_TOO_LONG)
         {
             max -= 2;
@@ -161,7 +173,7 @@ void Cracker::checkLength(unsigned int &min, unsigned int &max)
  * @param[in] value - The number used to generate the password guess. Must be given as int
  * but the data type provided is double because of the calculations done.
  * @param[in] length - The length of the password.
- * param[in] base - The number of characters to use in the guess.
+ * @param[in] base - The number of characters to use in the guess.
  *
  * @return A string which is the permuatation represented by the value sent in
  * by the user.
@@ -169,7 +181,7 @@ void Cracker::checkLength(unsigned int &min, unsigned int &max)
 string Cracker::getGuess(long double value, unsigned int length, double base)
 {
     static map<int, char> IntegerMap; //maps each digit with an integer
-    map<int, char>::iterator cit; 
+    map<int, char>::iterator cit;
     unsigned int digit;
     string guess = "";
     unsigned int counter;
@@ -179,29 +191,29 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
         IntegerMap = getIntegerMap();
 
     counter = 1;
-    
-    //resizing guess to the length of the password guess 
+
+    //resizing guess to the length of the password guess
     guess.resize(length);
-    
-    
+
+
     while (counter < length + 1)
     {
         //digit is the quotient which we use to find the correponding character
         //inside of the integer map
         digit = int(value / pow(base, length - counter));
-        
+
         //finds the character corresponding to the digit
         cit = IntegerMap.find(digit);
-        
+
         //placing the correct letter in the correct position of the string
         guess[guess.size() - length + (counter - 1)] = cit->second;
-        
+
         //Integer value of the remainder
         value = (value / pow(base, length - counter) - digit) * pow(base, length - counter);
-        
+
         //checking to make sure the remainder is an integer
         value = nearbyint(value);
-        
+
         counter++;
     }
 
@@ -211,13 +223,14 @@ string Cracker::getGuess(long double value, unsigned int length, double base)
 
 /***************************************************************************//**
  * @author Cameron Javaheri
+ * @brief Turns a string into a long long int.
  * @par Description
  *    Converts a password guess to a long long integer which will be graphed
  *
  * @param[in] guess -guessed password
  * @param[in] base - base 74
  *
- * @return The long long int representation of the guess 
+ * @return The long long int representation of the guess
  ******************************************************************************/
 long long int Cracker::getPassword(string guess, double base)
 {
@@ -226,17 +239,17 @@ long long int Cracker::getPassword(string guess, double base)
     long long int sum = 0;
     static map<char, int> CharacterMap;
     map<char, int>::iterator cit;
-    
+
     //maps each character to an int value
     if (CharacterMap.empty())
         CharacterMap = getCharacterMap();
 
-    //calaulates the integer representation of the string 
+    //calaulates the integer representation of the string
     for (i = guess.length() - 1; i > -1; i--, j++)
     {
         //finds the integer representation of the character in the map
         cit = CharacterMap.find(guess[i]);
-        
+
         //converts the string to base 74
         sum += (cit->second * pow(base, j));
     }
@@ -252,7 +265,7 @@ long long int Cracker::getPassword(string guess, double base)
  *
  * @par Description
  *    This recursive function searches the entire search space of the vault. It starts out
- * with a multiplier which dictates the range of each section to search. This multiplier is added to 
+ * with a multiplier which dictates the range of each section to search. This multiplier is added to
  * the initial value. This gives a range for the findmin function to search. The findmin function
  * then searches that range. If the password is not found, it returns back to the binary search function
  * to check for a larger section until it finds a minimium. Once a minimum is found the initialValue gets
@@ -260,7 +273,7 @@ long long int Cracker::getPassword(string guess, double base)
  * has searched the entire search space. If the password is not found, it starts searching the search space
  * from the beginning and continues to repeat this process until the password is found.
  *
- * @param[in] smallestLength - minimum length of the password 
+ * @param[in] smallestLength - minimum length of the password
  * @param[in] largestLength - maximum length of the password
  * @param[in] base - base 74
  * @param[in,out] response - response after sending the password to the vault
@@ -288,10 +301,10 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
 
     //checking the minimum length to set the minimum length of the password
     if (smallestLength <= 5)
-	length = 5;
+        length = 5;
 
     if (smallestLength == 6)
-	length = 6;
+        length = 6;
 
     //sets multiplier for each length
     if (length <= 6)
@@ -317,22 +330,22 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
         {
             //finding a minimum by sending a range to search
             firstMin = FindMin(length, base, response, initialValue,initialValue + value);
-	    counter++;
-	    
-	    //increasing length of search space
+            counter++;
+
+            //increasing length of search space
             initialValue = initialValue + value;
             value *= multiplier;
-            
+
             //integer value of a minimum in a seached section
             g3 = getPassword(firstMin, base);
-            
+
             //the very next value of the minimum
             g3Next = getGuess(g3 + 1, length, base);
-            
+
             //the previous value of the minimum
             g3Prev = getGuess(g3 - 1, length, base);
-            
-            //checks to see if the minimum, the next value and the prev value is the 
+
+            //checks to see if the minimum, the next value and the prev value is the
             //password
             response = sendPassword(firstMin);
             if (response.rc == ACCEPTED)
@@ -346,8 +359,8 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
             if (response.rc == ACCEPTED)
                 return g3Prev;
             g3PrevScore = response.score;
-            
-            //checks to see if g3 is the minimum so that we can search the next 
+
+            //checks to see if g3 is the minimum so that we can search the next
             //section
             if (g3Score < g3NextScore && g3Score < g3PrevScore)
             {
@@ -356,9 +369,9 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
                 initialValue = g3;
             }
 
-	    //Checking to see if we reached the end of the search space.
-	    //If we reach the end of the search space, we restart with a smaller 
-	    //multiplier  
+            //Checking to see if we reached the end of the search space.
+            //If we reach the end of the search space, we restart with a smaller
+            //multiplier
             if (initialValue > pow(base, length) - 1)
             {
                 found = true;
@@ -378,32 +391,32 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
                 initialValue = 1.0;
 
             }
-            
+
             //searches each length 4000 times and if its not found, we increment the
             //length and restart the search
-	    if (counter > 4000)
-	    {
- 		multiplier = multiplier - 0.001;
-		counter = 0;
-		value = 1;
-		initialValue = 1.0;
-		length++;
-	   }
+            if (counter > 4000)
+            {
+                multiplier = multiplier - 0.001;
+                counter = 0;
+                value = 1;
+                initialValue = 1.0;
+                length++;
+            }
 
-	   //if the password is not found within 4000 searches for the maximum length,
-	   //we set length to minimum and increase the multiplier and start searching
-	   //the vault again
-	   if (length > largestLength)
-           {
-		//increasing multiplier to search a bigger space
-		multiplier = sqrt(exp(multiplier));
-		
+            //if the password is not found within 4000 searches for the maximum length,
+            //we set length to minimum and increase the multiplier and start searching
+            //the vault again
+            if (length > largestLength)
+            {
+                //increasing multiplier to search a bigger space
+                multiplier = sqrt(exp(multiplier));
+
                 if (smallestLength > 4)
                     length = smallestLength;
 
                 else
                     length = 5;
-	   }
+            }
         }
     }
 
@@ -413,6 +426,8 @@ string Cracker::binarySearch(int smallestLength, int largestLength, double base,
 
 /***************************************************************************//**
  * @author Cameron Javaheri, Soham Naik
+ *
+ * @brief Finds the minimum.
  *
  * @par Description Navigates itself to the minimum value of a specific search space
  *      in the vault using binary search algorithm
@@ -445,10 +460,10 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
 
     //gets the guess just after the minimum value
     g3Next = getGuess(g3 + 1, length, base);
-    
+
     //gets the guess just before the minimum value
     g3Prev = getGuess(g3 - 1, length, base);
-    
+
     response = sendPassword(g3Next);
     if (response.rc == ACCEPTED)
         return g3Next;
@@ -468,12 +483,12 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     if (response.rc == ACCEPTED)
         return guess1;
     s1 = response.score;
-    
+
     response = sendPassword(guess2);
     if (response.rc == ACCEPTED)
         return guess2;
     s2 = response.score;
-    
+
     response = sendPassword(guess3);
     if (response.rc == ACCEPTED)
         return guess3;
@@ -487,7 +502,7 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
     //the left is never equal to the right and so it never exits the binary search
     //function
     else if (abs(g1 - g2) < 7)
-		return guess3;
+        return guess3;
 
     // If item is not found in search just return the mid guess
     else if (g1 == g3 || g2 == g3)
@@ -520,6 +535,8 @@ string Cracker::FindMin(int length, double base, Response &response, long long i
 /***************************************************************************//**
  * @author Cameron Javaheri
  *
+ * @brief Gets a map with characters mapped to digits.
+ *
  * @par Description This function creates a map with the correct character
  * ordering by calling the findOrdering function.
  *
@@ -529,26 +546,26 @@ map<char,int> Cracker::getCharacterMap()
 {
     Response response;
     //initializing only once to speed program up
-    static map<char, int> CharacterMap; 
+    static map<char, int> CharacterMap;
     static list<char> ordering;
-    
+
     list<char>::iterator orderingIt;
 
-	if (ordering.empty())
-		ordering = findOrdering(response);
+    if (ordering.empty())
+        ordering = findOrdering(response);
 
-	if (CharacterMap.empty())
-	{
-		orderingIt = ordering.begin();
+    if (CharacterMap.empty())
+    {
+        orderingIt = ordering.begin();
 
-		for (int i = 0; i < 74; i++)
-		{
-			//mapping each character to a digit
-			CharacterMap.insert({*orderingIt, i});
-			orderingIt++;
-		}
-	}
-	
+        for (int i = 0; i < 74; i++)
+        {
+            //mapping each character to a digit
+            CharacterMap.insert({*orderingIt, i});
+            orderingIt++;
+        }
+    }
+
     return CharacterMap;
 
 }
@@ -556,8 +573,10 @@ map<char,int> Cracker::getCharacterMap()
 /***************************************************************************//**
  * @author Cameron Javaheri
  *
+ * @brief Gets a map with integers mapped to characters.
+ *
  * @par Description Maps integers to characters by calling findOrdering function.
- * The difference between this function and the getCharacterMap function is that 
+ * The difference between this function and the getCharacterMap function is that
  * this function maps integers to characters and the opposite in the latter.
  *
  * @return A map with integers mapped to characters
@@ -568,31 +587,33 @@ map<int, char> Cracker::getIntegerMap()
     //initialzing only once to speed up program
     static list<char> ordering;
     static map<int, char> IntegerMap;
-    
+
     list<char>::iterator orderingIt;
     map<int, char>::iterator cit;
     int i;
 
-	if (ordering.empty())
-		ordering = findOrdering(response);
+    if (ordering.empty())
+        ordering = findOrdering(response);
 
-	if (IntegerMap.empty())
-	{
-		orderingIt = ordering.begin();
+    if (IntegerMap.empty())
+    {
+        orderingIt = ordering.begin();
 
-		for (i = 0; i < 74; i++)
-		{
-			//mapping integer to character
-			IntegerMap.insert({i, *orderingIt});
-			orderingIt++;
-		}
-	}
+        for (i = 0; i < 74; i++)
+        {
+            //mapping integer to character
+            IntegerMap.insert({i, *orderingIt});
+            orderingIt++;
+        }
+    }
 
     return IntegerMap;
 }
 
 /***************************************************************************//**
  * @author Cameron Javaheri, Soham Naik
+ *
+ * @brief Finds all of the possible combinations for a specific length.
  *
  * @par Description Brute forces every possible combination for length 1-4
  *
@@ -607,7 +628,7 @@ void Cracker::findCombinations(string guess, int length, Response &response)
     int j;
     int k;
     int l;
-    
+
     //brute forcing password of length 4 by changing 1 character
     //at a time
     if (length == 4)
@@ -624,15 +645,15 @@ void Cracker::findCombinations(string guess, int length, Response &response)
                     for (i = 0; i < 74; i++)
                     {
                         guess[guess.size() - 1] = validChars[i];
-			response = sendPassword(guess);
-			if (response.rc == ACCEPTED)
-				return;
+                        response = sendPassword(guess);
+                        if (response.rc == ACCEPTED)
+                            return;
                     }
                 }
             }
         }
     }
-	
+
     //brute forcing password of length 3 by changing 1 character
     //at a time
     else if (length == 3)
@@ -646,15 +667,15 @@ void Cracker::findCombinations(string guess, int length, Response &response)
                 for (i = 0; i < 74; i++)
                 {
                     guess[guess.size() - 1] = validChars[i];
-		    response = sendPassword(guess);
-		    if (response.rc == ACCEPTED)
-			return;
+                    response = sendPassword(guess);
+                    if (response.rc == ACCEPTED)
+                        return;
                 }
             }
         }
     }
 
-    //brute forcing password of length 2 by changing 1 character 
+    //brute forcing password of length 2 by changing 1 character
     //at a time
     else if (length == 2)
     {
@@ -664,9 +685,9 @@ void Cracker::findCombinations(string guess, int length, Response &response)
             for (i = 0; i < 74; i++)
             {
                 guess[guess.size() - 1] = validChars[i];
-		response = sendPassword(guess);
-		if (response.rc == ACCEPTED)
-			return;
+                response = sendPassword(guess);
+                if (response.rc == ACCEPTED)
+                    return;
             }
         }
     }
@@ -676,88 +697,95 @@ void Cracker::findCombinations(string guess, int length, Response &response)
         for (i = 0; i < 74; i++)
         {
             guess[guess.size() - 1] = validChars[i];
-	    response = sendPassword(guess);
-	    if (response.rc == ACCEPTED)
-			return;
+            response = sendPassword(guess);
+            if (response.rc == ACCEPTED)
+                return;
         }
     }
 
 }
 
+
 /***************************************************************************//**
- * @author Cameron Javaheri, Soham Naik
+ * @author Cameron Javaheri
  *
- * @par Description findOrdering function finds the correct character ordering by
- * first sending 74 guesses of the least significant digit. It then stores those
- * values in a map. Then it looks at the specific score of one of the password guesses
- * and compares that score to the other 73 scores by taking the difference of the scores.
- * These differences end up giving the correct character ordering by looking at all of 
- * the scores with the negative values all the way to the scores with high positive values.  
+ * @brief finds the digit ordering.
  *
- * @param[in,out] response - response sent by the vault
+ * @par Description First this function fills a string with 'a' until full.
+ * Then it keeps n-1 letters constant and changes one letter at a time and
+ * saves the scores. Then it compares 73 of the scores to 1 specific score.
+ * From this, it calculates the difference between each score with the score
+ * chosen. This gives the significance of simply one digit, this algorithm
+ * has to be ran n times where n is the length of the password. Finally,
+ * it stores these significances in a map so that they are ordered from least
+ * significant to most significant. The other number stored with the significance
+ * tells the actual position of the digit.
  *
- * @return A list with the correct character ordering
+ * @param[in] response - The response the vault sends back.
+ *
+ * @return A map containing the correct digit ordering
  ******************************************************************************/
+
 list<char> Cracker::findOrdering(Response &response)
 {
-	string guess = "";
-	unsigned int i;
-	long double difference;
-	map<char, long double> scores;
-	map<char, long double>::iterator it;
-	map<char, long double>::iterator compare;
-	map<long double, char> scoreDifferences;
-	map<long double, char> duplicates;
-	map<long double, char>::iterator differenceIt;
-	map<long double, char>::iterator duplicatesIt;
-	list<char> ordering;
-	list<char>::iterator orderingIt;
-	unsigned int min = 0;
-	unsigned int max = 0;
-	
-	//checks range of password
-	checkLength(min, max);
-	guess.resize(max);
+    string guess = "";
+    unsigned int i;
+    long double difference;
+    map<char, long double> scores;
+    map<char, long double>::iterator it;
+    map<char, long double>::iterator compare;
+    map<long double, char> scoreDifferences;
+    map<long double, char> duplicates;
+    map<long double, char>::iterator differenceIt;
+    map<long double, char>::iterator duplicatesIt;
+    list<char> ordering;
+    list<char>::iterator orderingIt;
+    unsigned int min = 0;
+    unsigned int max = 0;
 
-	//fills the string with 'a' till full	
-	for (i = 0; i < guess.size(); i++)
-	{
-		guess[i] = 'a';
-	}
+    //checks range of password
+    checkLength(min, max);
+    guess.resize(max);
 
-	//changes last letter one at a time 74 times and stores scores
-	for (i = 0; i < 74; i++)
-	{
-		guess[guess.size() - 1] = validChars[i];
-		response = sendPassword(guess);
-		scores.insert({guess[guess.size() - 1], response.score});
-	}
+    //fills the string with 'a' till full
+    for (i = 0; i < guess.size(); i++)
+    {
+        guess[i] = 'a';
+    }
 
-	it = scores.begin();
-	compare = it;
-	//compares 73 scores to 1 specific score
-	for (i = 0; i < 74; i++)
-	{
-		difference = it->second - compare->second;
-		differenceIt = scoreDifferences.find(difference);
+    //changes last letter one at a time 74 times and stores scores
+    for (i = 0; i < 74; i++)
+    {
+        guess[guess.size() - 1] = validChars[i];
+        response = sendPassword(guess);
+        scores.insert({guess[guess.size() - 1], response.score});
+    }
 
-		scoreDifferences.insert({difference, compare->first});
-	
-		compare++;
-	}
+    it = scores.begin();
+    compare = it;
+    //compares 73 scores to 1 specific score
+    for (i = 0; i < 74; i++)
+    {
+        difference = it->second - compare->second;
+        differenceIt = scoreDifferences.find(difference);
+
+        scoreDifferences.insert({difference, compare->first});
+
+        compare++;
+    }
 
 
-	i = 0;
+    i = 0;
 
- 	differenceIt = scoreDifferences.begin();
-	orderingIt = ordering.begin();
-	//filling the list with the ordering
-	while (differenceIt != scoreDifferences.end())
-	{
-		ordering.push_front(differenceIt->second);
-		i++;
-		differenceIt++;
-	}
-	
-	return ordering;
+    differenceIt = scoreDifferences.begin();
+    orderingIt = ordering.begin();
+    //filling the list with the ordering
+    while (differenceIt != scoreDifferences.end())
+    {
+        ordering.push_front(differenceIt->second);
+        i++;
+        differenceIt++;
+    }
+
+    return ordering;
 }
